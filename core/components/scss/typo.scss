@@ -1,0 +1,133 @@
+.socialText {
+    text-transform: uppercase;
+    font-size: 16px;
+}
+
+.primaryTitle {
+    text-transform: uppercase;
+    font-size: 54px;
+    color: #fff;
+    text-align: center;
+    min-height: 140px;
+
+    @media screen and (max-width: 1000px) {
+        font-size: 48px;
+        color: #fff;
+    }
+
+    @media screen and (max-width: 600px) {
+        font-size: 38px;
+    }
+
+    span {
+        position: relative;
+
+        span {
+            color: #d38a2a;
+        }
+
+        div {
+            position: absolute;
+            bottom: -15px;
+            right: 0;
+            color: #d38a2a;
+            font-size: 16px;
+            font-weight: 400;
+        }
+    }
+
+    .goFancy {
+        text-transform: uppercase;
+        background-image: linear-gradient(
+            -225deg,
+            #ff1361 0%,
+            #d38a2a 50%,
+            #ff1361 67%,
+            #44107a 100%,
+        );
+        background-size: auto auto;
+        background-clip: border-box;
+        background-size: 140% auto;
+        color: #fff;
+        background-clip: text;
+        text-fill-color: transparent;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+}
+
+.pstyling {
+    font-size: 18px;
+    line-height: 28px;
+    text-shadow: 0px 0px 4px rgba(0,0,0,0.9);
+
+    &.spec {
+        font-size: 14px;
+    }
+}
+
+.primaryButton {
+    font-size: 20px;
+    text-transform: uppercase;
+}
+
+.secondaryButton {
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.orElement {
+    font-size: 16px;
+    text-transform: uppercase;
+    color: #d38822;
+    padding: 22px 0;
+}
+
+.cardTitle {
+    font-size: 20px;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    padding: 8px 32px;
+    margin-bottom: 20px;
+    display: inline-block;
+    border-bottom: 4px solid #fff;
+    color: #fff;
+    margin-right: 8px;
+
+    &.active,
+    &:hover {
+        color:#d38a2a !important;
+        border-color: #d38a2a;
+        cursor: pointer;
+    }
+
+    p {
+        display: inline;
+        background: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        padding: 8px !important;
+        border-radius: 8px;
+        width: 20px;
+        height: 20px;
+        font-size: 0.8rem;
+        text-align: center;
+        position: relative;
+        top: -6px;
+        right: -12px;
+    }
+}
+
+.loading {
+    font-size: 24px;
+}
+
+h3.sectionHeading {
+    display: block;
+    text-align: center;
+    font-size: 2.4rem;
+}
+
+button {
+    cursor: pointer;
+}

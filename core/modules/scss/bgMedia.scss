@@ -1,0 +1,35 @@
+.bgMediaWrapper {
+    position: relative;
+    width: 100%;
+
+    img.mediaele {
+        position: absolute;
+        left: 50%;
+        margin-left: -1200px;
+        top: 0;
+        z-index: 25;
+    }
+
+    &.bottomAlign {
+        img.mediaele {
+            bottom: 0;
+            top: initial;
+        }
+    }
+
+    .bgMediaContent {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 998;
+    }
+
+    @media screen and (max-width: 1000px) {
+        img.mediaele {
+            width: 1800px;
+            margin-left: -900px;
+            height: auto;
+        }
+    }
+}

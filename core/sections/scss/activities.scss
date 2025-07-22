@@ -1,0 +1,18 @@
+.activities {
+    .content {
+        padding: 0 0 200px;
+
+        .cardsWrapper {
+            > div {
+                display: inline-block;
+                vertical-align: top;
+                width: 33.3%;
+            }
+        }
+
+        .additionalText {
+            padding: 130px 30px 0;
+            text-align: center;
+        }
+    }
+}

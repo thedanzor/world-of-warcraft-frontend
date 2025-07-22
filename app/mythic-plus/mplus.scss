@@ -1,0 +1,147 @@
+body, html {
+    background: #0b0a0f;
+    font-family: var(--font-arimo);
+    color: #dcdada;
+    padding: 0;
+    margin: 0;
+}
+
+.guildAudit,
+.bodyContent,
+.applicationWrapper {
+    width: 100%;
+    height: 100%;
+}
+
+.mplusList {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.mplus-item {
+    width: calc(12.5% - 20px);
+    margin: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #000;
+    position: relative;
+
+    @media screen and (max-width: 2100px) {
+        width: calc(20% - 20px);
+    }
+
+    @media screen and (max-width: 1800px) {
+        width: calc(25% - 20px);
+    }
+    @media screen and (max-width: 1400px) {
+        width: calc(33.33% - 20px);
+    }
+    @media screen and (max-width: 1100px) {
+        width: calc(50% - 20px);
+    }
+    @media screen and (max-width: 600px) {
+        width: calc(100% - 20px);
+    }
+
+    .mediaWrapper {
+        height: 140px;
+        width:100%;
+        overflow: hidden;
+
+        img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+    }
+
+    .score {
+        position: absolute;
+        top: 108px;
+        right: 20px;
+        padding: 4px 4px;
+        border-radius: 3px;
+        background-color: #a00023;
+
+        p {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #fff;
+        }
+    }
+
+    .nameInfo {
+        .name {
+            p {
+                font-size: 1.4rem;
+                padding: 8px 0 0;
+                text-transform: capitalize;
+                font-weight: bold;
+            }
+        }
+        .classandspec {
+            p {
+                font-size: 0.9rem;
+                color: #fff;
+            }
+        }
+    }
+
+    .guildRank {
+        p {
+            font-size: 0.9rem;
+            color: #fff;
+            opacity: 0.6;
+        }
+    }
+}
+
+.mplus-instance-title {
+    padding: 8px 8px 0;
+    margin-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    span {
+        &:nth-child(1) {
+            font-size: 0.9rem;
+            color: #fff;
+            padding-right: 8px;
+            font-weight: bold;
+        }
+
+        &:nth-child(2) {
+            font-size: 0.8rem;
+            color: #fff;
+            opacity: 0.8;
+        }
+
+        &:nth-child(3) {
+            font-size: 0.8rem;
+            color: #fff;
+            opacity: 0.4;
+            padding-left: 8px;
+        }
+    }
+}
+
+.nottimed {
+    opacity: 0.5;
+}
+
+.logoHolder {
+    text-align: center;
+
+    a {
+        display: inline-block;
+        border-radius: 8px;
+        width: 100px;
+        height: 100px;
+        img {
+            width: 100%;
+            height: auto;
+        }
+        box-shadow: 0px 0px 40px #181c37;
+        background: #181c37;
+        margin-bottom: 32px;
+    }
+}

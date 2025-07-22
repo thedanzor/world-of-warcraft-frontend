@@ -1,0 +1,38 @@
+header {
+    .headerContext {
+        padding: 560px 0 0 0;
+    }
+
+    p {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+        padding: 0px 20px;
+    }
+
+    .ctaArea {
+        padding: 80px 0;
+        text-align: center;
+    }
+
+    @media screen and (max-width: 1200px) {
+        .item {
+            width: 50%;
+        }
+
+        .discordWrapperheader,
+        .followUsWrapperHeader {
+            display: none;
+        }
+    }
+
+    @media screen and (max-width: 700px) {
+        .primaryTitle span div {
+            display: none;
+        }
+
+        .headerContext {
+            padding: 690px 0 100px;
+        }
+    }
+}

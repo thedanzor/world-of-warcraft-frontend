@@ -1,0 +1,156 @@
+.roster-planner {
+    padding: 24px;
+    color: #dcdada;
+
+    .character-pool {
+        margin-bottom: 32px;
+
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+    }
+
+    .character-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .role-sections {
+        .role-group {
+            margin-bottom: 24px;
+
+            .slot-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 16px;
+                margin-top: 16px;
+            }
+
+            &.substitutes,
+            &.social {
+                margin-top: 32px;
+                padding-top: 24px;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+                .slot-container {
+                    justify-content: flex-start;
+                }
+            }
+        }
+
+        .tanks .slot-container {
+            justify-content: left;
+        }
+
+        .healers .slot-container {
+            justify-content: left;
+        }
+
+        .dps .slot-container {
+            justify-content: flex-start;
+        }
+    }
+}
+
+.character-card {
+    display: flex;
+    align-items: left;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 4px;
+    
+    .character-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .character-info {
+        flex: 1;
+        text-transform: capitalize;
+        
+        .character-name {
+            font-weight: bold;
+        }
+        
+        .character-spec {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+        }
+    }
+}
+
+.role-slot {
+    width: 200px;
+    height: 62px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    transition: all 0.2s;
+
+    &.can-drop {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    &.is-over {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.6);
+    }
+}
+
+.buff-summary {
+    margin-top: 32px;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+
+    .buff-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+    }
+
+    .buff-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-transform: capitalize;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+
+        &.active {
+            background: rgba(46, 204, 113, 0.2);
+        }
+
+        .icon {
+            opacity: 0.6;
+        }
+
+        .name {
+            font-size: 0.9rem;
+        }
+    }
+} 
+
+.trash-zone {
+    padding: 1rem !important;
+    border: 2px dashed #8b1f1f !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-bottom: 1rem !important;
+    min-height: 100px !important;
+    background-color: transparent !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+}

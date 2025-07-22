@@ -1,0 +1,173 @@
+// Navigation Styles - Themed to match app (see base.scss)
+
+.crm-nav-root {
+  width: 100%;
+  font-family: var(--font-arimo, 'Inter', 'Segoe UI', Arial, sans-serif);
+  background: #110d17;
+}
+
+// Top bar: Logo
+.crm-logo-bar {
+  width: 100%;
+  background: #16131c;
+  border-bottom: 1px solid #151f1d;
+  box-shadow: none;
+  position: relative;
+  z-index: 10;
+}
+.crm-logo-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0.5rem 2rem;
+}
+.crm-logo-link {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 18px 0;
+  text-decoration: none;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family: var(--font-oswald, inherit);
+}
+.crm-mobile-menu-btn-wrapper {
+  display: none;
+}
+
+// Second bar: Horizontal nav
+.crm-desktop-nav-wrapper {
+  width: 100%;
+  background: #000;
+  border-bottom: 1px solid #151f1d;
+  box-shadow: none;
+}
+.crm-nav-bar {
+  display: flex;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 6px 2rem;
+  min-height: 48px;
+  gap: 1rem;
+}
+.crm-nav-link {
+  text-decoration: none;
+}
+.crm-nav-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 3px;
+  background: none;
+  border: 0px solid #153034;
+  color: #d9d9d9;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+  cursor: pointer;
+  margin-bottom: 0;
+  &:hover {
+    background: #2b1537;
+    border-color: #2b1537;
+    color: #fff;
+  }
+}
+.crm-nav-item-icon {
+  color: #d9d9d9;
+  margin-right: 12px;
+  font-size: 1.2rem;
+}
+.crm-nav-item-active {
+  background: #2b1537;
+  border-color: #2b1537;
+  color: #fff;
+  .crm-nav-item-icon {
+    color: #fff;
+  }
+}
+.crm-nav-item-label {
+  color: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+// Responsive styles
+@media (max-width: 900px) {
+  .crm-logo-bar-inner, .crm-nav-bar {
+    padding: 0.5rem 1rem;
+  }
+  .crm-nav-bar {
+    gap: 1rem;
+  }
+}
+@media (max-width: 1200px) {
+  .crm-desktop-nav-wrapper {
+    display: none;
+  }
+  .crm-mobile-menu-btn-wrapper {
+    display: block;
+  }
+}
+@media (min-width: 1201px) {
+  .nav-mobile-drawer {
+    display: none !important;
+  }
+}
+
+// Mobile drawer overrides
+.nav-mobile-drawer .MuiDrawer-paper {
+  width: 280px;
+  background-color: #0b0a0f;
+  border-right: 1px dashed rgba(255, 255, 255, 0.12);
+  overflow-x: hidden;
+}
+.nav-mobile-drawer-content {
+  padding: 16px;
+  height: 100%;
+}
+.logoSmall {
+  width: 180px !important;
+  height: auto !important;
+  color: #8dd52b;
+  font-family: var(--font-oswald, inherit);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+// Mobile nav list
+.nav-mobile-list {
+  flex-grow: 0;
+}
+.nav-mobile-section-label .MuiTypography-root {
+  font-size: 0.9rem;
+  color: #fff;
+  font-weight: 600;
+}
+.nav-mobile-list-item {
+  margin-bottom: 16px;
+}
+.nav-mobile-list-btn.Mui-selected,
+.nav-mobile-list-btn:hover,
+.nav-mobile-list-btn.Mui-selected:hover {
+  background-color: #151f1d;
+  border-radius: 6px;
+  color: #fff !important;
+}
+.nav-mobile-list-icon {
+  color: #8dd52b;
+  min-width: 36px;
+}
+.nav-mobile-list-label .MuiTypography-root {
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: #9e9e9e;
+} 

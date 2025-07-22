@@ -1,0 +1,396 @@
+body, html {
+  background: #110d17;
+  font-family: var(--font-arimo);
+  font-size: 16px;
+  color: #dcdada;
+  padding: 0;
+  margin: 0;
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-oswald);
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+}
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.3); 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.8);
+  border-radius: 8px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,0,0,0.9); 
+}
+
+.applicationWrapper {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.Warlock {
+  color: #9482C9 !important;
+  font-weight: 800;
+  > p {
+    font-weight: 800;
+    text-transform: capitalize;
+  }
+}
+
+.Warrior {
+  color: #C79C6E !important;
+  font-weight: 800;
+  > p {
+    font-weight: 800;
+    text-transform: capitalize;
+  }
+}
+
+.Paladin {
+  color: #F58CBA !important;
+  font-weight: 800;
+  > p {
+    font-weight: 800;
+    text-transform: capitalize;
+  }
+}
+
+.Priest {
+  color: #FFFFFF !important;
+  font-weight: 800;
+  > p {
+    font-weight: 800;
+    text-transform: capitalize;
+  }
+}
+
+.Rogue {
+  color: #FFF569 !important;
+  font-weight: 800;
+  > p {
+    font-weight: 800;
+    text-transform: capitalize;
+  }
+}
+
+.Shaman {
+  color: #0070DE !important;
+  font-weight: 800;
+  > p {
+    font-weight: 800;
+    text-transform: capitalize;
+  }
+}
+
+.Evoker {
+  color: #33937F !important;
+  font-weight: 800;
+  > p {
+    font-weight: 800;
+    text-transform: capitalize;
+  }
+}
+
+.Demon {
+  &.Hunter {
+    color: #A330C9 !important;
+    font-weight: 800;
+    > p {
+      font-weight: 800;
+      text-transform: capitalize;
+    }
+  }
+}
+
+.Mage {
+  color: #69CCF0 !important;
+  font-weight: 800;
+  > p {
+    font-weight: 800;
+    text-transform: capitalize;
+  }
+}
+
+.Monk {
+  color: #00FF96 !important;
+  font-weight: 800;
+  > p {
+    font-weight: 800;
+    text-transform: capitalize;
+  }
+}
+
+.Hunter {
+  color: #ABD473 !important;
+  font-weight: 800;
+  > p {
+    font-weight: 800;
+    text-transform: capitalize;
+  }
+}
+
+.Druid {
+  color: #FF7D0A !important;
+  font-weight: 800;
+  > p {
+    font-weight: 800;
+    text-transform: capitalize;
+  }
+}
+
+.Death {
+  color: #C41F3B !important;
+  font-weight: 800;
+  > p {
+    font-weight: 800;
+    text-transform: capitalize;
+  }
+}
+
+.logoSmall {
+  width: 180px !important; // Reduced from default size
+  height: auto !important;
+  img {
+      width: 100% !important;
+      height: auto !important;
+  }
+}
+
+.MuiListItemButton-root.Mui-selected,
+.MuiListItemButton-root:hover,
+.MuiListItemButton-root.Mui-selected:hover {
+  background-color: #151f1d;
+  border-radius: 6px;
+  color: #fff !important;
+}
+
+.characteroveriewlogo {
+  img {
+      position: relative;
+      top: 0;
+      left: 50%;
+      margin-top: 60px;
+      transform: translateX(-50%);
+      width: 300px;
+      height: auto;
+  }
+}
+
+// Navigation and layout styles
+.layout-root {
+  background-color: #08060c;
+  min-height: 100vh;
+}
+
+.layout-content {
+  background-color: #08060c;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+
+.copyright-text {
+  font-size: 11px;
+  font-weight: bold;
+  color: #8dd52b;
+  text-transform: uppercase;
+  text-align: center;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+// Desktop nav
+.nav-desktop-menu {
+  display: none;
+}
+@media (min-width: 1200px) {
+  .nav-desktop-menu {
+    display: block;
+  }
+}
+
+.nav-desktop-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.nav-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.nav-logo-link {
+  text-decoration: none;
+}
+
+.nav-items {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: -60px;
+}
+
+.nav-item {
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-top: 16px;
+  padding-bottom: 8px;
+  display: flex;
+  align-items: center;
+  background-color: #153034;
+  border: 1px solid #153034;
+  border-radius: 33px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.nav-item-active {
+  background-color: #2b1537;
+  border-color: #2b1537;
+}
+
+.nav-item-icon {
+  color: #d9d9d9;
+  margin-right: 12px;
+  font-size: 1.2rem;
+}
+
+.nav-item-active .nav-item-icon {
+  color: #fff;
+}
+
+.nav-item-label {
+  color: #d9d9d9;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.nav-item-active .nav-item-label {
+  color: #fff;
+}
+
+// Mobile nav
+.nav-mobile-menu-btn {
+  margin-left: 8px;
+  margin-top: 8px;
+  color: #9e9e9e;
+  background-color: #151f1d;
+  border-radius: 18px;
+  padding: 12px;
+  display: flex;
+}
+.nav-mobile-menu-btn:hover {
+  background-color: #1a2725;
+}
+
+@media (min-width: 1200px) {
+  .nav-mobile-menu-btn {
+    display: none;
+  }
+}
+
+.nav-mobile-drawer .MuiDrawer-paper {
+  width: 280px;
+  background-color: #0b0a0f;
+  border-right: 1px dashed rgba(255, 255, 255, 0.12);
+  overflow-x: hidden;
+}
+
+.nav-mobile-drawer-content {
+  padding: 16px;
+  height: 100%;
+}
+
+.nav-mobile-list {
+  flex-grow: 0;
+}
+
+.nav-mobile-section-label .MuiTypography-root {
+  font-size: 0.9rem;
+  color: #fff;
+  font-weight: 600;
+}
+
+.nav-mobile-list-item {
+  margin-bottom: 16px;
+}
+
+.nav-mobile-list-btn.Mui-selected,
+.nav-mobile-list-btn:hover,
+.nav-mobile-list-btn.Mui-selected:hover {
+  background-color: #151f1d;
+  border-radius: 6px;
+  color: #fff !important;
+}
+
+.nav-mobile-list-icon {
+  color: #8dd52b;
+  min-width: 36px;
+}
+
+.nav-mobile-list-label .MuiTypography-root {
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: #9e9e9e;
+}
+
+// Alert styles
+.season-alert-snackbar {
+  margin-bottom: 16px;
+  width: auto;
+  max-width: 600px;
+}
+
+.season-alert {
+  width: 100%;
+  background-color: #151f1d !important;
+  color: #9e9e9e !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+.season-alert .MuiAlert-icon {
+  color: #8dd52b !important;
+}
+
+.season-alert-title {
+  color: #8dd52b !important;
+  font-weight: bold !important;
+}
+
+.layout-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}

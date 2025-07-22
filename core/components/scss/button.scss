@@ -1,0 +1,35 @@
+a {
+    outline: 0;
+    border: 0;
+
+    &.secondary {
+        color: #c0c0c0;
+
+        &:hover {
+            color: #fff;
+        }
+    }
+
+    &.primary {
+        width: 341px;
+        height: 60px;
+        display: inline-block;
+        margin: 0 auto;
+        color: #fff;
+    
+        background-image: url('/images/button-bg.png');
+        background-position: center;
+        background-repeat: no-repeat;
+    
+        &:hover {
+            color: #8dd52b;
+        }
+    
+        span {
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            display: block;
+        }
+    }
+}

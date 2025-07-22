@@ -1,0 +1,299 @@
+.mrt {
+    .recInto {
+        padding: 0px 0 0 0;
+
+        h3 {
+            text-align: center;
+            padding: 0;
+
+            span {
+                color: #fff;
+            }
+        }
+    }
+
+    .logoHolder {
+        text-align: center;
+    
+        a {
+            display: inline-block;
+            border-radius: 8px;
+            width: 180px;
+            height: 180px;
+            img {
+                width: 200px;
+                height: auto;
+                position: relative;
+                top: 10px;
+                left: 52px;
+            }
+            box-shadow: 0px 0px 40px #181c37;
+            background: #181c37;
+            margin-bottom: 32px;
+        }
+    }
+
+    .ctaArea {
+        padding: 80px 0;
+        text-align: center;
+    }
+
+    @media screen and (max-width: 1200px) {
+        .item {
+            width: 50%;
+        }
+
+        .discordWrapperheader,
+        .followUsWrapperHeader {
+            display: none;
+        }
+    }
+
+    @media screen and (max-width: 700px) {
+        .primaryTitle span div {
+            display: none;
+        }
+
+        .headerContext {
+            padding: 390px 0 100px;
+        }
+    }
+
+    ul, li {
+        list-style: none;
+    }
+
+    h3 {
+        font-size: 2rem;
+        padding: 80px 0 20px 0;
+        color: #8dd52b;
+        text-align: left;
+    }
+
+    li {
+        padding: 12px 0 0;
+    }
+
+    .leftalign {
+        text-align: left;
+    }
+
+    .mrt-content {
+        padding: 40px 0;
+        min-width: 1200px;
+    }
+
+    .mrt-item-split {
+        height: 40px;
+    }
+
+    .mrt-item {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 22px 12px;
+        background: rgba(0,0,0,0.6);
+        min-height: 90px;
+        border-bottom: 1px solid #181c37;
+
+        .mrt-item-ability {
+            width: calc(30% - 120px);
+            text-align: left;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #7c7c7c;
+
+            &.mrt-item-enlarge {
+                color: red;
+            }
+        }
+
+        &.mrt-item-needsCD {
+            .mrt-item-ability {
+                color: #8dd52b;
+            }
+        }
+
+        .mrt-item-time {
+            width: 120px;
+            text-align: center;
+        }
+
+        .mrt-item-primary,
+        .mrt-item-secondary,
+        .mrt-item-raid {
+            width: calc(70% / 3);
+            text-align: left;
+            padding: 0px 10px;
+
+            span {
+                text-transform: capitalize;
+            }
+
+            .MuiInput-root::before {
+                border: 0px solid #000 !important;
+            }
+        }
+    }
+
+    .import {
+        .importArea {
+            margin-top: 50px;
+            width: 100%;
+            height: 600px;
+            padding: 22px;
+            border: 1px solid #181c37;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+        }
+    }
+
+    .saveclose {
+        display: block;
+        margin: 20px 0;
+        padding: 22px;
+        text-align: center;
+        background: #8dd52b;
+        color: #000;
+        cursor: pointer;
+    }
+
+    .primaryButton {
+        cursor: pointer;
+    }
+
+    .bossSelect {
+        text-align: center;
+
+        select {
+            width: 300px;
+            padding: 16px 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+    }
+
+    .mrt-import-stack {
+      width: 100%;
+    }
+    .mrt-import-textfield {
+      font-family: monospace;
+    }
+    .mrt-import-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .mrt-autocomplete-input {
+      background-color: #1e1e1e;
+      border-radius: 4px;
+      padding: 14px 18px;
+      border: none;
+    }
+    .mrt-autocomplete-input:focus {
+      background-color: #1e1e1e;
+    }
+    .mrt-autocomplete-chip {
+      background-color: rgba(0, 0, 0, 0.5);
+      color: rgba(255, 255, 255, 0.9);
+    }
+    .mrt-autocomplete-chip:hover {
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+    .mrt-autocomplete-tag {
+      background-color: rgba(0, 0, 0, 0.2);
+      color: #fff;
+    }
+    .mrt-content-grid {
+      box-sizing: border-box;
+      max-width: fit-content;
+    }
+    .mrt-content-row {
+      padding-left: 0 !important;
+    }
+    .mrt-content-row-stack {
+      padding: 12px;
+      border-radius: 4px;
+      background: #1e1e1e;
+    }
+    .mrt-content-row-needsCD {
+      background: rgba(255, 152, 0, 0.15);
+    }
+    .mrt-content-time {
+      min-width: 60px;
+    }
+    .mrt-content-ability {
+      flex: 1;
+    }
+    .mrt-content-ability-enrage {
+      color: #f44336;
+      font-weight: 700;
+    }
+    .mrt-content-assignees {
+      width: 100%;
+    }
+    @media (min-width: 600px) {
+      .mrt-content-assignees {
+        width: 50%;
+      }
+    }
+    .mrt-tool-root {
+      color: #fff;
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .mrt-tool-paper {
+      padding: 24px;
+      border-radius: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .mrt-tool-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+}
+
+// Flex-based ability list styles
+.mrt-ability-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: none; // theme background.paper
+  color: #fff; // theme text.primary
+  margin-bottom: 24px;
+}
+.mrt-ability-list-header {
+  display: flex;
+  width: 100%;
+  font-weight: 700;
+  background: none; // theme background.default
+  border-bottom: 2px solid rgba(200,217,255,0.05); // theme divider
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+}
+.mrt-ability-list-header > div {
+  padding: 12px 8px;
+}
+.mrt-ability-list-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border-bottom: 1px solid rgba(200,217,255,0.05); // theme divider
+  transition: background 0.2s;
+  color: #fff; // theme text.primary
+}
+.mrt-ability-list-row:hover {
+  background: rgba(140,213,41,0.04); // theme primary.main with alpha
+}
+.mrt-ability-list-row .MuiBox-root {
+  padding: 12px 8px;
+}
+.mrt-ability-list-row.mrt-is-enrage {
+  color: #dc2626; // theme error.main
+  font-weight: 700;
+}
+.mrt-ability-list-row.mrt-needs-cd {
+  color: #8cd529; // theme primary.main
+}

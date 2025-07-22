@@ -1,0 +1,82 @@
+.dashboard {
+  padding-bottom: 32px;
+}
+
+.logoHolder {
+  margin-top: 40px;
+}
+
+.logoHolder-title {
+  text-transform: capitalize !important;
+  text-align: left;
+  font-size: 2rem;
+}
+
+.logoHolder-description {
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.stats-cards {
+  margin-bottom: 24px;
+}
+
+.top-players {
+  margin-bottom: 24px;
+}
+
+.missing-enchants-title {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  margin-top: 32px;
+  text-transform: capitalize !important;
+}
+
+.role-distribution {
+  margin-top: 24px;
+  padding-bottom: 32px;
+}
+
+// StatCard styles
+.stat-card {
+  padding: 16px;
+  height: 100%;
+}
+.stat-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.stat-card-title {
+  font-size: 1.1rem;
+}
+.stat-card-value {
+  margin-bottom: 8px;
+  font-size: 2rem;
+}
+.stat-card-description {
+  color: var(--mui-palette-text-secondary, #aaa);
+}
+
+// TopPlayersTable styles
+.top-players-table {
+  padding: 16px;
+  height: 100%;
+}
+.top-players-table-title {
+  margin-bottom: 16px;
+}
+.top-players-table-row .mediaWrapper img {
+  width: 40px;
+  height: 40px;
+}
+.top-players-table-row .name {
+  text-transform: capitalize;
+}
+.top-players-table-row .classandspec {
+  font-size: 0.9rem;
+  color: #aaa;
+}
+.top-players-table-row .score {
+  font-weight: bold;
+} 

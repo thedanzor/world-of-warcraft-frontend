@@ -1,0 +1,64 @@
+.progress {
+    .content {
+        padding: 120px 0;
+    }
+
+    .teamContent {
+        h3 {
+            padding: 0 0 10px 0;
+        }
+        p {
+            text-align: center;
+        }
+
+        .officerTeamList {
+            padding: 80px 0 20px;
+            text-align: center;
+
+            > div {
+                > div {
+                    width: 320px;
+                    display: inline-block;
+                    padding: 0px 30px 50px;
+                    vertical-align: top;
+
+                    h4 {
+                        font-size: 1.4rem;
+                        color: #8dd52b;
+                        padding: 0 0 12px 0;
+                    }
+
+                    p {
+                        font-size: 0.95rem;
+
+                        &.title {
+                            font-weight: 800;
+                            text-transform: uppercase;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .imgHolder {
+        width: 220px;
+        height: 220px;
+        background: #0b0a0f;
+        margin: 0 auto 15px;
+        border-radius: 30px;
+        overflow:hidden;
+
+        img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            object-position: center;
+        }
+    }
+
+    .disclaimer {
+        font-style: italic;
+        font-size: 0.9rem;
+    }
+}

@@ -1,0 +1,146 @@
+.recruitment {
+    .recInto {
+        padding: 30px 0 0 0;
+    }
+
+    .recruitmentLogo {
+        .logoHeaderVariant  {
+            left: 50%;
+            margin-left: -300px;
+        }
+    }
+
+    .logoHeaderVariant {
+        position: relative;
+        left: 0;
+        margin: 0 auto;
+        width: 300px;
+        height: auto;
+        text-align: center;
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+    }
+
+    .logoHolder {
+        position: relative;
+        text-align: center;
+    
+        a {
+            display: inline-block;
+            border-radius: 8px;
+            height: 300px;
+        }
+    }
+
+    p {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+        padding: 0px 20px;
+    }
+
+    .ctaArea {
+        padding: 80px 0;
+        text-align: center;
+    }
+
+    @media screen and (max-width: 1200px) {
+        .item {
+            width: 50%;
+        }
+
+        .discordWrapperheader,
+        .followUsWrapperHeader {
+            display: none;
+        }
+    }
+
+    @media screen and (max-width: 700px) {
+        .primaryTitle span div {
+            display: none;
+        }
+
+        .headerContext {
+            padding: 390px 0 100px;
+        }
+    }
+
+    ul, li {
+        list-style: none;
+    }
+
+    h3 {
+        font-size: 2rem;
+        padding: 20px 0 20px 0;
+        color: #8dd52b;
+        text-align: left;
+    }
+
+    h4 {
+        font-size: 1.5rem;
+        padding: 0px 0 10px 0;
+        color: #8dd52b;
+        text-align: left;
+    }
+
+    li {
+        padding: 12px 0 0;
+    }
+
+    .leftalign {
+        text-align: left;
+    }
+
+    .goal-section {
+        margin-bottom: 30px;
+        padding: 0 0 20px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        ul li ul {
+            margin-left: 20px;
+            margin-top: 5px;
+            
+            li {
+                padding: 5px 0;
+                position: relative;
+                
+                &:before {
+                    content: "•";
+                    position: absolute;
+                    left: -15px;
+                    color: #8dd52b;
+                }
+            }
+        }
+    }
+
+    .sub-section {
+        margin: 15px 0 15px 0;
+        padding-left: 15px;
+        border-left: 3px solid rgba(211, 138, 42, 0.5);
+        
+        strong {
+            color: #8dd52b;
+            display: block;
+            margin-bottom: 8px;
+        }
+    }
+
+    .addon-link {
+        color: #8dd52b;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        
+        &:hover {
+            color: #ffb74d;
+            text-decoration: underline;
+        }
+    }
+}

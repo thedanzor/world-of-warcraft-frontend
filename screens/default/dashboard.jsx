@@ -1,15 +1,13 @@
 'use client'
 import React, { useMemo } from 'react'
+
+// Config
+import config from '@/app.config.js'
+
+// Material Components
 import Box from '@mui/material/Box'
-import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
-
-import AuditBlock from '@/core/modules/auditBlock'
-import config from '@/app.config.js'
-import useAuditData from '@/core/hooks/useAuditData'
-import getPreviousWednesdayAt1AM from '@/core/utils/currentLockout'
-
 import Alert from '@mui/material/Alert'
 import CircularProgress from '@mui/material/CircularProgress'
 
@@ -20,27 +18,28 @@ import LockIcon from '@mui/icons-material/Lock'
 import StarIcon from '@mui/icons-material/Star'
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents'
 
-
+// Components
 import './scss/dashboard.scss'
+import AuditBlock from '@/core/modules/auditBlock'
+import useAuditData from '@/core/hooks/useAuditData'
+import getPreviousWednesdayAt1AM from '@/core/utils/currentLockout'
 import StatCard from '@/core/components/StatCard'
 import TopPlayersTable from '@/core/components/TopPlayersTable'
 import RoleDistribution from '@/core/components/RoleDistribution'
 
+
+// Dashboard
 const Dashboard = ({ guildData }) => {
     const [isDataLoaded, setIsDataLoaded] = React.useState(false)
-    const [query, setQuery] = React.useState('')
-    const [classFilter, setClassFilter] = React.useState([])
-    const [rankFilter, setRankFilter] = React.useState('all')
-    const [specFilter, setSpecFilter] = React.useState('all')
-    const [ilevelFilter, setIlevelFilter] = React.useState(
-        config.INITIAL_FILTERS.defaultItemLevel
-    )
-    const [instanceIndex, setInstanceIndex] = React.useState(
-        config.INITIAL_FILTERS.instanceIndex
-    )
-    const [lockTimeStamp, setLockTimeStamp] = React.useState(
-        getPreviousWednesdayAt1AM(Date.now())
-    )
+    
+    // These values are static and only used in hook dependencies
+    const query = ''
+    const classFilter = []
+    const rankFilter = 'all'
+    const specFilter = 'all'
+    const ilevelFilter = config.INITIAL_FILTERS.defaultItemLevel
+    const instanceIndex = config.INITIAL_FILTERS.instanceIndex
+    const lockTimeStamp = getPreviousWednesdayAt1AM(Date.now())
 
     // Handle loading and error states
     if (!guildData) {

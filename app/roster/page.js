@@ -1,4 +1,5 @@
-import RosterBuilder from "@/core/sections/rosterBuilder";
+import config from '@/app.config.js'
+import RosterBuilder from `@/screens/${config.THEME}/rosterBuilder`
 import { api } from '@/lib/api'
 import { Suspense } from 'react'
 

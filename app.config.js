@@ -3,6 +3,7 @@ const data = {
     "GUILD_REALM": process.env.NEXT_PUBLIC_GUILD_REALM || "GUILD_REALM",
     "REGION": "eu",
     "API_PARAM_REQUIREMENTGS": "namespace=profile-eu&locale=en_US",
+    "THEME": "default",
 
     "LEVEL_REQUIREMENT": 80,
     "GUILD_RANK_REQUIREMENT": [0,1,2,3,4,5,6, 7,8,9,10],

@@ -5,8 +5,6 @@ import {
 } from '@/tools/guildFetcher/utils'
 
 const useAuditData = (data, filterProps) => {
-    const [originalData] = useState(data)
-
     const [
         query,
         classFilter,
@@ -17,18 +15,9 @@ const useAuditData = (data, filterProps) => {
         lockTimeStamp,
     ] = filterProps
 
-    const [filteredData, setFilteredData] = React.useState({
-        all: data,
-        onlyMissingEnchants: [],
-        heroicLocked: [],
-        normalLocked: [],
-        mythicLocked: [],
-        locked: [],
-    })
-
-    useEffect(() => {
+    const filteredData = useMemo(() => {
         const processData = () => {
-            const filterDataBaseOnFilters = originalData.filter((character) =>
+            const filterDataBaseOnFilters = data.filter((character) =>
                 filterSearch(
                     character,
                     query,
@@ -116,10 +105,9 @@ const useAuditData = (data, filterProps) => {
             }
         }
 
-        const combinedData = processData()
-        setFilteredData(combinedData)
+        return processData()
     }, [
-        originalData,
+        data,
         query,
         classFilter,
         rankFilter,

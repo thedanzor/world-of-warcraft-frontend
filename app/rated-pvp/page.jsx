@@ -1,8 +1,7 @@
 // Sections
-import Pvp from '@/core/sections/pvp'
+import config from '@/app.config.js'
 import { api } from '@/lib/api'
-
-import './pvp.scss'
+import DynamicScreenLoader from '@/core/dynamicScreenLoader'
 
 import { Public_Sans } from 'next/font/google'
 const publicSans = Public_Sans({
@@ -47,7 +46,12 @@ export default async function RatedPvpPage() {
     
     return (
         <main className={`fullbody ${publicSans.className}`}>
-            <Pvp guildData={guildData} />
+            <DynamicScreenLoader 
+                screenName="pvp"
+                props={{ guildData }}
+                loadingMessage="Loading PvP..."
+                minHeight="50vh"
+            />
         </main>
     )
 }

@@ -1,26 +1,15 @@
 'use client'
 
-import ContentWrapper from '@/core/components/content'
+import config from '@/app.config.js'
+import { lazy, Suspense } from 'react'
 
-import { MultiColorHeadingH1 } from '@/core/components/typography'
+// Dynamic import using React.lazy
+const Error = lazy(() => import(`@/core/screens/${config.THEME}/error`))
 
-
-// React component
-const Header = () => {
+export default function ErrorPage() {
     return (
-        <header>
-                <ContentWrapper>
-
-                    <div className="headerContext">
-                        <MultiColorHeadingH1
-                            floatingText="We could not find the page you were looking for"
-                            highlightText="Page"
-                        >
-                            Not Found
-                        </MultiColorHeadingH1>
-                    </div>
-                </ContentWrapper>
-        </header>
+        <Suspense fallback={<div>Loading...</div>}>
+            <Error />
+        </Suspense>
     )
 }
-export default Header

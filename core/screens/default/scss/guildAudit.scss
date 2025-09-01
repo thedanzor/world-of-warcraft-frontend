@@ -1,3 +1,56 @@
+/**
+ * GUILD AUDIT SCSS STYLES
+ * 
+ * This file contains all the styling for the guild audit interface, including
+ * tables, player cards, filtering controls, and responsive layouts. It provides
+ * the visual foundation for the comprehensive guild analysis tools.
+ * 
+ * WHAT THIS DOES:
+ * - Styles the main guild audit interface and tables
+ * - Defines player card layouts and media wrappers
+ * - Provides responsive design for different screen sizes
+ * - Styles filtering controls and search interfaces
+ * - Defines table layouts and column styling
+ * - Handles media queries for mobile responsiveness
+ * 
+ * KEY COMPONENTS:
+ * - Media wrappers for character portraits and class icons
+ * - Table layouts for audit data display
+ * - Player card styling and information layout
+ * - Filter controls and search interface styling
+ * - Responsive breakpoints for mobile and tablet
+ * 
+ * LAYOUT STRUCTURE:
+ * - Header context with proper spacing and typography
+ * - Table headers with consistent column styling
+ * - Player rows with media and information layout
+ * - Filter controls with proper spacing and alignment
+ * - Call-to-action areas for user interactions
+ * 
+ * RESPONSIVE DESIGN:
+ * - Mobile-first approach with progressive enhancement
+ * - Breakpoints for tablet and desktop optimization
+ * - Flexible layouts that adapt to different screen sizes
+ * - Touch-friendly interface elements for mobile devices
+ * 
+ * STYLING FEATURES:
+ * - Consistent color scheme and spacing
+ * - Proper typography hierarchy and readability
+ * - Visual indicators for different player states
+ * - Hover effects and interactive elements
+ * 
+ * USAGE:
+ * This file styles the main guild audit interface used across multiple screens.
+ * Essential for maintaining consistent audit appearance and functionality.
+ * 
+ * MODIFICATION NOTES:
+ * - Test responsive behavior on various devices
+ * - Ensure color contrast meets accessibility standards
+ * - Maintain consistent spacing and typography
+ * - Consider performance impact of complex selectors
+ * - Test table layouts with various data lengths
+ */
+
 section.guildAudit {
     .mediaWrapper {
         width: 60px;

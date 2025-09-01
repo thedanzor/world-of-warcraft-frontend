@@ -1,3 +1,52 @@
+/**
+ * MAIN THEME SYSTEM
+ * 
+ * This is the central theme configuration for the World of Warcraft application.
+ * It provides a complete Material-UI theme with custom colors, typography, shadows,
+ * and component overrides that match the WoW aesthetic.
+ * 
+ * WHAT THIS DOES:
+ * - Creates a dark-themed Material-UI theme with WoW-inspired colors
+ * - Defines custom color palettes (primary, secondary, error, warning, info, success)
+ * - Sets up typography with custom fonts and sizing
+ * - Provides custom shadows for depth and visual hierarchy
+ * - Overrides MUI component styles for consistent WoW branding
+ * - Integrates with the base SCSS for global styling
+ * 
+ * COLOR SYSTEM:
+ * - Primary: Green (#8cd529) - WoW's signature green for success and primary actions
+ * - Secondary: Dark grays and blues for backgrounds and secondary elements
+ * - Error/Warning/Info/Success: Standard semantic colors with WoW theme integration
+ * - Background: Dark theme (#0b0a0f, #060d12) for authentic WoW feel
+ * 
+ * TYPOGRAPHY:
+ * - Integrates custom fonts (Jockey One for headings, system fonts for body)
+ * - Responsive font sizing for different screen sizes
+ * - Consistent heading hierarchy and spacing
+ * 
+ * COMPONENT OVERRIDES:
+ * - All major MUI components are customized for WoW aesthetic
+ * - Consistent border radius, spacing, and color usage
+ * - Dark theme optimizations for better readability
+ * 
+ * SHADOWS:
+ * - Custom shadow system for depth and visual hierarchy
+ * - Theme-aware shadows that adapt to light/dark modes
+ * - Special button shadows for interactive elements
+ * 
+ * USAGE:
+ * This theme wraps the entire application and provides consistent styling.
+ * Import specific theme values: const theme = useTheme()
+ * Access colors: theme.palette.primary.main
+ * 
+ * MODIFICATION NOTES:
+ * - Changes here affect the entire application appearance
+ * - Keep WoW brand colors consistent
+ * - Test all components after theme changes
+ * - Consider accessibility when modifying colors
+ * - Update component overrides if adding new MUI components
+ */
+
 // Theme Provider: All palette, typography, shadows, and component overrides are defined here.
 // This file is the single source of truth for the app's Material UI theme.
 
@@ -9,6 +58,8 @@ import { HEADER_HEIGHT } from './config'
 import { alpha } from '@mui/material/styles'
 import { jockeyone } from '@/app/fonts'
 import merge from 'lodash/merge'
+
+import './base.scss'
 
 // ==============================|| PALETTE ||============================== //
 // Main color palette for the app (dark mode)

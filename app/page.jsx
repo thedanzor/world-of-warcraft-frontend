@@ -1,39 +1,38 @@
-// Sections
-import Dashboard from '@/core/sections/dashboard'
-import { Poppins } from 'next/font/google'
+/**
+ * Main page for the WoW guild dashboard
+ * Fetches guild data and renders the dashboard
+ */
+
+// Project imports
 import { api } from '@/lib/api'
+import DynamicScreenLoader from '@/core/dynamicScreenLoader'
 
-const poppins = Poppins({
-    subsets: ['latin'],
-    weight: ['400', '500', '600', '700'],
-    display: 'swap',
-    fallback: ['system-ui', 'arial', 'sans-serif'],
-    preload: false, // Disable preloading to avoid build issues
-})
+// Refresh data every 10 minutes
+export const revalidate = 600
 
-// Enable revalidation for this page
-export const revalidate = 600 // Revalidate every 10 minutes
-
-// Server-side data fetching
+/**
+ * Gets all the guild data we need for the dashboard
+ * Fetches roster, stats, top players, and role counts
+ */
 async function getGuildData() {
     try {
-        // Fetch main guild data
+        // Main guild roster
         const guildResponse = await api.getFilteredGuildData({
             filter: 'all',
             page: 1,
-            limit: 300 // Get a reasonable amount for dashboard
+            limit: 300 // Enough for dashboard display
         });
 
-        // Fetch missing enchants statistics
+        // Check who's missing enchants
         const missingEnchantsResponse = await api.getMissingEnchantsStats();
 
-        // Fetch top PvP players
+        // Top PvP players
         const topPvpResponse = await api.getTopPvPPlayers();
 
-        // Fetch top PvE players
+        // Top PvE players (raids, mythic+)
         const topPveResponse = await api.getTopPvEPlayers();
 
-        // Fetch role counts
+        // How many tanks/healers/DPS we have
         const roleCountsResponse = await api.getRoleCounts();
 
         return {
@@ -48,6 +47,8 @@ async function getGuildData() {
         }
     } catch (error) {
         console.error('Error fetching guild data:', error)
+        
+        // Return empty data on error so the page still loads
         return {
             data: null,
             statistics: null,
@@ -61,13 +62,21 @@ async function getGuildData() {
     }
 }
 
-// Page wrapper
+/**
+ * Home page component
+ * Fetches data and renders the dashboard
+ */
 export default async function Home() {
     const guildData = await getGuildData()
 
     return (
-        <main className={`fullbody ${poppins.className}`}>
-            <Dashboard guildData={guildData} />
+        <main className={`fullbody`}>
+            <DynamicScreenLoader 
+                screenName="dashboard"
+                props={{ guildData }}
+                loadingMessage="Loading Dashboard..."
+                minHeight="50vh"
+            />
         </main>
     )
 }

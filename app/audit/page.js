@@ -1,5 +1,6 @@
-import AuditGuild from '@/core/sections/guildAudit'
+import config from '@/app.config.js'
 import { api } from '@/lib/api'
+import DynamicScreenLoader from '@/core/dynamicScreenLoader'
 
 import { Public_Sans } from 'next/font/google'
 const publicSans = Public_Sans({
@@ -66,7 +67,12 @@ export default async function AuditPage() {
 
     return (
         <main className={`fullbody ${publicSans.className}`}>
-            <AuditGuild auditable initialData={guildData} />
+            <DynamicScreenLoader 
+                screenName="audit"
+                props={{ auditable: true, initialData: guildData }}
+                loadingMessage="Loading Audit..."
+                minHeight="50vh"
+            />
         </main>
     )
 }

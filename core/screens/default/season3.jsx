@@ -1,3 +1,57 @@
+/**
+ * SEASON 3 RAID PLANNING SCREEN
+ * 
+ * This screen manages Season 3 raid planning, player signups, and roster analysis
+ * for the upcoming raid tier. It provides comprehensive tools for guild officers
+ * to plan and organize their Season 3 raiding team.
+ * 
+ * WHAT THIS DOES:
+ * - Manages Season 3 raid signups and player commitments
+ * - Shows class distribution and role breakdown for the new season
+ * - Displays raid requirements and buff coverage analysis
+ * - Provides tabbed interface for different aspects of season planning
+ * - Integrates with guild data to show current vs. signed-up players
+ * - Calculates raid buffs and team composition optimization
+ * 
+ * KEY FEATURES:
+ * - Season 3 signup form for player commitments
+ * - Class distribution analysis and visualization
+ * - Role-based roster planning (tanks, healers, DPS)
+ * - Raid requirements display and compliance tracking
+ * - Mythic+ and raiding environment statistics
+ * - Tabbed interface for organized information display
+ * 
+ * DATA INTEGRATION:
+ * - guildData: Current guild roster and player information
+ * - season3Data: Season 3 specific signup and commitment data
+ * - Real-time data processing and analysis
+ * - Integration with raid buff calculation utilities
+ * 
+ * TAB INTERFACES:
+ * - Overview: General season statistics and signup status
+ * - Class Distribution: Visual breakdown of class representation
+ * - Role Distribution: Tank/healer/DPS balance analysis
+ * - Raid Buffs: Buff coverage and optimization suggestions
+ * - Mythic+: Mythic+ performance and goals
+ * - Raiding Environment: Raid-specific requirements and setup
+ * 
+ * SIGNUP SYSTEM:
+ * - Player commitment tracking for Season 3
+ * - Character name validation and cleanup
+ * - Return-to-raid status tracking
+ * - Integration with guild roster data
+ * 
+ * USAGE:
+ * Primary tool for Season 3 raid planning and player management.
+ * Essential for guild officers preparing for new content.
+ * 
+ * MODIFICATION NOTES:
+ * - Ensure signup data validation is robust
+ * - Test class and role detection logic thoroughly
+ * - Consider adding export functionality for raid planning
+ * - Validate character name matching with guild data
+ */
+
 'use client'
 import React, { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
@@ -13,7 +67,6 @@ import SignUpForm from '@/core/components/Season3SignUp/SignUpForm'
 import { classIcons, classColors } from '@/core/components/Season3Stats/constants'
 import { calculateRaidBuffs } from '@/core/utils/raidBuffs'
 import { clientApi } from '@/lib/clientApi'
-import Season3RosterTable from '@/core/components/Season3Stats/Season3RosterTable'
 
 // Main Season 3 Component
 const Season3Section = ({ guildData, season3Data }) => {

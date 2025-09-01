@@ -1,49 +1,98 @@
+/**
+ * ROSTER BUILDER SCREEN
+ * 
+ * This is a drag-and-drop raid team composition builder that allows guild officers
+ * to plan and organize raid rosters with visual feedback and automatic buff calculations.
+ * 
+ * WHAT THIS DOES:
+ * - Provides drag-and-drop interface for building raid teams
+ * - Automatically calculates and displays raid buffs based on composition
+ * - Persists roster state in URL for sharing and bookmarking
+ * - Shows role distribution and team balance
+ * - Filters guild data to show only main characters
+ * - Manages tank, healer, DPS, substitute, and social assignments
+ * 
+ * KEY FEATURES:
+ * - Visual drag-and-drop roster building
+ * - Real-time buff calculation and display
+ * - URL persistence for roster sharing
+ * - Role-based slot management
+ * - Character card system with detailed information
+ * - Automatic role detection based on specialization
+ * 
+ * ROSTER STRUCTURE:
+ * - Tanks: 2 slots (typically 2 tanks for most raids)
+ * - Healers: 5 slots (flexible healer composition)
+ * - DPS: 18 slots (main damage dealers)
+ * - Substitutes: 10 slots (backup players)
+ * - Social: 10 slots (non-raiding members)
+ * 
+ * DRAG AND DROP:
+ * - Uses react-dnd for smooth drag-and-drop functionality
+ * - Characters can be moved between different role sections
+ * - Automatic removal from previous positions
+ * - Visual feedback during drag operations
+ * 
+ * BUFF CALCULATIONS:
+ * - Integrates with raidBuffs utility for automatic calculations
+ * - Shows buff coverage and gaps
+ * - Helps optimize team composition
+ * - Displays buff summary for the entire roster
+ * 
+ * URL PERSISTENCE:
+ * - Roster state is encoded in URL parameters
+ * - Allows sharing specific roster configurations
+ * - Maintains state across page refreshes
+ * - Supports bookmarking different roster setups
+ * 
+ * USAGE:
+ * Primary tool for raid leaders to plan team compositions.
+ * Essential for raid preparation and team optimization.
+ * 
+ * MODIFICATION NOTES:
+ * - Test drag-and-drop functionality thoroughly
+ * - Ensure buff calculations remain accurate
+ * - Consider adding roster templates and presets
+ * - Test URL encoding/decoding with various character names
+ */
+
 'use client'
+
+// React and Next.js
 import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
+
+// Third-party libraries
 import { DndProvider, useDrop } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
+// Material-UI components
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import Paper from '@mui/material/Paper'
 
+// Internal utilities and config
 import { calculateRaidBuffs } from '@/core/utils/raidBuffs'
 import config from '@/app.config.js'
 
-// Components
+// Internal components
 import CharacterCard from '@/core/components/CharacterCard'
 import RoleSlot from '@/core/components/RoleSlot'
 import BuffSummary from '@/core/components/BuffSummary'
 
-import './scss/roster.scss'
+// Styles
+import '@/core/screens/default/scss/roster.scss'
 
 /**
- * RosterPlanner Component
- * A drag-and-drop interface for organizing raid team compositions in a gaming context.
- *
- * Key Features:
- * - Manages raid roster assignments for tanks, healers, and DPS roles
- * - Persists roster state in URL for sharing/saving
- * - Provides drag-and-drop functionality for character assignment
- * - Displays raid buff calculations based on team composition
- * - Includes a character pool of available players (mains only)
- */
-
-/**
- * Main RosterPlanner Component
- * @returns {JSX.Element} The complete roster planning interface
+ * RosterPlanner - Drag-and-drop raid team composition builder
+ * Manages roster assignments, persists state in URL, and calculates raid buffs
  */
 const RosterPlanner = ({ guildData }) => {
-    // Navigation hooks for URL management
     const router = useRouter()
     const searchParams = useSearchParams()
 
-    /**
-     * Filters guild data to only include main characters based on configured ranks
-     * @type {Array<Character>}
-     */
+    // Filter guild data to only include main characters
     const mains = useMemo(() => {
         if (!guildData?.data) return []
         
@@ -58,15 +107,7 @@ const RosterPlanner = ({ guildData }) => {
         }))
     }, [guildData])
 
-    /**
-     * State for role assignments
-     * @type {Object} assignments
-     * @property {Array<string|null>} tanks - Array of 2 tank positions
-     * @property {Array<string|null>} healers - Array of 5 healer positions
-     * @property {Array<string|null>} dps - Array of 18 DPS positions
-     * @property {Array<string|null>} substitutes - Array of 10 substitute positions
-     * @property {Array<string|null>} social - Array of 10 social positions
-     */
+    // State for role assignments (tanks, healers, DPS, substitutes, social)
     const [assignments, setAssignments] = useState(() => {
         const rosterParam = searchParams.get('roster')
         const defaultRoster = {
@@ -89,10 +130,7 @@ const RosterPlanner = ({ guildData }) => {
     })
 
     
-    /**
-     * Effect hook to update URL when assignments change
-     * Encodes roster data and updates the URL parameter
-     */
+    // Update URL when assignments change
     useEffect(() => {
         const encodedAssignments = encodeURIComponent(JSON.stringify(assignments))
         const newUrl = `?roster=${encodedAssignments}`
@@ -102,12 +140,7 @@ const RosterPlanner = ({ guildData }) => {
         }
     }, [assignments, router, searchParams])
 
-    /**
-     * Handles character assignment to a specific role and position
-     * @param {string} characterId - The ID of the character being assigned
-     * @param {string} roleType - The role type ('tanks', 'healers', or 'dps')
-     * @param {number} index - The position index within the role array
-     */
+    // Handle character assignment to a specific role and position
     const handleDrop = (characterId, roleType, index) => {
         setAssignments((prev) => {
             const newAssignments = { ...prev }
@@ -130,10 +163,7 @@ const RosterPlanner = ({ guildData }) => {
         })
     }
 
-    /**
-     * Derives the list of currently assigned characters
-     * @type {Array<Character>}
-     */
+    // Get list of currently assigned characters
     const assignedCharacters = Object.entries(assignments)
         .flatMap(([roleType, chars]) =>
             chars
@@ -154,15 +184,10 @@ const RosterPlanner = ({ guildData }) => {
                 .filter(Boolean)
         )
 
-    /**
-     * Calculates current raid buffs based on team composition
-     * @type {Object} raidBuffs
-     */
+    // Calculate current raid buffs based on team composition
     const raidBuffs = calculateRaidBuffs(assignedCharacters)
 
-    /**
-     * Resets the roster to empty state
-     */
+    // Reset roster to empty state
     const handleReset = () => {
         setAssignments({
             tanks: new Array(2).fill(null),
@@ -438,12 +463,7 @@ const RosterPlanner = ({ guildData }) => {
 }
 
 /**
- * TrashZone Component
- * Provides a drop zone for removing characters from the roster
- *
- * @param {Object} props
- * @param {Function} props.setAssignments - Function to update roster assignments
- * @returns {JSX.Element} A styled drop zone for character removal
+ * TrashZone - Drop zone for removing characters from the roster
  */
 const TrashZone = ({ setAssignments }) => {
     const [{ isOver }, drop] = useDrop(
@@ -500,4 +520,3 @@ const TrashZone = ({ setAssignments }) => {
 }
 
 export default RosterPlanner
-

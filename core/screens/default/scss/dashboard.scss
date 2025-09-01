@@ -1,0 +1,142 @@
+/**
+ * DASHBOARD SCSS STYLES
+ * 
+ * This file contains all the styling for the main dashboard interface, including
+ * statistics cards, player tables, role distribution charts, and responsive layouts.
+ * It provides the visual foundation for the guild overview and performance metrics.
+ * 
+ * WHAT THIS DOES:
+ * - Styles the main dashboard layout and components
+ * - Defines statistics card layouts and appearance
+ * - Styles top players table and player information
+ * - Provides responsive design for different screen sizes
+ * - Handles typography and spacing for dashboard elements
+ * - Styles role distribution and missing enchants sections
+ * 
+ * KEY COMPONENTS:
+ * - Dashboard container and layout structure
+ * - Logo holder and title styling
+ * - Statistics cards with consistent design
+ * - Top players table with player information
+ * - Role distribution charts and visualizations
+ * - Missing enchants section styling
+ * 
+ * LAYOUT STRUCTURE:
+ * - Main dashboard container with proper padding
+ * - Logo holder with title and description
+ * - Statistics cards grid layout
+ * - Top players table with consistent styling
+ * - Role distribution section with proper spacing
+ * 
+ * COMPONENT STYLING:
+ * - StatCard: Individual metric display cards
+ * - TopPlayersTable: Player ranking and performance table
+ * - RoleDistribution: Visual charts and role breakdowns
+ * - MissingEnchants: Requirements and compliance tracking
+ * 
+ * RESPONSIVE DESIGN:
+ * - Mobile-first approach with progressive enhancement
+ * - Consistent spacing and typography across devices
+ * - Flexible layouts that adapt to different screen sizes
+ * - Touch-friendly interface elements for mobile devices
+ * 
+ * STYLING FEATURES:
+ * - Consistent color scheme and spacing
+ * - Proper typography hierarchy and readability
+ * - Visual indicators for different metrics
+ * - Hover effects and interactive elements
+ * 
+ * USAGE:
+ * This file styles the main dashboard interface used for guild overview.
+ * Essential for maintaining consistent dashboard appearance and functionality.
+ * 
+ * MODIFICATION NOTES:
+ * - Test responsive behavior on various devices
+ * - Ensure color contrast meets accessibility standards
+ * - Maintain consistent spacing and typography
+ * - Consider performance impact of complex selectors
+ * - Test card layouts with various content lengths
+ */
+
+.dashboard {
+  padding-bottom: 32px;
+}
+
+.logoHolder {
+  margin-top: 40px;
+}
+
+.logoHolder-title {
+  text-transform: capitalize !important;
+  text-align: left;
+  font-size: 2rem;
+}
+
+.logoHolder-description {
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.stats-cards {
+  margin-bottom: 24px;
+}
+
+.top-players {
+  margin-bottom: 24px;
+}
+
+.missing-enchants-title {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  margin-top: 32px;
+  text-transform: capitalize !important;
+}
+
+.role-distribution {
+  margin-top: 24px;
+  padding-bottom: 32px;
+}
+
+// StatCard styles
+.stat-card {
+  padding: 16px;
+  height: 100%;
+}
+.stat-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.stat-card-title {
+  font-size: 1.1rem;
+}
+.stat-card-value {
+  margin-bottom: 8px;
+  font-size: 2rem;
+}
+.stat-card-description {
+  color: var(--mui-palette-text-secondary, #aaa);
+}
+
+// TopPlayersTable styles
+.top-players-table {
+  padding: 16px;
+  height: 100%;
+}
+.top-players-table-title {
+  margin-bottom: 16px;
+}
+.top-players-table-row .mediaWrapper img {
+  width: 40px;
+  height: 40px;
+}
+.top-players-table-row .name {
+  text-transform: capitalize;
+}
+.top-players-table-row .classandspec {
+  font-size: 0.9rem;
+  color: #aaa;
+}
+.top-players-table-row .score {
+  font-weight: bold;
+} 

@@ -1,7 +1,4 @@
 import StyledComponentsRegistry from '../lib/registry'
-import { Analytics } from '@vercel/analytics/react'
-
-import '@/core/themes/base.scss'
 
 import { systemui } from '@/app/fonts'
 import BaseLayout from '@/core/layout'
@@ -19,7 +16,6 @@ export default function RootLayout({ children }) {
             </head>
             <body>
                 <div className={`${systemui.className} applicationWrapper`}>
-                    <Analytics />
                     <StyledComponentsRegistry>
                         <BaseLayout>{children}</BaseLayout>
                     </StyledComponentsRegistry>

@@ -1,21 +1,11 @@
-import RosterBuilder from "@/core/sections/rosterBuilder";
+import config from '@/app.config.js'
 import { api } from '@/lib/api'
-import { Suspense } from 'react'
+import DynamicScreenLoader from '@/core/dynamicScreenLoader'
 
 // Enable revalidation for this page
 export const revalidate = 600 // Revalidate every 10 minutes
 
-// Loading component for the roster builder
-const RosterBuilderLoading = () => (
-  <div style={{ 
-    padding: '2rem', 
-    textAlign: 'center',
-    color: '#dcdada'
-  }}>
-    <h2>Loading Roster Builder...</h2>
-    <p>Please wait while we load the roster planning interface.</p>
-  </div>
-);
+
 
 // Server-side data fetching
 async function getGuildData() {
@@ -68,9 +58,12 @@ const RosterPage = async () => {
   const guildData = await getGuildData();
 
   return (
-    <Suspense fallback={<RosterBuilderLoading />}>
-      <RosterBuilder guildData={guildData} />
-    </Suspense>
+    <DynamicScreenLoader 
+      screenName="rosterBuilder"
+      props={{ guildData }}
+      loadingMessage="Loading Roster Builder..."
+      minHeight="50vh"
+    />
   );
 };
 

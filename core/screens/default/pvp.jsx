@@ -1,16 +1,79 @@
-// Modules
-'use client'
-import React from 'react'
-import PvpBlock from '@/core/modules/RatingBlock'
+/**
+ * RATED PVP SCREEN
+ * 
+ * This screen displays rated PvP performance statistics, ratings, and leaderboards
+ * for guild members. It provides insights into PvP performance and competitive rankings.
+ * 
+ * WHAT THIS DOES:
+ * - Shows rated PvP ratings and rankings for guild members
+ * - Displays PvP performance statistics and leaderboards
+ * - Integrates with guild data to show current PvP standings
+ * - Provides timestamp information for last data update
+ * - Uses RatingBlock component for consistent data display
+ * 
+ * KEY FEATURES:
+ * - PvP rating leaderboards and rankings
+ * - Performance statistics and comparisons
+ * - Last audit timestamp display
+ * - Responsive layout with proper typography
+ * - Integration with guild audit system
+ * 
+ * DATA DISPLAY:
+ * - PvP ratings and rankings
+ * - Player performance comparisons
+ * - Historical performance tracking
+ * - Guild-wide PvP statistics
+ * - Arena and battleground performance
+ * 
+ * COMPONENT INTEGRATION:
+ * - Uses PvpBlock (RatingBlock) for data display
+ * - Integrates with guild data system
+ * - Consistent styling with other audit screens
+ * - Error handling and loading states
+ * 
+ * LAYOUT STRUCTURE:
+ * - Header with title and timestamp
+ * - Main content area with PvP data
+ * - Responsive design for different screen sizes
+ * - Consistent typography and spacing
+ * 
+ * PVP CONTENT:
+ * - Arena ratings and rankings
+ * - Battleground performance
+ * - PvP gear and progression
+ * - Competitive statistics
+ * 
+ * USAGE:
+ * Primary tool for guild members to track PvP performance.
+ * Essential for PvP-focused players and team leaders.
+ * 
+ * MODIFICATION NOTES:
+ * - Ensure PvP data is properly formatted
+ * - Test responsive design on various devices
+ * - Consider adding filtering and sorting options
+ * - Validate timestamp display accuracy
+ * - Consider adding PvP-specific metrics
+ */
 
+'use client'
+
+// React
+import React from 'react'
+
+// Material-UI components
 import { Typography, Box, Alert, CircularProgress } from '@mui/material'
 
-// MUI CONTROLS
+// Internal components
+import PvpBlock from '@/core/modules/RatingBlock'
 
-// Theme and styling
-import './scss/guildAudit.scss'
+// Styles
+import '@/core/screens/default/scss/pvp.scss'
+import '@/core/screens/default/scss/guildAudit.scss'
 
-// React component
+/**
+ * PVP - Rated PvP leaderboard and statistics display
+ * Shows PvP ratings and rankings for guild members
+ */
 const PVP = ({ auditable, guildData }) => {
     // Handle loading and error states
     if (!guildData) {
@@ -75,4 +138,5 @@ const PVP = ({ auditable, guildData }) => {
         </section>
     )
 }
+
 export default PVP

@@ -1,15 +1,71 @@
-// Modules
-'use client'
-import React from 'react'
-import MPlusBlock from '@/core/modules/RatingBlock'
+/**
+ * MYTHIC+ DUNGEON SCREEN
+ * 
+ * This screen displays Mythic+ dungeon performance statistics, rankings, and leaderboards
+ * for guild members. It provides insights into dungeon performance and competitive rankings.
+ * 
+ * WHAT THIS DOES:
+ * - Shows Mythic+ dungeon scores and rankings for guild members
+ * - Displays performance statistics and leaderboards
+ * - Integrates with guild data to show current Mythic+ standings
+ * - Provides timestamp information for last data update
+ * - Uses RatingBlock component for consistent data display
+ * 
+ * KEY FEATURES:
+ * - Mythic+ score leaderboards and rankings
+ * - Performance statistics and comparisons
+ * - Last audit timestamp display
+ * - Responsive layout with proper typography
+ * - Integration with guild audit system
+ * 
+ * DATA DISPLAY:
+ * - Mythic+ scores and rankings
+ * - Player performance comparisons
+ * - Historical performance tracking
+ * - Guild-wide Mythic+ statistics
+ * 
+ * COMPONENT INTEGRATION:
+ * - Uses MPlusBlock (RatingBlock) for data display
+ * - Integrates with guild data system
+ * - Consistent styling with other audit screens
+ * - Error handling and loading states
+ * 
+ * LAYOUT STRUCTURE:
+ * - Header with title and timestamp
+ * - Main content area with Mythic+ data
+ * - Responsive design for different screen sizes
+ * - Consistent typography and spacing
+ * 
+ * USAGE:
+ * Primary tool for guild members to track Mythic+ performance.
+ * Essential for competitive players and raid leaders.
+ * 
+ * MODIFICATION NOTES:
+ * - Ensure Mythic+ data is properly formatted
+ * - Test responsive design on various devices
+ * - Consider adding filtering and sorting options
+ * - Validate timestamp display accuracy
+ */
 
+'use client'
+
+// React
+import React from 'react'
+
+// Material-UI components
 import { Typography, Box, Alert, CircularProgress } from '@mui/material'
 
+// Internal components
+import MPlusBlock from '@/core/modules/RatingBlock'
 
-// Theme and styling
-import './scss/guildAudit.scss'
+// Styles
+import '@/core/screens/default/scss/mplus.scss'
+import '@/core/screens/default/scss/guildAudit.scss'
 
-// React component
+/**
+ * MPlus - Mythic+ dungeon leaderboard and statistics display
+ * Shows Mythic+ scores and rankings for guild members
+ */
 const MPlus = ({ auditable, guildData }) => {
     // Handle loading and error states
     if (!guildData) {
@@ -78,4 +134,5 @@ const MPlus = ({ auditable, guildData }) => {
         </section>
     )
 }
+
 export default MPlus

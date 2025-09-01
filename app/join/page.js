@@ -1,5 +1,6 @@
-import Join from "@/core/sections/recruitment";
+import config from '@/app.config.js'
 import { api } from '@/lib/api'
+import DynamicScreenLoader from '@/core/dynamicScreenLoader'
 
 // Enable revalidation for this page
 export const revalidate = 600 // Revalidate every 10 minutes
@@ -51,10 +52,17 @@ async function getGuildData() {
     }
 }
 
-const RosterPage = async () => {
+const JoinPage = async () => {
   const guildData = await getGuildData();
 
-  return <Join guildData={guildData} />;
+  return (
+    <DynamicScreenLoader 
+      screenName="recruitment"
+      props={{ guildData }}
+      loadingMessage="Loading Join Page..."
+      minHeight="50vh"
+    />
+  );
 };
 
-export default RosterPage;
+export default JoinPage;

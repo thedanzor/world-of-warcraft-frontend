@@ -1,8 +1,7 @@
 // Sections
-import Mplus from '@/core/sections/mplus'
+import config from '@/app.config.js'
 import { api } from '@/lib/api'
-
-import './mplus.scss'
+import DynamicScreenLoader from '@/core/dynamicScreenLoader'
 
 import { Public_Sans } from 'next/font/google'
 const publicSans = Public_Sans({
@@ -48,7 +47,12 @@ export default async function MythicPlusPage() {
     
     return (
         <main className={`fullbody ${publicSans.className}`}>
-            <Mplus auditable guildData={guildData} />
+            <DynamicScreenLoader 
+                screenName="mythicPlus"
+                props={{ auditable: true, guildData }}
+                loadingMessage="Loading Mythic Plus..."
+                minHeight="50vh"
+            />
         </main>
     )
 }

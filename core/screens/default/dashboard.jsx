@@ -1,15 +1,61 @@
+/**
+ * DASHBOARD SCREEN
+ * 
+ * This is the main landing page that provides an overview of the guild's status and performance.
+ * It displays key metrics, statistics, and quick access to important guild information.
+ * 
+ * WHAT THIS DOES:
+ * - Shows guild overview with key performance indicators
+ * - Displays player statistics (item levels, raid lockouts, missing enchants)
+ * - Provides role distribution visualization (tanks, healers, DPS)
+ * - Shows top players in Mythic+ and PvP
+ * - Integrates with audit system for raid readiness
+ * - Handles loading states and error conditions gracefully
+ * 
+ * KEY FEATURES:
+ * - Guild statistics dashboard with visual cards
+ * - Player count and role distribution charts
+ * - Top performers table for Mythic+ and PvP
+ * - Audit block showing raid readiness status
+ * - Responsive grid layout for different screen sizes
+ * 
+ * DATA SOURCES:
+ * - guildData: Main guild information from API
+ * - useAuditData: Hook for raid lockout and readiness data
+ * - Statistics from backend (missing enchants, role counts, top players)
+ * 
+ * COMPONENTS USED:
+ * - StatCard: Individual metric display cards
+ * - TopPlayersTable: Table showing best performers
+ * - RoleDistribution: Visual chart of role breakdown
+ * - AuditBlock: Raid readiness and lockout information
+ * 
+ * FILTERING:
+ * - Uses static filters for consistent data display
+ * - Integrates with global filter system
+ * - Shows data based on current lockout period
+ * 
+ * USAGE:
+ * This screen is the main entry point for guild leaders and officers.
+ * It provides quick insights into guild health and performance.
+ * 
+ * MODIFICATION NOTES:
+ * - Keep statistics calculations accurate and performant
+ * - Ensure responsive design works on all devices
+ * - Test with various guild sizes and data scenarios
+ * - Consider adding more metrics based on guild needs
+ */
+
 'use client'
 import React, { useMemo } from 'react'
+
+// Config
+import config from '@/app.config.js'
+
+// Material Components
 import Box from '@mui/material/Box'
-import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
-
-import AuditBlock from '@/core/modules/auditBlock'
-import config from '@/app.config.js'
-import useAuditData from '@/core/hooks/useAuditData'
-import getPreviousWednesdayAt1AM from '@/core/utils/currentLockout'
-
 import Alert from '@mui/material/Alert'
 import CircularProgress from '@mui/material/CircularProgress'
 
@@ -20,27 +66,28 @@ import LockIcon from '@mui/icons-material/Lock'
 import StarIcon from '@mui/icons-material/Star'
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents'
 
-
+// Components
 import './scss/dashboard.scss'
+import AuditBlock from '@/core/modules/auditBlock'
+import useAuditData from '@/core/hooks/useAuditData'
+import getPreviousWednesdayAt1AM from '@/core/utils/currentLockout'
 import StatCard from '@/core/components/StatCard'
 import TopPlayersTable from '@/core/components/TopPlayersTable'
 import RoleDistribution from '@/core/components/RoleDistribution'
 
+
+// Dashboard
 const Dashboard = ({ guildData }) => {
     const [isDataLoaded, setIsDataLoaded] = React.useState(false)
-    const [query, setQuery] = React.useState('')
-    const [classFilter, setClassFilter] = React.useState([])
-    const [rankFilter, setRankFilter] = React.useState('all')
-    const [specFilter, setSpecFilter] = React.useState('all')
-    const [ilevelFilter, setIlevelFilter] = React.useState(
-        config.INITIAL_FILTERS.defaultItemLevel
-    )
-    const [instanceIndex, setInstanceIndex] = React.useState(
-        config.INITIAL_FILTERS.instanceIndex
-    )
-    const [lockTimeStamp, setLockTimeStamp] = React.useState(
-        getPreviousWednesdayAt1AM(Date.now())
-    )
+    
+    // These values are static and only used in hook dependencies
+    const query = ''
+    const classFilter = []
+    const rankFilter = 'all'
+    const specFilter = 'all'
+    const ilevelFilter = config.INITIAL_FILTERS.defaultItemLevel
+    const instanceIndex = config.INITIAL_FILTERS.instanceIndex
+    const lockTimeStamp = getPreviousWednesdayAt1AM(Date.now())
 
     // Handle loading and error states
     if (!guildData) {
@@ -218,7 +265,7 @@ const Dashboard = ({ guildData }) => {
                 />
 
                 {/* Role Distribution */}
-                <RoleDistribution tanks={data.tanks} healers={data.healers} dps={data.dps} />
+                {/* <RoleDistribution tanks={data.tanks} healers={data.healers} dps={data.dps} /> */}
             </Box>
         </section>
     )

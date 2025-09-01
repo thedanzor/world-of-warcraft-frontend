@@ -20,6 +20,8 @@ const RatingBlock = ({ data, name, type }) => {
             : item?.pvp || 0
     }
 
+    console.log('sortedData', sortedData)
+
     return (
         <Box className="contentBlock">
             <Box

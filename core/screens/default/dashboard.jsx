@@ -79,6 +79,8 @@ import RoleDistribution from '@/core/components/RoleDistribution'
 // Dashboard
 const Dashboard = ({ guildData }) => {
     const [isDataLoaded, setIsDataLoaded] = React.useState(false)
+
+    console.log('guildData', guildData, isDataLoaded)
     
     // These values are static and only used in hook dependencies
     const query = ''
@@ -111,6 +113,8 @@ const Dashboard = ({ guildData }) => {
 
     const guildDataToUse = guildData.data || []
 
+    console.log('guildDataToUse', guildDataToUse, isDataLoaded)
+
     const auditData = useAuditData(guildDataToUse, [
         query,
         classFilter,
@@ -120,6 +124,8 @@ const Dashboard = ({ guildData }) => {
         instanceIndex,
         lockTimeStamp,
     ])
+
+    console.log('auditData', auditData, isDataLoaded)
 
     const data = useMemo(() => {
         const allPlayers = guildDataToUse || []
@@ -147,8 +153,6 @@ const Dashboard = ({ guildData }) => {
             player.missingEnchants && player.missingEnchants.length > 0
         )
 
-        setIsDataLoaded(true)
-
         return {
             totalMembers: allPlayers.length,
             missingEnchants: missingEnchants.all || 0,
@@ -163,6 +167,15 @@ const Dashboard = ({ guildData }) => {
             dps: roleCounts.dps || 0,
         }
     }, [auditData, guildData])
+
+    // Set data loaded when data is available
+    React.useEffect(() => {
+        if (data && Object.keys(data).length > 0) {
+            setIsDataLoaded(true)
+        }
+    }, [data])
+
+    console.log('data', data, isDataLoaded)
 
     if (!isDataLoaded) {
         return null

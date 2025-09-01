@@ -56,7 +56,7 @@ import React from 'react'
 import { Typography, Box, Alert, CircularProgress } from '@mui/material'
 
 // Internal components
-import MPlusBlock from '@/core/modules/RatingBlock'
+import MythicPlusBlock from '@/core/modules/MythicPlusBlock'
 
 // Styles
 import '@/core/screens/default/scss/mplus.scss'
@@ -64,7 +64,8 @@ import '@/core/screens/default/scss/guildAudit.scss'
 
 /**
  * MPlus - Mythic+ dungeon leaderboard and statistics display
- * Shows Mythic+ scores and rankings for guild members
+ * Shows Mythic+ scores and rankings for guild members in a detailed table format
+ * with individual dungeon scores displayed as columns
  */
 const MPlus = ({ auditable, guildData }) => {
     // Handle loading and error states
@@ -117,15 +118,13 @@ const MPlus = ({ auditable, guildData }) => {
                                     textAlign: 'left',
                                 }}
                             >
-                                Last audit ran{' '}
-                                {guildData.timestamp ? new Date(guildData.timestamp).toLocaleString() : 'Unknown'}
+                                This information is based on each weekly reset.
                             </Typography>
                         </div>
                         <div className="">
-                            <MPlusBlock
+                            <MythicPlusBlock
                                 data={guildData}
                                 name="data"
-                                type="mplus"
                             />
                         </div>
                     </div>

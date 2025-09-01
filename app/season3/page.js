@@ -1,7 +1,8 @@
 // Sections
-import Season3Section from '@/core/sections/season3'
+import config from '@/app.config.js'
 import { Poppins } from 'next/font/google'
 import { api } from '@/lib/api'
+import DynamicScreenLoader from '@/core/dynamicScreenLoader'
 
 const poppins = Poppins({
     subsets: ['latin'],
@@ -54,7 +55,12 @@ export default async function Home() {
 
     return (
         <main className={`fullbody ${poppins.className}`}>
-            <Season3Section guildData={guildData} season3Data={guildData.season3} />
+            <DynamicScreenLoader 
+                screenName="season3"
+                props={{ guildData, season3Data: guildData.season3 }}
+                loadingMessage="Loading Season 3..."
+                minHeight="50vh"
+            />
         </main>
     )
 }

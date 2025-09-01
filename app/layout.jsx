@@ -1,7 +1,5 @@
 import StyledComponentsRegistry from '../lib/registry'
 
-import '@/core/themes/base.scss'
-
 import { systemui } from '@/app/fonts'
 import BaseLayout from '@/core/layout'
 import seo from '@/core/seo'

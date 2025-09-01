@@ -56,11 +56,6 @@ const navigationItems = {
                 icon: GroupAddIcon,
             },
             {
-                label: 'MRT TOOL',
-                path: '/mrt',
-                icon: PrecisionManufacturingIcon,
-            },
-            {
                 label: 'Signup',
                 path: '/season3',
                 icon: HowToRegIcon,

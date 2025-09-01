@@ -1,6 +1,15 @@
 'use client'
 
 import config from '@/app.config.js'
-import Error from `@/screens/${config.THEME}/error`
+import { lazy, Suspense } from 'react'
 
-export default Error
+// Dynamic import using React.lazy
+const Error = lazy(() => import(`@/core/screens/${config.THEME}/error`))
+
+export default function ErrorPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <Error />
+        </Suspense>
+    )
+}

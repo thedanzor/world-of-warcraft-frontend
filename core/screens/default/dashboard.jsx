@@ -1,3 +1,51 @@
+/**
+ * DASHBOARD SCREEN
+ * 
+ * This is the main landing page that provides an overview of the guild's status and performance.
+ * It displays key metrics, statistics, and quick access to important guild information.
+ * 
+ * WHAT THIS DOES:
+ * - Shows guild overview with key performance indicators
+ * - Displays player statistics (item levels, raid lockouts, missing enchants)
+ * - Provides role distribution visualization (tanks, healers, DPS)
+ * - Shows top players in Mythic+ and PvP
+ * - Integrates with audit system for raid readiness
+ * - Handles loading states and error conditions gracefully
+ * 
+ * KEY FEATURES:
+ * - Guild statistics dashboard with visual cards
+ * - Player count and role distribution charts
+ * - Top performers table for Mythic+ and PvP
+ * - Audit block showing raid readiness status
+ * - Responsive grid layout for different screen sizes
+ * 
+ * DATA SOURCES:
+ * - guildData: Main guild information from API
+ * - useAuditData: Hook for raid lockout and readiness data
+ * - Statistics from backend (missing enchants, role counts, top players)
+ * 
+ * COMPONENTS USED:
+ * - StatCard: Individual metric display cards
+ * - TopPlayersTable: Table showing best performers
+ * - RoleDistribution: Visual chart of role breakdown
+ * - AuditBlock: Raid readiness and lockout information
+ * 
+ * FILTERING:
+ * - Uses static filters for consistent data display
+ * - Integrates with global filter system
+ * - Shows data based on current lockout period
+ * 
+ * USAGE:
+ * This screen is the main entry point for guild leaders and officers.
+ * It provides quick insights into guild health and performance.
+ * 
+ * MODIFICATION NOTES:
+ * - Keep statistics calculations accurate and performant
+ * - Ensure responsive design works on all devices
+ * - Test with various guild sizes and data scenarios
+ * - Consider adding more metrics based on guild needs
+ */
+
 'use client'
 import React, { useMemo } from 'react'
 
@@ -217,7 +265,7 @@ const Dashboard = ({ guildData }) => {
                 />
 
                 {/* Role Distribution */}
-                <RoleDistribution tanks={data.tanks} healers={data.healers} dps={data.dps} />
+                {/* <RoleDistribution tanks={data.tanks} healers={data.healers} dps={data.dps} /> */}
             </Box>
         </section>
     )

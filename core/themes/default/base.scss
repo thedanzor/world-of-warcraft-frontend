@@ -1,3 +1,50 @@
+/**
+ * BASE SCSS STYLES
+ * 
+ * This file contains the foundational styles for the entire World of Warcraft application.
+ * It defines the base appearance, typography, and global styling that all other components build upon.
+ * 
+ * WHAT THIS DOES:
+ * - Sets up global HTML and body styles (background, fonts, colors)
+ * - Defines typography hierarchy with proper font families and weights
+ * - Provides custom scrollbar styling for better visual consistency
+ * - Defines WoW class-specific colors and styling
+ * - Establishes base layout containers and wrapper elements
+ * 
+ * GLOBAL STYLES:
+ * - Background: Dark theme (#110d17) for WoW aesthetic
+ * - Typography: Arimo for body text, Oswald for headings
+ * - Colors: Light gray (#dcdada) for readable text
+ * - Box-sizing: Border-box for predictable layout calculations
+ * 
+ * WOW CLASS COLORS:
+ * Each class has its signature color from the game:
+ * - Warlock: Purple (#9482C9)
+ * - Warrior: Brown (#C79C6E) 
+ * - Paladin: Pink (#F58CBA)
+ * - Priest: White (#FFFFFF)
+ * - Rogue: Yellow (#FFF569)
+ * - Shaman: Blue (#0070DE)
+ * - And more...
+ * 
+ * SCROLLBAR STYLING:
+ * Custom webkit scrollbars with dark theme colors and hover effects
+ * 
+ * LAYOUT ELEMENTS:
+ * - applicationWrapper: Main container with overflow control
+ * - Various utility classes for consistent spacing and layout
+ * 
+ * USAGE:
+ * This file is imported by the main theme system and applies globally.
+ * Don't modify class-specific colors without considering WoW brand consistency.
+ * 
+ * MODIFICATION NOTES:
+ * - Changes here affect the entire application appearance
+ * - Test color changes for accessibility and readability
+ * - Keep WoW class colors authentic to the game
+ * - Consider dark theme implications for all new styles
+ */
+
 body, html {
   background: #110d17;
   font-family: var(--font-arimo);

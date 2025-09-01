@@ -4,11 +4,8 @@
  */
 
 // Project imports
-import config from '@/app.config.js'
 import { api } from '@/lib/api'
-
-// Components
-import Dashboard from `@/screens/${config.THEME}/dashboard`
+import DynamicScreenLoader from '@/core/dynamicScreenLoader'
 
 // Refresh data every 10 minutes
 export const revalidate = 600
@@ -74,7 +71,12 @@ export default async function Home() {
 
     return (
         <main className={`fullbody`}>
-            <Dashboard guildData={guildData} />
+            <DynamicScreenLoader 
+                screenName="dashboard"
+                props={{ guildData }}
+                loadingMessage="Loading Dashboard..."
+                minHeight="50vh"
+            />
         </main>
     )
 }

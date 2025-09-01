@@ -1,3 +1,56 @@
+/**
+ * GUILD AUDIT SCREEN
+ * 
+ * This is a comprehensive guild analysis and audit tool that allows officers and leaders
+ * to examine guild member data, filter by various criteria, and assess raid readiness.
+ * 
+ * WHAT THIS DOES:
+ * - Provides advanced filtering by class, spec, rank, item level, and more
+ * - Shows detailed audit information for raid preparation
+ * - Displays missing enchants and consumables for guild members
+ * - Tracks raid lockouts and availability
+ * - Offers multiple view modes (all players, missing enchants, locked players)
+ * - Generates comprehensive guild statistics and role breakdowns
+ * 
+ * KEY FEATURES:
+ * - Multi-tab interface for different audit views
+ * - Advanced filtering system with real-time search
+ * - Visual indicators for missing requirements
+ * - Role distribution analysis (tanks, healers, DPS)
+ * - Item level requirements and compliance tracking
+ * - Rank-based filtering (mains vs alts)
+ * 
+ * FILTERING CAPABILITIES:
+ * - Text search across character names
+ * - Class and specialization filtering
+ * - Guild rank filtering (mains, alts, specific ranks)
+ * - Item level threshold filtering
+ * - Instance-specific filtering
+ * - Raid lockout status filtering
+ * 
+ * AUDIT VIEWS:
+ * - All Players: Complete guild roster with audit status
+ * - Missing Enchants: Players needing enchantments
+ * - Locked Players: Characters with active raid lockouts
+ * - Statistics: Guild composition and role breakdowns
+ * 
+ * DATA INTEGRATION:
+ * - Uses useAuditData hook for filtered data processing
+ * - Integrates with guild data from API
+ * - Real-time filtering and search capabilities
+ * - Configurable thresholds and requirements
+ * 
+ * USAGE:
+ * Primary tool for guild officers to assess raid readiness and member compliance.
+ * Essential for raid planning and guild management.
+ * 
+ * MODIFICATION NOTES:
+ * - Filter logic is complex; test thoroughly when modifying
+ * - Performance considerations for large guilds
+ * - Ensure all filter combinations work correctly
+ * - Consider adding export functionality for reports
+ */
+
 'use client'
 
 // React
@@ -31,7 +84,7 @@ import useAuditData from '@/core/hooks/useAuditData'
 import config from '@/app.config.js'
 
 // Styles
-import '@/core/sections/scss/guildAudit.scss'
+import '@/core/screens/default/scss/guildAudit.scss'
 
 // Static variables
 const {

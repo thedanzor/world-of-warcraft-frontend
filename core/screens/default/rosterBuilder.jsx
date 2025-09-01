@@ -1,3 +1,61 @@
+/**
+ * ROSTER BUILDER SCREEN
+ * 
+ * This is a drag-and-drop raid team composition builder that allows guild officers
+ * to plan and organize raid rosters with visual feedback and automatic buff calculations.
+ * 
+ * WHAT THIS DOES:
+ * - Provides drag-and-drop interface for building raid teams
+ * - Automatically calculates and displays raid buffs based on composition
+ * - Persists roster state in URL for sharing and bookmarking
+ * - Shows role distribution and team balance
+ * - Filters guild data to show only main characters
+ * - Manages tank, healer, DPS, substitute, and social assignments
+ * 
+ * KEY FEATURES:
+ * - Visual drag-and-drop roster building
+ * - Real-time buff calculation and display
+ * - URL persistence for roster sharing
+ * - Role-based slot management
+ * - Character card system with detailed information
+ * - Automatic role detection based on specialization
+ * 
+ * ROSTER STRUCTURE:
+ * - Tanks: 2 slots (typically 2 tanks for most raids)
+ * - Healers: 5 slots (flexible healer composition)
+ * - DPS: 18 slots (main damage dealers)
+ * - Substitutes: 10 slots (backup players)
+ * - Social: 10 slots (non-raiding members)
+ * 
+ * DRAG AND DROP:
+ * - Uses react-dnd for smooth drag-and-drop functionality
+ * - Characters can be moved between different role sections
+ * - Automatic removal from previous positions
+ * - Visual feedback during drag operations
+ * 
+ * BUFF CALCULATIONS:
+ * - Integrates with raidBuffs utility for automatic calculations
+ * - Shows buff coverage and gaps
+ * - Helps optimize team composition
+ * - Displays buff summary for the entire roster
+ * 
+ * URL PERSISTENCE:
+ * - Roster state is encoded in URL parameters
+ * - Allows sharing specific roster configurations
+ * - Maintains state across page refreshes
+ * - Supports bookmarking different roster setups
+ * 
+ * USAGE:
+ * Primary tool for raid leaders to plan team compositions.
+ * Essential for raid preparation and team optimization.
+ * 
+ * MODIFICATION NOTES:
+ * - Test drag-and-drop functionality thoroughly
+ * - Ensure buff calculations remain accurate
+ * - Consider adding roster templates and presets
+ * - Test URL encoding/decoding with various character names
+ */
+
 'use client'
 
 // React and Next.js
@@ -24,7 +82,7 @@ import RoleSlot from '@/core/components/RoleSlot'
 import BuffSummary from '@/core/components/BuffSummary'
 
 // Styles
-import '@/core/sections/scss/roster.scss'
+import '@/core/screens/default/scss/roster.scss'
 
 /**
  * RosterPlanner - Drag-and-drop raid team composition builder

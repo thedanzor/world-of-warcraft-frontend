@@ -1,3 +1,63 @@
+/**
+ * RECRUITMENT SCSS STYLES
+ * 
+ * This file contains all the styling for the guild recruitment interface, including
+ * recruitment information, requirements display, application process, and responsive layouts.
+ * It provides the visual foundation for attracting and informing potential guild members.
+ * 
+ * WHAT THIS DOES:
+ * - Styles the main recruitment page layout and components
+ * - Defines recruitment logo and header styling
+ * - Styles requirements sections and application information
+ * - Provides responsive design for different screen sizes
+ * - Handles typography and spacing for recruitment content
+ * - Styles call-to-action areas and contact information
+ * 
+ * KEY COMPONENTS:
+ * - Recruitment container and layout structure
+ * - Logo holder and header variant styling
+ * - Requirements sections with consistent design
+ * - Application process and contact information
+ * - Call-to-action areas for user engagement
+ * - Responsive breakpoints for mobile and tablet
+ * 
+ * LAYOUT STRUCTURE:
+ * - Main recruitment container with proper spacing
+ * - Logo header with centered positioning
+ * - Content sections with consistent typography
+ * - Requirements lists with proper formatting
+ * - Call-to-action areas with proper spacing
+ * 
+ * CONTENT STYLING:
+ * - Requirements display with clear hierarchy
+ * - Application process with step-by-step formatting
+ * - Contact information with proper emphasis
+ * - Guild benefits with visual indicators
+ * 
+ * RESPONSIVE DESIGN:
+ * - Mobile-first approach with progressive enhancement
+ * - Breakpoints for tablet (1200px) and mobile (700px)
+ * - Flexible layouts that adapt to different screen sizes
+ * - Touch-friendly interface elements for mobile devices
+ * 
+ * STYLING FEATURES:
+ * - Consistent color scheme with WoW branding
+ * - Proper typography hierarchy and readability
+ * - Visual indicators for different content sections
+ * - Hover effects and interactive elements
+ * 
+ * USAGE:
+ * This file styles the recruitment interface used for attracting new guild members.
+ * Essential for maintaining professional recruitment appearance and functionality.
+ * 
+ * MODIFICATION NOTES:
+ * - Test responsive behavior on various devices
+ * - Ensure color contrast meets accessibility standards
+ * - Maintain consistent spacing and typography
+ * - Consider performance impact of complex selectors
+ * - Test content layouts with various text lengths
+ */
+
 .recruitment {
     .recInto {
         padding: 30px 0 0 0;

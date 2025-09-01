@@ -77,6 +77,428 @@ The backend is an Express.js API server that:
 - **Drag & Drop**: React DnD
 - **Fonts**: Google Fonts (Poppins, Public Sans)
 
+## 🎨 Theme & Screen System
+
+The application uses a flexible theme and screen system that allows for easy customization while maintaining clean separation of concerns. This system makes it simple to create multiple visual themes and track changes across different versions of the application.
+
+### System Overview
+
+The theme system consists of two main parts:
+1. **Themes** - Visual styling and layout configurations
+2. **Screens** - Page-specific components that adapt to the current theme
+
+### Directory Structure
+
+```
+core/
+├── themes/                    # Theme definitions
+│   ├── default/              # Default theme (currently active)
+│   │   ├── index.jsx         # Theme provider and configuration
+│   │   ├── base.scss         # Base styling variables
+│   │   └── config.js         # Theme configuration
+│   └── _add_your_own_/       # Template for custom themes
+├── screens/                   # Screen components
+│   ├── default/              # Default screen implementations
+│   │   ├── dashboard.jsx     # Dashboard screen
+│   │   ├── audit.jsx         # Audit screen
+│   │   ├── rosterBuilder.jsx # Roster builder screen
+│   │   ├── recruitment.jsx   # Recruitment screen
+│   │   ├── pvp.jsx           # PvP screen
+│   │   ├── mythicPlus.jsx    # Mythic+ screen
+│   │   ├── season3.jsx       # Season 3 screen
+│   │   ├── error.jsx         # Error screen
+│   │   └── not-found.jsx     # Not found screen
+│   └── _add_your_own_/       # Template for custom screens
+└── components/                # Shared components (theme-agnostic)
+```
+
+### Theme Configuration
+
+Themes are configured in `app.config.js`:
+
+```javascript
+const data = {
+    "THEME": "default",  // Current active theme
+    // ... other configuration
+}
+```
+
+### How It Works
+
+#### 1. Dynamic Imports with React.lazy
+
+All theme-specific components use React.lazy for dynamic importing:
+
+```jsx
+import { lazy, Suspense } from 'react'
+import config from '@/app.config.js'
+
+// Dynamic import based on current theme
+const Dashboard = lazy(() => import(`@/core/screens/${config.THEME}/dashboard`))
+
+// Usage with Suspense
+<Suspense fallback={<div>Loading Dashboard...</div>}>
+    <Dashboard guildData={guildData} />
+</Suspense>
+```
+
+#### 2. Theme Provider System
+
+Themes provide styling and configuration through a provider pattern:
+
+```jsx
+// core/themes/default/index.jsx
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
+import { createTheme } from '@mui/material/styles'
+import baseStyles from './base.scss'
+
+const theme = createTheme({
+    palette: {
+        primary: { main: '#8dd52b' },
+        secondary: { main: '#d38a2a' },
+        // ... theme-specific colors
+    },
+    // ... other theme configuration
+})
+
+export default function ThemeProvider({ children }) {
+    return (
+        <MuiThemeProvider theme={theme}>
+            {children}
+        </MuiThemeProvider>
+    )
+}
+```
+
+#### 3. Screen Component Structure
+
+Each screen component follows a consistent pattern:
+
+```jsx
+// core/screens/default/dashboard.jsx
+import { Box, Grid } from '@mui/material'
+import { MultiColorHeadingH1 } from '@/core/components/typography'
+import '@/core/screens/default/scss/dashboard.scss'
+
+const Dashboard = ({ guildData }) => {
+    return (
+        <section className="dashboard">
+            <Box sx={{ p: 3 }}>
+                <MultiColorHeadingH1>Dashboard</MultiColorHeadingH1>
+                {/* Screen-specific content */}
+            </Box>
+        </section>
+    )
+}
+
+export default Dashboard
+```
+
+### Creating Custom Themes
+
+#### Step 1: Create Theme Directory
+
+```bash
+mkdir core/themes/my-custom-theme
+```
+
+#### Step 2: Create Theme Files
+
+```jsx
+// core/themes/my-custom-theme/index.jsx
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
+import { createTheme } from '@mui/material/styles'
+import './base.scss'
+
+const theme = createTheme({
+    palette: {
+        primary: { main: '#ff6b6b' },    // Custom primary color
+        secondary: { main: '#4ecdc4' },  // Custom secondary color
+        background: { 
+            default: '#2c3e50',
+            paper: '#34495e'
+        }
+    },
+    typography: {
+        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+        h1: { fontSize: '2.5rem', fontWeight: 700 },
+        h2: { fontSize: '2rem', fontWeight: 600 }
+    }
+})
+
+export default function ThemeProvider({ children }) {
+    return (
+        <MuiThemeProvider theme={theme}>
+            {children}
+        </MuiThemeProvider>
+    )
+}
+```
+
+#### Step 3: Create Theme Styles
+
+```scss
+// core/themes/my-custom-theme/base.scss
+:root {
+    --primary-color: #ff6b6b;
+    --secondary-color: #4ecdc4;
+    --background-color: #2c3e50;
+    --text-color: #ecf0f1;
+    --accent-color: #f39c12;
+}
+
+// Theme-specific global styles
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+// Custom component overrides
+.MuiButton-primary {
+    background-color: var(--primary-color);
+    &:hover {
+        background-color: darken(#ff6b6b, 10%);
+    }
+}
+```
+
+#### Step 4: Create Custom Screens (Optional)
+
+If you want to completely customize a screen:
+
+```jsx
+// core/screens/my-custom-theme/dashboard.jsx
+import { Box, Card, Typography } from '@mui/material'
+import '@/core/screens/my-custom-theme/scss/dashboard.scss'
+
+const Dashboard = ({ guildData }) => {
+    return (
+        <section className="custom-dashboard">
+            <Box sx={{ p: 4 }}>
+                <Typography variant="h1" sx={{ color: 'primary.main' }}>
+                    My Custom Dashboard
+                </Typography>
+                {/* Completely custom layout and components */}
+            </Box>
+        </section>
+    )
+}
+
+export default Dashboard
+```
+
+#### Step 5: Activate Custom Theme
+
+Update `app.config.js`:
+
+```javascript
+const data = {
+    "THEME": "my-custom-theme",  // Switch to custom theme
+    // ... other configuration
+}
+```
+
+### Creating Custom Screens
+
+#### Step 1: Create Screen Directory
+
+```bash
+mkdir core/screens/my-custom-theme
+mkdir core/screens/my-custom-theme/scss
+```
+
+#### Step 2: Create Screen Component
+
+```jsx
+// core/screens/my-custom-theme/customPage.jsx
+import { Box, Typography } from '@mui/material'
+import '@/core/screens/my-custom-theme/scss/customPage.scss'
+
+const CustomPage = ({ data }) => {
+    return (
+        <section className="custom-page">
+            <Box sx={{ p: 3 }}>
+                <Typography variant="h1">Custom Page</Typography>
+                {/* Custom content */}
+            </Box>
+        </section>
+    )
+}
+
+export default CustomPage
+```
+
+#### Step 3: Create Screen Styles
+
+```scss
+// core/screens/my-custom-theme/scss/customPage.scss
+.custom-page {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    min-height: 100vh;
+    
+    h1 {
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+}
+```
+
+#### Step 4: Use Custom Screen
+
+```jsx
+// In any page file
+const CustomPage = lazy(() => import(`@/core/screens/${config.THEME}/customPage`))
+
+// Usage
+<Suspense fallback={<div>Loading...</div>}>
+    <CustomPage data={pageData} />
+</Suspense>
+```
+
+### Benefits of This System
+
+#### 🎯 **Easy Customization**
+- Change entire visual themes by updating one configuration value
+- Create custom screen implementations without affecting other themes
+- Maintain consistent component structure across themes
+
+#### 📊 **Change Tracking**
+- Clear separation between theme-specific and shared code
+- Easy to compare changes between different theme versions
+- Git-friendly structure for tracking modifications
+
+#### 🔧 **Maintainability**
+- Shared components remain consistent across themes
+- Theme-specific code is isolated and easy to manage
+- Clear patterns for developers to follow
+
+#### 🚀 **Performance**
+- React.lazy ensures only active theme components are loaded
+- Code splitting by theme reduces bundle size
+- Efficient rendering with Suspense boundaries
+
+### Best Practices
+
+#### 1. **Keep Shared Components Theme-Agnostic**
+```jsx
+// ✅ Good - Component adapts to theme
+const Button = ({ children, variant = 'primary' }) => (
+    <MuiButton variant={variant} className={`theme-button ${variant}`}>
+        {children}
+    </MuiButton>
+)
+
+// ❌ Avoid - Hard-coded theme-specific styling
+const Button = ({ children }) => (
+    <button style={{ backgroundColor: '#8dd52b' }}>
+        {children}
+    </button>
+)
+```
+
+#### 2. **Use CSS Variables for Theme Values**
+```scss
+// ✅ Good - Theme-agnostic
+.button {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+// ❌ Avoid - Hard-coded values
+.button {
+    background-color: #8dd52b;
+    color: white;
+}
+```
+
+#### 3. **Maintain Consistent File Structure**
+```
+core/
+├── themes/
+│   └── theme-name/
+│       ├── index.jsx          # Theme provider
+│       ├── base.scss          # Base styles
+│       └── config.js          # Configuration
+└── screens/
+    └── theme-name/
+        ├── screenName.jsx     # Screen component
+        └── scss/
+            └── screenName.scss # Screen styles
+```
+
+#### 4. **Document Theme Dependencies**
+```jsx
+// core/themes/my-theme/README.md
+# My Custom Theme
+
+## Dependencies
+- Requires Material-UI v5
+- Compatible with Next.js 14
+- Uses custom color palette
+
+## Customization Options
+- Primary color: #ff6b6b
+- Secondary color: #4ecdc4
+- Background: Dark theme
+- Typography: Roboto font family
+
+## Usage
+Set `THEME: "my-theme"` in app.config.js
+```
+
+### Migration Guide
+
+If you're upgrading from the old static import system:
+
+#### Before (Old System)
+```jsx
+import Dashboard from '@/core/screens/dashboard'
+```
+
+#### After (New Theme System)
+```jsx
+import { lazy, Suspense } from 'react'
+import config from '@/app.config.js'
+
+const Dashboard = lazy(() => import(`@/core/screens/${config.THEME}/dashboard`))
+
+// Wrap in Suspense
+<Suspense fallback={<div>Loading...</div>}>
+    <Dashboard />
+</Suspense>
+```
+
+### Troubleshooting
+
+#### Common Issues
+
+1. **Component Not Loading**
+   - Check that the theme directory exists
+   - Verify the component file path matches the import
+   - Ensure Suspense is properly wrapping the component
+
+2. **Styling Not Applied**
+   - Check that theme SCSS files are imported
+   - Verify CSS variables are defined in the theme
+   - Ensure theme provider is wrapping the component tree
+
+3. **Build Errors**
+   - Check for typos in dynamic import paths
+   - Verify all theme files exist
+   - Ensure proper export statements in theme files
+
+#### Debug Mode
+
+Enable debug logging by adding to your theme:
+
+```jsx
+// core/themes/my-theme/index.jsx
+console.log('Loading theme:', config.THEME)
+console.log('Theme path:', `@/core/themes/${config.THEME}`)
+```
+
+This theme and screen system provides a robust foundation for customization while maintaining clean code organization and easy change tracking. Whether you're creating a simple color scheme change or a complete visual overhaul, the system scales to meet your needs.
+
 ## 🔧 Environment Variables
 
 Create a `.env.local` file in the root directory with the following variables:

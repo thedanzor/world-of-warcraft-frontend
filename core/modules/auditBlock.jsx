@@ -114,7 +114,7 @@ const headCells = [
     { id: 'enchants', label: 'Missing Enchants', sortable: false },
     { id: 'hasWaist', label: 'Waist', sortable: false },
     { id: 'hasCloak', label: 'Cloak', sortable: false },
-    { id: 'tier', label: 'Tier Sets (S1|S2)', sortable: false },
+    { id: 'tier', label: 'Tier Sets (S2|S3)', sortable: false },
     { id: 'locked', label: 'Locked', sortable: false },
 ]
 

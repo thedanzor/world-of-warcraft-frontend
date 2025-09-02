@@ -74,8 +74,6 @@ export default async function Home() {
             <DynamicScreenLoader 
                 screenName="dashboard"
                 props={{ guildData }}
-                loadingMessage="Loading Dashboard..."
-                minHeight="50vh"
             />
         </main>
     )

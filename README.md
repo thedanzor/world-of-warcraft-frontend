@@ -125,21 +125,25 @@ const data = {
 
 ### How It Works
 
-#### 1. Dynamic Imports with React.lazy
+#### 1. Direct Imports with Theme Selection
 
-All theme-specific components use React.lazy for dynamic importing:
+The system uses direct imports for optimal performance, with theme-aware component selection:
 
 ```jsx
-import { lazy, Suspense } from 'react'
-import config from '@/app.config.js'
+import DynamicScreenLoader from '@/core/dynamicScreenLoader'
 
-// Dynamic import based on current theme
-const Dashboard = lazy(() => import(`@/core/screens/${config.THEME}/dashboard`))
+// Usage with automatic theme selection
+<DynamicScreenLoader 
+    screenName="dashboard"
+    props={{ guildData }}
+/>
 
-// Usage with Suspense
-<Suspense fallback={<div>Loading Dashboard...</div>}>
-    <Dashboard guildData={guildData} />
-</Suspense>
+// Usage with theme override
+<DynamicScreenLoader 
+    screenName="dashboard"
+    props={{ guildData }}
+    theme="custom"
+/>
 ```
 
 #### 2. Theme Provider System
@@ -287,7 +291,29 @@ const Dashboard = ({ guildData }) => {
 export default Dashboard
 ```
 
-#### Step 5: Activate Custom Theme
+#### Step 5: Register Custom Theme
+
+Add your custom theme to the dynamic screen loader:
+
+```jsx
+// core/dynamicScreenLoader.jsx
+import CustomDashboard from './screens/my-custom-theme/dashboard';
+import CustomRosterBuilder from './screens/my-custom-theme/rosterBuilder';
+// ... import other custom screens
+
+const screenComponents = {
+  default: {
+    // ... existing default screens
+  },
+  'my-custom-theme': {
+    dashboard: CustomDashboard,
+    rosterBuilder: CustomRosterBuilder,
+    // ... other custom screens
+  }
+};
+```
+
+#### Step 6: Activate Custom Theme
 
 Update `app.config.js`:
 
@@ -343,16 +369,37 @@ export default CustomPage
 }
 ```
 
-#### Step 4: Use Custom Screen
+#### Step 4: Register Screen with Theme
+
+Add your custom screen to the dynamic screen loader:
+
+```jsx
+// core/dynamicScreenLoader.jsx
+import CustomPage from './screens/my-custom-theme/customPage';
+
+const screenComponents = {
+  default: {
+    // ... existing screens
+  },
+  'my-custom-theme': {
+    // ... existing custom screens
+    customPage: CustomPage,
+  }
+};
+```
+
+#### Step 5: Use Custom Screen
 
 ```jsx
 // In any page file
-const CustomPage = lazy(() => import(`@/core/screens/${config.THEME}/customPage`))
+import DynamicScreenLoader from '@/core/dynamicScreenLoader'
 
 // Usage
-<Suspense fallback={<div>Loading...</div>}>
-    <CustomPage data={pageData} />
-</Suspense>
+<DynamicScreenLoader 
+    screenName="customPage"
+    props={{ data: pageData }}
+    theme="my-custom-theme"
+/>
 ```
 
 ### Benefits of This System
@@ -373,9 +420,10 @@ const CustomPage = lazy(() => import(`@/core/screens/${config.THEME}/customPage`
 - Clear patterns for developers to follow
 
 #### 🚀 **Performance**
-- React.lazy ensures only active theme components are loaded
-- Code splitting by theme reduces bundle size
-- Efficient rendering with Suspense boundaries
+- Direct imports ensure optimal build-time and runtime performance
+- No lazy loading overhead or Suspense boundaries
+- All components are available immediately
+- Better tree-shaking and code optimization by Next.js
 
 ### Best Practices
 
@@ -448,14 +496,9 @@ Set `THEME: "my-theme"` in app.config.js
 
 ### Migration Guide
 
-If you're upgrading from the old static import system:
+If you're upgrading from the old lazy loading system:
 
-#### Before (Old System)
-```jsx
-import Dashboard from '@/core/screens/dashboard'
-```
-
-#### After (New Theme System)
+#### Before (Old Lazy Loading System)
 ```jsx
 import { lazy, Suspense } from 'react'
 import config from '@/app.config.js'
@@ -464,8 +507,19 @@ const Dashboard = lazy(() => import(`@/core/screens/${config.THEME}/dashboard`))
 
 // Wrap in Suspense
 <Suspense fallback={<div>Loading...</div>}>
-    <Dashboard />
+    <Dashboard guildData={guildData} />
 </Suspense>
+```
+
+#### After (New Direct Import System)
+```jsx
+import DynamicScreenLoader from '@/core/dynamicScreenLoader'
+
+// Simple, direct usage
+<DynamicScreenLoader 
+    screenName="dashboard"
+    props={{ guildData }}
+/>
 ```
 
 ### Troubleshooting
@@ -473,19 +527,25 @@ const Dashboard = lazy(() => import(`@/core/screens/${config.THEME}/dashboard`))
 #### Common Issues
 
 1. **Component Not Loading**
-   - Check that the theme directory exists
-   - Verify the component file path matches the import
-   - Ensure Suspense is properly wrapping the component
+   - Check that the theme directory exists in `core/themes/`
+   - Verify the screen component file exists in `core/screens/{theme}/`
+   - Ensure the screen is properly registered in `dynamicScreenLoader.jsx`
+   - Check browser console for error messages
 
 2. **Styling Not Applied**
-   - Check that theme SCSS files are imported
-   - Verify CSS variables are defined in the theme
-   - Ensure theme provider is wrapping the component tree
+   - Check that theme SCSS files are imported in the screen component
+   - Verify CSS variables are defined in the theme's `base.scss`
+   - Ensure theme provider is wrapping the component tree in `layout.jsx`
 
 3. **Build Errors**
-   - Check for typos in dynamic import paths
-   - Verify all theme files exist
+   - Check for typos in import statements in `dynamicScreenLoader.jsx`
+   - Verify all theme files exist and are properly exported
    - Ensure proper export statements in theme files
+
+4. **Theme Not Switching**
+   - Verify `THEME` is set correctly in `app.config.js`
+   - Check that the theme is registered in `screenComponents` object
+   - Ensure theme directory structure matches expected pattern
 
 #### Debug Mode
 
@@ -497,7 +557,55 @@ console.log('Loading theme:', config.THEME)
 console.log('Theme path:', `@/core/themes/${config.THEME}`)
 ```
 
+You can also use the helper functions to debug available themes:
+
+```jsx
+import { getAvailableThemes, getAvailableScreens } from '@/core/dynamicScreenLoader'
+
+console.log('Available themes:', getAvailableThemes())
+console.log('Available screens for default theme:', getAvailableScreens('default'))
+```
+
 This theme and screen system provides a robust foundation for customization while maintaining clean code organization and easy change tracking. Whether you're creating a simple color scheme change or a complete visual overhaul, the system scales to meet your needs.
+
+### Helper Functions
+
+The dynamic screen loader provides several helper functions for theme management:
+
+#### `registerTheme(themeName, screens)`
+Register a new theme with its screen components:
+
+```jsx
+import { registerTheme } from '@/core/dynamicScreenLoader'
+import CustomDashboard from './screens/my-theme/dashboard'
+import CustomRoster from './screens/my-theme/rosterBuilder'
+
+registerTheme('my-theme', {
+  dashboard: CustomDashboard,
+  rosterBuilder: CustomRoster,
+  // ... other screens
+})
+```
+
+#### `getAvailableThemes()`
+Get a list of all available themes:
+
+```jsx
+import { getAvailableThemes } from '@/core/dynamicScreenLoader'
+
+const themes = getAvailableThemes()
+console.log('Available themes:', themes) // ['default', 'my-theme']
+```
+
+#### `getAvailableScreens(themeName)`
+Get a list of available screens for a specific theme:
+
+```jsx
+import { getAvailableScreens } from '@/core/dynamicScreenLoader'
+
+const screens = getAvailableScreens('default')
+console.log('Default theme screens:', screens) // ['dashboard', 'rosterBuilder', ...]
+```
 
 ## 🔧 Environment Variables
 

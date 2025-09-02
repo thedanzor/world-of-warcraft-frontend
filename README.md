@@ -16,6 +16,8 @@ For full license details, visit: https://creativecommons.org/licenses/by-nc-nd/4
 
 ## 🖼️ Screenshots
 
+![Dashboard](_screenshots/reloading.png)
+
 ### Dashboard
 
 ![Dashboard](_screenshots/screen-dashboard.png)

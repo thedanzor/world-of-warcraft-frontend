@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography'
 const StatCard = ({ title, value, description, icon: Icon }) => (
     <Paper className="stat-card">
         <Box className="stat-card-header">
-            <Icon style={{ marginRight: 8, color: 'var(--mui-palette-primary-main, #1976d2)' }} />
+            <Icon style={{ marginRight: 8, color: '#B08D5A' }} />
             <Typography variant="h6" className="stat-card-title">
                 {title}
             </Typography>

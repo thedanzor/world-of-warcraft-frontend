@@ -88,7 +88,7 @@ const getScoreColor = (score, color = null) => {
     if (score >= 2500) return '#c0c0c0' // Silver
     if (score >= 2000) return '#cd7f32' // Bronze
     if (score >= 1500) return '#4CAF50' // Green
-    if (score >= 1000) return '#2196F3' // Blue
+    if (score >= 1000) return '#B08D5A' // Brown (our theme color)
     return '#666' // Gray
 }
 

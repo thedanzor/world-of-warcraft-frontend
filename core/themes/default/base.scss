@@ -1,101 +1,497 @@
 /**
- * BASE SCSS STYLES
+ * MODERN DARK UI BASE STYLES
  * 
- * This file contains the foundational styles for the entire World of Warcraft application.
- * It defines the base appearance, typography, and global styling that all other components build upon.
+ * Clean, professional base styles for the modern dark UI theme.
+ * Features sophisticated typography, proper spacing, and refined colors.
  * 
- * WHAT THIS DOES:
- * - Sets up global HTML and body styles (background, fonts, colors)
- * - Defines typography hierarchy with proper font families and weights
- * - Provides custom scrollbar styling for better visual consistency
- * - Defines WoW class-specific colors and styling
- * - Establishes base layout containers and wrapper elements
+ * DESIGN PRINCIPLES:
+ * - Clean, minimal aesthetic with focus on readability
+ * - Sophisticated color palette with browns, dark grays, and whites
+ * - Proper contrast ratios for accessibility
+ * - Consistent spacing and typography hierarchy
+ * - Modern component styling with subtle shadows and borders
  * 
- * GLOBAL STYLES:
- * - Background: Dark theme (#110d17) for WoW aesthetic
- * - Typography: Arimo for body text, Oswald for headings
- * - Colors: Light gray (#dcdada) for readable text
- * - Box-sizing: Border-box for predictable layout calculations
+ * COLOR SYSTEM:
+ * - Primary: Warm brown (#B08D5A) for accents and primary actions
+ * - Secondary: Cool grays for backgrounds and secondary elements
+ * - Text: High contrast whites and grays for readability
+ * - Background: Deep dark grays for depth and focus
+ * - Accents: Subtle browns and warm tones for visual interest
  * 
- * WOW CLASS COLORS:
- * Each class has its signature color from the game:
- * - Warlock: Purple (#9482C9)
- * - Warrior: Brown (#C79C6E) 
- * - Paladin: Pink (#F58CBA)
- * - Priest: White (#FFFFFF)
- * - Rogue: Yellow (#FFF569)
- * - Shaman: Blue (#0070DE)
- * - And more...
+ * TYPOGRAPHY:
+ * - Clean, modern font stack with excellent readability
+ * - Proper font weights and sizing for hierarchy
+ * - Consistent line heights and letter spacing
+ * - Responsive typography scaling
  * 
- * SCROLLBAR STYLING:
- * Custom webkit scrollbars with dark theme colors and hover effects
- * 
- * LAYOUT ELEMENTS:
- * - applicationWrapper: Main container with overflow control
- * - Various utility classes for consistent spacing and layout
- * 
- * USAGE:
- * This file is imported by the main theme system and applies globally.
- * Don't modify class-specific colors without considering WoW brand consistency.
- * 
- * MODIFICATION NOTES:
- * - Changes here affect the entire application appearance
- * - Test color changes for accessibility and readability
- * - Keep WoW class colors authentic to the game
- * - Consider dark theme implications for all new styles
+ * SPACING:
+ * - 8px base unit system for consistent spacing
+ * - Proper padding and margins throughout
+ * - Generous whitespace for breathing room
  */
 
+// Modern font stack for excellent readability
+$font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-heading: $font-family-base;
+
+// Base colors
+$color-background: #0A0A0A;
+$color-surface: #111111;
+$color-surface-secondary: #1A1A1A;
+$color-surface-tertiary: #262626;
+
+$color-text-primary: #FFFFFF;
+$color-text-secondary: #A3A3A3;
+$color-text-disabled: #525252;
+
+$color-primary: #B08D5A;
+$color-primary-light: #D4A574;
+$color-primary-dark: #9A7B4A;
+
+$color-border: rgba(255, 255, 255, 0.08);
+$color-divider: rgba(255, 255, 255, 0.08);
+
+// Base styles
 body, html {
-  background: #110d17;
-  font-family: var(--font-arimo);
+  background: $color-background;
+  font-family: $font-family-base;
   font-size: 16px;
-  color: #dcdada;
+  color: $color-text-primary;
   padding: 0;
   margin: 0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 
-  h1, h2, h3, h4 {
-    font-family: var(--font-oswald);
-    text-transform: uppercase;
-    font-weight: bold;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: $font-family-heading;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    margin: 0 0 1rem 0;
+  }
+
+  h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 1.875rem;
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  h5 {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  h6 {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0 0 1rem 0;
+    line-height: 1.6;
   }
 
   a {
     text-decoration: none;
+    color: $color-primary;
+    transition: color 0.2s ease-in-out;
+    
+    &:hover {
+      color: $color-primary-light;
+    }
   }
 
   * {
     box-sizing: border-box;
-    padding: 0;
-    margin: 0;
   }
 }
-/* width */
+
+// Modern scrollbar styling
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
+  height: 8px;
 }
 
-/* Track */
 ::-webkit-scrollbar-track {
-  background: rgba(0,0,0,0.3); 
+  background: $color-surface-secondary;
+  border-radius: 4px;
 }
 
-/* Handle */
 ::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.8);
-  border-radius: 8px;
+  background: $color-surface-tertiary;
+  border-radius: 4px;
+  transition: background 0.2s ease-in-out;
+  
+  &:hover {
+    background: lighten($color-surface-tertiary, 10%);
+  }
 }
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(0,0,0,0.9); 
-}
-
+// Application wrapper
 .applicationWrapper {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background: $color-background;
 }
 
+// Modern layout styles
+.layout-root {
+  background-color: $color-background;
+  min-height: 100vh;
+  font-family: $font-family-base;
+}
+
+.layout-content {
+  background-color: $color-background;
+  min-height: 100vh;
+  padding: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+// Modern card styles
+.card {
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease-in-out;
+  
+  &:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+}
+
+// Modern button styles
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  
+  &-primary {
+    background: $color-primary;
+    color: white;
+    
+    &:hover {
+      background: $color-primary-dark;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+  }
+  
+  &-secondary {
+    background: $color-surface-secondary;
+    color: $color-text-primary;
+    border: 1px solid $color-border;
+    
+    &:hover {
+      background: $color-surface-tertiary;
+      border-color: $color-primary;
+    }
+  }
+}
+
+// Modern form styles
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: $color-text-primary;
+  font-size: 0.875rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid $color-border;
+  border-radius: 8px;
+  background: $color-surface-secondary;
+  color: $color-text-primary;
+  font-size: 0.875rem;
+  transition: all 0.2s ease-in-out;
+  
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+  }
+  
+  &::placeholder {
+    color: $color-text-secondary;
+  }
+}
+
+// Modern table styles
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: $color-surface;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid $color-border;
+  
+  th, td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid $color-border;
+  }
+  
+  th {
+    background: $color-surface-secondary;
+    font-weight: 600;
+    color: $color-text-primary;
+    font-size: 0.875rem;
+  }
+  
+  td {
+    color: $color-text-primary;
+    font-size: 0.875rem;
+  }
+  
+  tr:last-child td {
+    border-bottom: none;
+  }
+  
+  tr:hover {
+    background: $color-surface-secondary;
+  }
+}
+
+// Modern badge styles
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  
+  &-primary {
+    background: rgba($color-primary, 0.1);
+    color: $color-primary;
+  }
+  
+  &-success {
+    background: rgba(#10B981, 0.1);
+    color: #10B981;
+  }
+  
+  &-warning {
+    background: rgba(#F59E0B, 0.1);
+    color: #F59E0B;
+  }
+  
+  &-error {
+    background: rgba(#EF4444, 0.1);
+    color: #EF4444;
+  }
+}
+
+// Modern navigation styles
+.nav {
+  background: $color-surface;
+  border-bottom: 1px solid $color-border;
+  padding: 16px 24px;
+  
+  &-item {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 6px;
+    color: $color-text-secondary;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s ease-in-out;
+    
+    &:hover {
+      background: $color-surface-secondary;
+      color: $color-text-primary;
+    }
+    
+    &.active {
+      background: rgba($color-primary, 0.1);
+      color: $color-primary;
+    }
+  }
+}
+
+// Modern alert styles
+.alert {
+  padding: 16px 20px;
+  border-radius: 8px;
+  border: 1px solid;
+  font-size: 0.875rem;
+  margin-bottom: 16px;
+  
+  &-info {
+    background: rgba(176, 141, 90, 0.1);
+    border-color: rgba(176, 141, 90, 0.2);
+    color: #B08D5A;
+  }
+  
+  &-success {
+    background: rgba(#10B981, 0.1);
+    border-color: rgba(#10B981, 0.2);
+    color: #10B981;
+  }
+  
+  &-warning {
+    background: rgba(#F59E0B, 0.1);
+    border-color: rgba(#F59E0B, 0.2);
+    color: #F59E0B;
+  }
+  
+  &-error {
+    background: rgba(#EF4444, 0.1);
+    border-color: rgba(#EF4444, 0.2);
+    color: #EF4444;
+  }
+}
+
+// Modern spacing utilities
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mt-3 { margin-top: 24px; }
+.mt-4 { margin-top: 32px; }
+
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.mb-3 { margin-bottom: 24px; }
+.mb-4 { margin-bottom: 32px; }
+
+.ml-1 { margin-left: 8px; }
+.ml-2 { margin-left: 16px; }
+.ml-3 { margin-left: 24px; }
+.ml-4 { margin-left: 32px; }
+
+.mr-1 { margin-right: 8px; }
+.mr-2 { margin-right: 16px; }
+.mr-3 { margin-right: 24px; }
+.mr-4 { margin-right: 32px; }
+
+.pt-1 { padding-top: 8px; }
+.pt-2 { padding-top: 16px; }
+.pt-3 { padding-top: 24px; }
+.pt-4 { padding-top: 32px; }
+
+.pb-1 { padding-bottom: 8px; }
+.pb-2 { padding-bottom: 16px; }
+.pb-3 { padding-bottom: 24px; }
+.pb-4 { padding-bottom: 32px; }
+
+.pl-1 { padding-left: 8px; }
+.pl-2 { padding-left: 16px; }
+.pl-3 { padding-left: 24px; }
+.pl-4 { padding-left: 32px; }
+
+.pr-1 { padding-right: 8px; }
+.pr-2 { padding-right: 16px; }
+.pr-3 { padding-right: 24px; }
+.pr-4 { padding-right: 32px; }
+
+// Modern text utilities
+.text-primary { color: $color-text-primary; }
+.text-secondary { color: $color-text-secondary; }
+.text-disabled { color: $color-text-disabled; }
+.text-accent { color: $color-primary; }
+
+.text-sm { font-size: 0.875rem; }
+.text-xs { font-size: 0.75rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+
+.font-normal { font-weight: 400; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+
+// Modern flex utilities
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-row { flex-direction: row; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-1 { gap: 8px; }
+.gap-2 { gap: 16px; }
+.gap-3 { gap: 24px; }
+.gap-4 { gap: 32px; }
+
+// Modern grid utilities
+.grid { display: grid; }
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.gap-1 { gap: 8px; }
+.gap-2 { gap: 16px; }
+.gap-3 { gap: 24px; }
+.gap-4 { gap: 32px; }
+
+// Responsive utilities
+@media (max-width: 768px) {
+  .layout-content {
+    padding: 16px;
+  }
+  
+  .card {
+    padding: 16px;
+  }
+  
+  .table {
+    th, td {
+      padding: 12px;
+    }
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    font-size: 0.8rem;
+  }
+}
+
+// Copyright text
+.copyright-text {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: $color-text-secondary;
+  text-align: center;
+  padding: 16px 0;
+  border-top: 1px solid $color-border;
+  margin-top: 32px;
+}
+
+// WoW Class Colors
 .Warlock {
   color: #9482C9 !important;
   font-weight: 800;
@@ -213,231 +609,4 @@ body, html {
     font-weight: 800;
     text-transform: capitalize;
   }
-}
-
-.logoSmall {
-  width: 180px !important; // Reduced from default size
-  height: auto !important;
-  img {
-      width: 100% !important;
-      height: auto !important;
-  }
-}
-
-.MuiListItemButton-root.Mui-selected,
-.MuiListItemButton-root:hover,
-.MuiListItemButton-root.Mui-selected:hover {
-  background-color: #151f1d;
-  border-radius: 6px;
-  color: #fff !important;
-}
-
-.characteroveriewlogo {
-  img {
-      position: relative;
-      top: 0;
-      left: 50%;
-      margin-top: 60px;
-      transform: translateX(-50%);
-      width: 300px;
-      height: auto;
-  }
-}
-
-// Navigation and layout styles
-.layout-root {
-  background-color: #08060c;
-  min-height: 100vh;
-}
-
-.layout-content {
-  background-color: #08060c;
-  background-size: 100% auto;
-  background-repeat: no-repeat;
-  min-height: 100vh;
-}
-
-.copyright-text {
-  font-size: 11px;
-  font-weight: bold;
-  color: #8dd52b;
-  text-transform: uppercase;
-  text-align: center;
-  padding-top: 16px;
-  padding-bottom: 16px;
-}
-
-// Desktop nav
-.nav-desktop-menu {
-  display: none;
-}
-@media (min-width: 1200px) {
-  .nav-desktop-menu {
-    display: block;
-  }
-}
-
-.nav-desktop-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding-left: 24px;
-  padding-right: 24px;
-  padding-top: 16px;
-  padding-bottom: 16px;
-}
-
-.nav-logo {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 32px;
-}
-
-.nav-logo-link {
-  text-decoration: none;
-}
-
-.nav-items {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-top: -60px;
-}
-
-.nav-item {
-  padding-left: 40px;
-  padding-right: 40px;
-  padding-top: 16px;
-  padding-bottom: 8px;
-  display: flex;
-  align-items: center;
-  background-color: #153034;
-  border: 1px solid #153034;
-  border-radius: 33px;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.nav-item-active {
-  background-color: #2b1537;
-  border-color: #2b1537;
-}
-
-.nav-item-icon {
-  color: #d9d9d9;
-  margin-right: 12px;
-  font-size: 1.2rem;
-}
-
-.nav-item-active .nav-item-icon {
-  color: #fff;
-}
-
-.nav-item-label {
-  color: #d9d9d9;
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.nav-item-active .nav-item-label {
-  color: #fff;
-}
-
-// Mobile nav
-.nav-mobile-menu-btn {
-  margin-left: 8px;
-  margin-top: 8px;
-  color: #9e9e9e;
-  background-color: #151f1d;
-  border-radius: 18px;
-  padding: 12px;
-  display: flex;
-}
-.nav-mobile-menu-btn:hover {
-  background-color: #1a2725;
-}
-
-@media (min-width: 1200px) {
-  .nav-mobile-menu-btn {
-    display: none;
-  }
-}
-
-.nav-mobile-drawer .MuiDrawer-paper {
-  width: 280px;
-  background-color: #0b0a0f;
-  border-right: 1px dashed rgba(255, 255, 255, 0.12);
-  overflow-x: hidden;
-}
-
-.nav-mobile-drawer-content {
-  padding: 16px;
-  height: 100%;
-}
-
-.nav-mobile-list {
-  flex-grow: 0;
-}
-
-.nav-mobile-section-label .MuiTypography-root {
-  font-size: 0.9rem;
-  color: #fff;
-  font-weight: 600;
-}
-
-.nav-mobile-list-item {
-  margin-bottom: 16px;
-}
-
-.nav-mobile-list-btn.Mui-selected,
-.nav-mobile-list-btn:hover,
-.nav-mobile-list-btn.Mui-selected:hover {
-  background-color: #151f1d;
-  border-radius: 6px;
-  color: #fff !important;
-}
-
-.nav-mobile-list-icon {
-  color: #8dd52b;
-  min-width: 36px;
-}
-
-.nav-mobile-list-label .MuiTypography-root {
-  font-size: 0.9rem;
-  font-weight: 700;
-  white-space: nowrap;
-  color: #9e9e9e;
-}
-
-// Alert styles
-.season-alert-snackbar {
-  margin-bottom: 16px;
-  width: auto;
-  max-width: 600px;
-}
-
-.season-alert {
-  width: 100%;
-  background-color: #151f1d !important;
-  color: #9e9e9e !important;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-}
-.season-alert .MuiAlert-icon {
-  color: #8dd52b !important;
-}
-
-.season-alert-title {
-  color: #8dd52b !important;
-  font-weight: bold !important;
-}
-
-.layout-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding-left: 24px;
-  padding-right: 24px;
-  padding-top: 16px;
-  padding-bottom: 16px;
 }

@@ -13,6 +13,17 @@ export default function RootLayout({ children }) {
                 <link rel="icon" href="/favicon.ico" sizes="any" />
                 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
                 <meta name="theme-color" content="#1a1a1a" />
+                
+                {/* Preload critical styles to prevent FOUC */}
+                <link 
+                    rel="preload" 
+                    href="/_next/static/css/app.css" 
+                    as="style" 
+                    onLoad="this.onload=null;this.rel='stylesheet'"
+                />
+                <noscript>
+                    <link rel="stylesheet" href="/_next/static/css/app.css" />
+                </noscript>
             </head>
             <body>
                 <div className={`${systemui.className} applicationWrapper`}>

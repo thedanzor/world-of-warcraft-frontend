@@ -1,17 +1,15 @@
 /**
- * RECRUITMENT SCSS STYLES
+ * MODERN RECRUITMENT SCSS STYLES
  * 
- * This file contains all the styling for the guild recruitment interface, including
- * recruitment information, requirements display, application process, and responsive layouts.
- * It provides the visual foundation for attracting and informing potential guild members.
+ * Clean, professional recruitment styling with modern dark UI theme.
+ * Features sophisticated typography, proper spacing, and refined colors.
  * 
- * WHAT THIS DOES:
- * - Styles the main recruitment page layout and components
- * - Defines recruitment logo and header styling
- * - Styles requirements sections and application information
- * - Provides responsive design for different screen sizes
- * - Handles typography and spacing for recruitment content
- * - Styles call-to-action areas and contact information
+ * DESIGN PRINCIPLES:
+ * - Clean, minimal aesthetic with focus on readability
+ * - Sophisticated color palette with browns, dark grays, and whites
+ * - Proper contrast ratios for accessibility
+ * - Consistent spacing and typography hierarchy
+ * - Modern component styling with subtle shadows and borders
  * 
  * KEY COMPONENTS:
  * - Recruitment container and layout structure
@@ -41,7 +39,7 @@
  * - Touch-friendly interface elements for mobile devices
  * 
  * STYLING FEATURES:
- * - Consistent color scheme with WoW branding
+ * - Consistent color scheme with modern branding
  * - Proper typography hierarchy and readability
  * - Visual indicators for different content sections
  * - Hover effects and interactive elements
@@ -58,149 +56,192 @@
  * - Test content layouts with various text lengths
  */
 
+// Modern color variables
+$recruitment-bg: #0A0A0A;
+$card-bg: #111111;
+$card-border: rgba(255, 255, 255, 0.08);
+$text-primary: #FFFFFF;
+$text-secondary: #A3A3A3;
+$text-accent: #B08D5A;
+$shadow-light: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+
 .recruitment {
-    .recInto {
-        padding: 30px 0 0 0;
-    }
+  background: $recruitment-bg;
+  min-height: 100vh;
+  color: $text-primary;
+  
+  .recInto {
+    padding: 40px 0 0 0;
+  }
 
-    .recruitmentLogo {
-        .logoHeaderVariant  {
-            left: 50%;
-            margin-left: -300px;
-        }
-    }
-
+  .recruitmentLogo {
     .logoHeaderVariant {
-        position: relative;
-        left: 0;
-        margin: 0 auto;
-        width: 300px;
-        height: auto;
-        text-align: center;
+      left: 50%;
+      margin-left: -300px;
+    }
+  }
 
-        img {
-            width: 100%;
-            height: auto;
-        }
+  .logoHeaderVariant {
+    position: relative;
+    left: 0;
+    margin: 0 auto;
+    width: 300px;
+    height: auto;
+    text-align: center;
+
+    img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: $shadow-light;
+    }
+  }
+
+  .logoHolder {
+    position: relative;
+    text-align: center;
+    margin-bottom: 40px;
+  
+    a {
+      display: inline-block;
+      border-radius: 12px;
+      height: 300px;
+      transition: all 0.2s ease-in-out;
+      
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+    }
+  }
+
+  p {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0 24px;
+    line-height: 1.6;
+    color: $text-secondary;
+    font-size: 1.125rem;
+  }
+
+  .ctaArea {
+    padding: 80px 0;
+    text-align: center;
+    background: $card-bg;
+    border-top: 1px solid $card-border;
+    margin-top: 40px;
+  }
+
+  @media screen and (max-width: 1200px) {
+    .item {
+      width: 50%;
     }
 
-    .logoHolder {
+    .discordWrapperheader,
+    .followUsWrapperHeader {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 700px) {
+    .primaryTitle span div {
+      display: none;
+    }
+
+    .headerContext {
+      padding: 390px 0 100px;
+    }
+  }
+
+  ul, li {
+    list-style: none;
+  }
+
+  h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    padding: 32px 0 24px 0;
+    color: $text-accent;
+    text-align: left;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+  }
+
+  h4 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 0 0 16px 0;
+    color: $text-accent;
+    text-align: left;
+    letter-spacing: -0.025em;
+    line-height: 1.3;
+  }
+
+  li {
+    padding: 16px 0 0;
+    color: $text-secondary;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .leftalign {
+    text-align: left;
+  }
+
+  .goal-section {
+    margin-bottom: 40px;
+    padding: 0 0 32px 0;
+    border-bottom: 1px solid $card-border;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    ul li ul {
+      margin-left: 24px;
+      margin-top: 8px;
+      
+      li {
+        padding: 8px 0;
         position: relative;
-        text-align: center;
+        
+        &:before {
+          content: "•";
+          position: absolute;
+          left: -16px;
+          color: $text-accent;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
+  .sub-section {
+    margin: 20px 0 20px 0;
+    padding: 20px 0 20px 24px;
+    border-left: 3px solid rgba(176, 141, 90, 0.3);
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 0 8px 8px 0;
     
-        a {
-            display: inline-block;
-            border-radius: 8px;
-            height: 300px;
-        }
+    strong {
+      color: $text-accent;
+      display: block;
+      margin-bottom: 12px;
+      font-weight: 600;
+      font-size: 1.125rem;
     }
+  }
 
-    p {
-        max-width: 1200px;
-        margin: 0 auto;
-        text-align: center;
-        padding: 0px 20px;
+  .addon-link {
+    color: $text-accent;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    font-weight: 500;
+    
+    &:hover {
+      color: lighten($text-accent, 10%);
+      text-decoration: underline;
     }
-
-    .ctaArea {
-        padding: 80px 0;
-        text-align: center;
-    }
-
-    @media screen and (max-width: 1200px) {
-        .item {
-            width: 50%;
-        }
-
-        .discordWrapperheader,
-        .followUsWrapperHeader {
-            display: none;
-        }
-    }
-
-    @media screen and (max-width: 700px) {
-        .primaryTitle span div {
-            display: none;
-        }
-
-        .headerContext {
-            padding: 390px 0 100px;
-        }
-    }
-
-    ul, li {
-        list-style: none;
-    }
-
-    h3 {
-        font-size: 2rem;
-        padding: 20px 0 20px 0;
-        color: #8dd52b;
-        text-align: left;
-    }
-
-    h4 {
-        font-size: 1.5rem;
-        padding: 0px 0 10px 0;
-        color: #8dd52b;
-        text-align: left;
-    }
-
-    li {
-        padding: 12px 0 0;
-    }
-
-    .leftalign {
-        text-align: left;
-    }
-
-    .goal-section {
-        margin-bottom: 30px;
-        padding: 0 0 20px 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-
-        &:last-child {
-            border-bottom: none;
-        }
-
-        ul li ul {
-            margin-left: 20px;
-            margin-top: 5px;
-            
-            li {
-                padding: 5px 0;
-                position: relative;
-                
-                &:before {
-                    content: "•";
-                    position: absolute;
-                    left: -15px;
-                    color: #8dd52b;
-                }
-            }
-        }
-    }
-
-    .sub-section {
-        margin: 15px 0 15px 0;
-        padding-left: 15px;
-        border-left: 3px solid rgba(211, 138, 42, 0.5);
-        
-        strong {
-            color: #8dd52b;
-            display: block;
-            margin-bottom: 8px;
-        }
-    }
-
-    .addon-link {
-        color: #8dd52b;
-        text-decoration: none;
-        transition: color 0.3s ease;
-        
-        &:hover {
-            color: #ffb74d;
-            text-decoration: underline;
-        }
-    }
+  }
 }

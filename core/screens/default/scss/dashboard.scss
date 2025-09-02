@@ -1,50 +1,9 @@
 /**
- * DASHBOARD SCSS STYLES
+ * MODERN DASHBOARD SCSS STYLES
  * 
- * This file contains all the styling for the main dashboard interface, including
- * statistics cards, player tables, role distribution charts, and responsive layouts.
- * It provides the visual foundation for the guild overview and performance metrics.
+ * Clean, professional dashboard styling with modern dark UI theme.
+ * Features sophisticated typography, proper spacing, and refined colors.
  * 
- * WHAT THIS DOES:
- * - Styles the main dashboard layout and components
- * - Defines statistics card layouts and appearance
- * - Styles top players table and player information
- * - Provides responsive design for different screen sizes
- * - Handles typography and spacing for dashboard elements
- * - Styles role distribution and missing enchants sections
- * 
- * KEY COMPONENTS:
- * - Dashboard container and layout structure
- * - Logo holder and title styling
- * - Statistics cards with consistent design
- * - Top players table with player information
- * - Role distribution charts and visualizations
- * - Missing enchants section styling
- * 
- * LAYOUT STRUCTURE:
- * - Main dashboard container with proper padding
- * - Logo holder with title and description
- * - Statistics cards grid layout
- * - Top players table with consistent styling
- * - Role distribution section with proper spacing
- * 
- * COMPONENT STYLING:
- * - StatCard: Individual metric display cards
- * - TopPlayersTable: Player ranking and performance table
- * - RoleDistribution: Visual charts and role breakdowns
- * - MissingEnchants: Requirements and compliance tracking
- * 
- * RESPONSIVE DESIGN:
- * - Mobile-first approach with progressive enhancement
- * - Consistent spacing and typography across devices
- * - Flexible layouts that adapt to different screen sizes
- * - Touch-friendly interface elements for mobile devices
- * 
- * STYLING FEATURES:
- * - Consistent color scheme and spacing
- * - Proper typography hierarchy and readability
- * - Visual indicators for different metrics
- * - Hover effects and interactive elements
  * 
  * USAGE:
  * This file styles the main dashboard interface used for guild overview.
@@ -58,85 +17,255 @@
  * - Test card layouts with various content lengths
  */
 
+// Modern color variables
+$dashboard-bg: #0A0A0A;
+$card-bg: #111111;
+$card-border: rgba(255, 255, 255, 0.08);
+$text-primary: #FFFFFF;
+$text-secondary: #A3A3A3;
+$text-accent: #B08D5A;
+$shadow-light: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+$shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+// WoW Class Colors
+$warlock: #9482C9;
+$warrior: #C79C6E;
+$paladin: #F58CBA;
+$priest: #FFFFFF;
+$rogue: #FFF569;
+$shaman: #0070DE;
+$evoker: #33937F;
+$hunter: #ABD473;
+$mage: #69CCF0;
+$monk: #00FF96;
+$druid: #FF7D0A;
+$death-knight: #C41F3B;
+$demon-hunter: #A330C9;
+
 .dashboard {
   padding-bottom: 32px;
+  background: $dashboard-bg;
+  min-height: 100vh;
 }
 
 .logoHolder {
   margin-top: 40px;
+  margin-bottom: 32px;
 }
 
 .logoHolder-title {
-  text-transform: capitalize !important;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: $text-primary;
   text-align: left;
-  font-size: 2rem;
+  margin-bottom: 16px;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
 }
 
 .logoHolder-description {
   margin-bottom: 32px;
   text-align: left;
+  color: $text-secondary;
+  font-size: 1.125rem;
+  line-height: 1.6;
 }
 
 .stats-cards {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .top-players {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .missing-enchants-title {
   font-size: 1.5rem;
-  margin-bottom: 16px;
+  font-weight: 600;
+  margin-bottom: 24px !important;
   margin-top: 32px;
-  text-transform: capitalize !important;
+  color: $text-primary;
+  letter-spacing: -0.025em;
 }
 
 .role-distribution {
-  margin-top: 24px;
+  margin-top: 32px;
   padding-bottom: 32px;
 }
 
-// StatCard styles
+// Modern StatCard styles
 .stat-card {
-  padding: 16px;
+  padding: 24px;
   height: 100%;
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: 12px;
+  box-shadow: $shadow-light;
+  transition: all 0.2s ease-in-out;
+  
+  &:hover {
+    box-shadow: $shadow-medium;
+    transform: translateY(-2px);
+  }
 }
+
 .stat-card-header {
   display: flex;
   align-items: center;
-  margin-bottom: 16px;
-}
-.stat-card-title {
-  font-size: 1.1rem;
-}
-.stat-card-value {
-  margin-bottom: 8px;
-  font-size: 2rem;
-}
-.stat-card-description {
-  color: var(--mui-palette-text-secondary, #aaa);
+  margin-bottom: 20px;
+  gap: 12px;
 }
 
-// TopPlayersTable styles
+.stat-card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: $text-primary;
+  letter-spacing: -0.025em;
+}
+
+.stat-card-value {
+  margin-bottom: 12px;
+  font-size: 2.5rem !important;
+  font-weight: 700;
+  color: $text-accent;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.stat-card-description {
+  color: $text-secondary;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+// Modern TopPlayersTable styles
 .top-players-table {
-  padding: 16px;
+  padding: 24px 12px 12px;
   height: 100%;
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: 12px;
+  box-shadow: $shadow-light;
 }
+
 .top-players-table-title {
-  margin-bottom: 16px;
+  margin-bottom: 24px !important;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: $text-primary;
+  letter-spacing: -0.025em;
 }
-.top-players-table-row .mediaWrapper img {
-  width: 40px;
-  height: 40px;
+
+.top-players-table-row {
+  display: flex;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid $card-border;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  .mediaWrapper {
+    width: 48px;
+    height: 48px;
+    margin-right: 16px;
+    border-radius: 8px;
+    overflow: hidden;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  
+  .name {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 4px;
+    letter-spacing: -0.025em;
+  }
+  
+  .classandspec {
+    font-size: 0.875rem;
+    color: $text-secondary;
+    font-weight: 500;
+  }
+  
+  .score {
+    font-weight: 700;
+    font-size: 1.125rem;
+    margin-left: auto;
+  }
 }
+
+// WoW Class Colors for player names
 .top-players-table-row .name {
-  text-transform: capitalize;
+  &.Warlock { color: $warlock; }
+  &.Warrior { color: $warrior; }
+  &.Paladin { color: $paladin; }
+  &.Priest { color: $priest; }
+  &.Rogue { color: $rogue; }
+  &.Shaman { color: $shaman; }
+  &.Evoker { color: $evoker; }
+  &.Hunter { color: $hunter; }
+  &.Mage { color: $mage; }
+  &.Monk { color: $monk; }
+  &.Druid { color: $druid; }
+  &.Death { color: $death-knight; }
+  &.Demon { color: $demon-hunter; }
 }
-.top-players-table-row .classandspec {
-  font-size: 0.9rem;
-  color: #aaa;
-}
+
+// Mythic+ and PvP specific score colors
 .top-players-table-row .score {
-  font-weight: bold;
+  &.mythic-plus {
+    color: #FF7D0A; // Orange for Mythic+
+  }
+  
+  &.pvp {
+    color: #0070DE; // Blue for PvP
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .dashboard {
+    padding-bottom: 24px;
+  }
+  
+  .logoHolder {
+    margin-top: 24px;
+    margin-bottom: 24px;
+  }
+  
+  .logoHolder-title {
+    font-size: 1.875rem;
+  }
+  
+  .logoHolder-description {
+    font-size: 1rem;
+  }
+  
+  .stat-card {
+    padding: 20px;
+  }
+  
+  .stat-card-value {
+    font-size: 2rem !important;
+  }
+  
+  .top-players-table {
+    padding: 20px;
+  }
+  
+  .top-players-table-row {
+    padding: 12px 0;
+    
+    .mediaWrapper {
+      width: 40px;
+      height: 40px;
+      margin-right: 12px;
+    }
+  }
 } 

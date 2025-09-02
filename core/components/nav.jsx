@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -40,6 +42,12 @@ const navigationItems = {
                 path: '/audit',
                 icon: AssessmentIcon,
             },
+            
+        ],
+    },
+    SEASON3: {
+        label: 'SEASON 3',
+        items: [
             {
                 label: 'MYTHIC PLUS',
                 path: '/mythic-plus',
@@ -51,17 +59,22 @@ const navigationItems = {
                 icon: EmojiEventsIcon,
             },
             {
-                label: 'ROSTER BUILDER',
-                path: '/roster',
-                icon: GroupAddIcon,
-            },
-            {
-                label: 'Signup',
+                label: 'SIGN UP',
                 path: '/season3',
                 icon: HowToRegIcon,
             },
         ],
     },
+    TOOLS: {
+        label: 'TOOLS',
+        items: [
+            {
+                label: 'ROSTER BUILDER',
+                path: '/roster',
+                icon: GroupAddIcon,
+            },
+        ],
+    }
 }
 
 function getInitialSection(path) {
@@ -85,17 +98,47 @@ function isActive(path, pathname) {
     return pathname.startsWith(path)
 }
 
+function getCurrentSection(pathname) {
+    for (const [section, data] of Object.entries(navigationItems)) {
+        const hasActiveItem = data.items.some(item => isActive(item.path, pathname))
+        if (hasActiveItem) {
+            return section
+        }
+    }
+    return 'OVERVIEW'
+}
+
 export { navigationItems, getInitialSection, isActive }
 
 export default function Nav() {
     const pathname = usePathname()
     const [mobileOpen, setMobileOpen] = useState(false)
     const handleDrawerToggle = () => setMobileOpen(!mobileOpen)
+    
+    const currentSection = getCurrentSection(pathname)
+    const currentSectionItems = navigationItems[currentSection].items
 
-    // Desktop horizontal nav bar
-    const DesktopNavBar = () => (
-        <div className="crm-nav-bar">
-            {navigationItems.OVERVIEW.items.map((item) => (
+    // Desktop group navigation (next to logo)
+    const DesktopGroupNav = () => (
+        <div className="crm-group-nav">
+            {Object.entries(navigationItems).map(([sectionKey, section]) => (
+                <Link 
+                    key={sectionKey} 
+                    href={section.items[0].path} 
+                    className="crm-group-link"
+                >
+                    <div className={`crm-group-item${currentSection === sectionKey ? ' crm-group-item-active' : ''}`}>
+                        <span className="crm-group-label">{section.label}</span>
+                    </div>
+                </Link>
+            ))}
+        </div>
+    )
+
+    // Desktop sub-navigation bar
+    const DesktopSubNavBar = () => (
+        <div className="crm-sub-nav-bar">
+            {currentSectionItems.map((item) => (
                 <Link key={item.path} href={item.path} className="crm-nav-link">
                     <div className={`crm-nav-item${isActive(item.path, pathname) ? ' crm-nav-item-active' : ''}`}>
                         <item.icon className="crm-nav-item-icon" />
@@ -109,37 +152,45 @@ export default function Nav() {
     // Mobile nav items (drawer)
     const renderNavItems = () => (
         <List className="nav-mobile-list">
-            <ListItem className="nav-mobile-section-label">
-                <ListItemText primary="OVERVIEW" />
-            </ListItem>
-            {navigationItems.OVERVIEW.items.map((item) => (
-                <ListItem disablePadding key={item.label} className="nav-mobile-list-item">
-                    <ListItemButton
-                        component={Link}
-                        href={item.path}
-                        selected={isActive(item.path, pathname)}
-                        className="nav-mobile-list-btn"
-                        onClick={handleDrawerToggle}
-                        {...(item.external ? { target: '_blank' } : {})}
-                    >
-                        <ListItemIcon className="nav-mobile-list-icon">
-                            <item.icon />
-                        </ListItemIcon>
-                        <ListItemText primary={item.label} className="nav-mobile-list-label" />
-                    </ListItemButton>
-                </ListItem>
+            {Object.entries(navigationItems).map(([sectionKey, section]) => (
+                <div key={sectionKey}>
+                    <ListItem className="nav-mobile-section-label">
+                        <ListItemText primary={section.label} />
+                    </ListItem>
+                    {section.items.map((item) => (
+                        <ListItem disablePadding key={item.label} className="nav-mobile-list-item">
+                            <ListItemButton
+                                component={Link}
+                                href={item.path}
+                                selected={isActive(item.path, pathname)}
+                                className="nav-mobile-list-btn"
+                                onClick={handleDrawerToggle}
+                                {...(item.external ? { target: '_blank' } : {})}
+                            >
+                                <ListItemIcon className="nav-mobile-list-icon">
+                                    <item.icon />
+                                </ListItemIcon>
+                                <ListItemText primary={item.label} className="nav-mobile-list-label" />
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+                </div>
             ))}
         </List>
     )
 
     return (
         <nav className="crm-nav-root">
-            {/* Top bar: Logo and mobile menu button */}
+            {/* Top bar: Logo, group navigation, and mobile menu button */}
             <div className="crm-logo-bar">
                 <div className="crm-logo-bar-inner">
                     <Link href="/" className="crm-logo-link">
                         {process.env.NEXT_PUBLIC_GUILD_NAME}
                     </Link>
+                    {/* Desktop group navigation */}
+                    <div className="crm-desktop-group-nav-wrapper">
+                        <DesktopGroupNav />
+                    </div>
                     {/* Mobile menu button (right side) */}
                     <div className="crm-mobile-menu-btn-wrapper">
                         <IconButton
@@ -153,9 +204,9 @@ export default function Nav() {
                     </div>
                 </div>
             </div>
-            {/* Desktop horizontal nav bar (hidden on mobile) */}
-            <div className="crm-desktop-nav-wrapper">
-                <DesktopNavBar />
+            {/* Desktop sub-navigation bar (hidden on mobile) */}
+            <div className="crm-desktop-sub-nav-wrapper">
+                <DesktopSubNavBar />
             </div>
             {/* Mobile drawer */}
             <Drawer

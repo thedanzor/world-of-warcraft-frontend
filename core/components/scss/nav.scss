@@ -1,120 +1,289 @@
-// Navigation Styles - Themed to match app (see base.scss)
+/**
+ * MODERN NAVIGATION SCSS STYLES
+ * 
+ * Clean, professional navigation design with modern dark UI theme.
+ * Features sophisticated typography, proper spacing, and refined interactions.
+ * 
+ * DESIGN PRINCIPLES:
+ * - Clean, minimal aesthetic with focus on usability
+ * - Sophisticated color palette with browns, dark grays, and whites
+ * - Proper contrast ratios for accessibility
+ * - Consistent spacing and typography hierarchy
+ * - Modern component styling with subtle shadows and transitions
+ * 
+ * LAYOUT STRUCTURE:
+ * - Main bar: Logo and group navigation with clean spacing
+ * - Sub bar: Page-specific navigation with background styling
+ * - Mobile drawer: Responsive navigation for smaller screens
+ * 
+ * COMPONENT STYLING:
+ * - Logo: Bold, prominent branding
+ * - Group nav: Clean pill-style buttons with hover effects
+ * - Sub nav: Background-based active states with icons
+ * - Mobile: Touch-friendly interface with proper spacing
+ * 
+ * RESPONSIVE DESIGN:
+ * - Mobile-first approach with progressive enhancement
+ * - Consistent spacing and typography across devices
+ * - Flexible layouts that adapt to different screen sizes
+ * - Touch-friendly interface elements for mobile devices
+ * 
+ * STYLING FEATURES:
+ * - Consistent color scheme and spacing
+ * - Proper typography hierarchy and readability
+ * - Visual indicators for different states
+ * - Hover effects and smooth transitions
+ * 
+ * USAGE:
+ * This file styles the main navigation interface used across the application.
+ * Essential for maintaining consistent navigation appearance and functionality.
+ * 
+ * MODIFICATION NOTES:
+ * - Test responsive behavior on various devices
+ * - Ensure color contrast meets accessibility standards
+ * - Maintain consistent spacing and typography
+ * - Consider performance impact of complex selectors
+ * - Test navigation with various content lengths
+ */
+
+// Modern color variables
+$nav-bg-primary: #0A0A0A;
+$nav-bg-secondary: #111111;
+$nav-bg-tertiary: #0D0D0D;
+$nav-border: rgba(255, 255, 255, 0.08);
+$text-primary: #FFFFFF;
+$text-secondary: #A3A3A3;
+$text-accent: #B08D5A;
+$accent-bg: rgba(176, 141, 90, 0.15);
+$accent-border: rgba(176, 141, 90, 0.3);
+$hover-bg: rgba(255, 255, 255, 0.04);
 
 .crm-nav-root {
   width: 100%;
-  font-family: var(--font-arimo, 'Inter', 'Segoe UI', Arial, sans-serif);
-  background: #110d17;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: $nav-bg-primary;
+  border-bottom: 1px solid $nav-border;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-// Top bar: Logo
+// Main bar: Logo and group navigation
 .crm-logo-bar {
   width: 100%;
-  background: #16131c;
-  border-bottom: 1px solid #151f1d;
-  box-shadow: none;
+  background: $nav-bg-secondary;
+  border-bottom: 1px solid $nav-border;
   position: relative;
   z-index: 10;
 }
+
 .crm-logo-bar-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  max-width: 1400px;
+  justify-content: flex-start;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 0.5rem 2rem;
+  padding: 16px 24px;
+  gap: 32px;
 }
+
 .crm-logo-link {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #ffffff;
-  padding: 18px 0;
+  color: $text-primary;
   text-decoration: none;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  font-family: var(--font-oswald, inherit);
-}
-.crm-mobile-menu-btn-wrapper {
-  display: none;
+  letter-spacing: -0.025em;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  transition: color 0.2s ease-in-out;
+  
+  &:hover {
+    color: $text-accent;
+  }
 }
 
-// Second bar: Horizontal nav
-.crm-desktop-nav-wrapper {
-  width: 100%;
-  background: #000;
-  border-bottom: 1px solid #151f1d;
-  box-shadow: none;
-}
-.crm-nav-bar {
+// Desktop group navigation (next to logo)
+.crm-desktop-group-nav-wrapper {
   display: flex;
   align-items: center;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 6px 2rem;
-  min-height: 48px;
-  gap: 1rem;
+  gap: 16px;
 }
+
+.crm-group-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.crm-group-link {
+  text-decoration: none;
+}
+
+.crm-group-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: transparent;
+  color: $text-secondary;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  border: 2px solid transparent;
+  letter-spacing: -0.025em;
+  
+  &:hover {
+    background: $hover-bg;
+    color: $text-primary;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.crm-group-item-active {
+  background: $accent-bg;
+  border-color: $accent-border;
+  color: $text-accent;
+  
+  &:hover {
+    background: rgba(176, 141, 90, 0.2);
+    color: $text-accent;
+  }
+}
+
+.crm-group-label {
+  color: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+}
+
+.crm-mobile-menu-btn-wrapper {
+  display: none;
+  margin-left: auto;
+}
+
+// Sub bar: Page-specific navigation
+.crm-desktop-sub-nav-wrapper {
+  width: 100%;
+  background: $nav-bg-tertiary;
+  border-bottom: 1px solid $nav-border;
+}
+
+.crm-sub-nav-bar {
+  display: flex;
+  align-items: center;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  gap: 16px;
+  min-height: 48px;
+}
+
 .crm-nav-link {
   text-decoration: none;
 }
+
 .crm-nav-item {
   display: flex;
   align-items: center;
-  padding: 12px;
-  border-radius: 3px;
-  background: none;
-  border: 0px solid #153034;
-  color: #d9d9d9;
-  font-weight: 700;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: all 0.2s;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: transparent;
+  color: $text-secondary;
+  font-weight: 500;
+  font-size: 0.8rem;
+  transition: all 0.2s ease-in-out;
   cursor: pointer;
-  margin-bottom: 0;
+  border: 1px solid transparent;
+  letter-spacing: -0.025em;
+  
   &:hover {
-    background: #2b1537;
-    border-color: #2b1537;
-    color: #fff;
+    background: $hover-bg;
+    color: $text-primary;
   }
 }
+
 .crm-nav-item-icon {
-  color: #d9d9d9;
-  margin-right: 12px;
-  font-size: 1.2rem;
+  color: inherit;
+  margin-right: 8px;
+  font-size: 1rem;
+  transition: color 0.2s ease-in-out;
 }
+
 .crm-nav-item-active {
-  background: #2b1537;
-  border-color: #2b1537;
-  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: $text-primary;
+  
   .crm-nav-item-icon {
-    color: #fff;
+    color: $text-primary;
+  }
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: $text-primary;
   }
 }
+
 .crm-nav-item-label {
   color: inherit;
   font-size: 0.8rem;
-  font-weight: 700;
+  font-weight: 500;
+  letter-spacing: -0.025em;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 // Responsive styles
-@media (max-width: 900px) {
-  .crm-logo-bar-inner, .crm-nav-bar {
-    padding: 0.5rem 1rem;
-  }
-  .crm-nav-bar {
-    gap: 1rem;
-  }
-}
 @media (max-width: 1200px) {
-  .crm-desktop-nav-wrapper {
+  .crm-desktop-sub-nav-wrapper {
     display: none;
   }
+  
   .crm-mobile-menu-btn-wrapper {
     display: block;
   }
+  
+  .crm-desktop-group-nav-wrapper {
+    display: none;
+  }
+  
+  .crm-logo-bar-inner {
+    padding: 16px 20px;
+    gap: 24px;
+  }
+  
+  .crm-logo-link {
+    font-size: 1.25rem;
+  }
 }
+
+@media (max-width: 900px) {
+  .crm-logo-bar-inner {
+    padding: 12px 16px;
+    gap: 16px;
+  }
+  
+  .crm-sub-nav-bar {
+    padding: 8px 16px;
+    gap: 12px;
+  }
+  
+  .crm-group-nav {
+    gap: 12px;
+  }
+  
+  .crm-group-item {
+    padding: 8px 12px;
+    font-size: 0.75rem;
+  }
+  
+  .crm-nav-item {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+}
+
 @media (min-width: 1201px) {
   .nav-mobile-drawer {
     display: none !important;
@@ -124,50 +293,88 @@
 // Mobile drawer overrides
 .nav-mobile-drawer .MuiDrawer-paper {
   width: 280px;
-  background-color: #0b0a0f;
-  border-right: 1px dashed rgba(255, 255, 255, 0.12);
+  background-color: $nav-bg-secondary;
+  border-right: 1px solid $nav-border;
   overflow-x: hidden;
 }
+
 .nav-mobile-drawer-content {
-  padding: 16px;
+  padding: 24px 20px;
   height: 100%;
 }
+
 .logoSmall {
   width: 180px !important;
   height: auto !important;
-  color: #8dd52b;
-  font-family: var(--font-oswald, inherit);
-  font-size: 1.2rem;
+  color: $text-accent;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 1.5rem;
+  margin-bottom: 32px;
+  letter-spacing: -0.025em;
 }
 
 // Mobile nav list
 .nav-mobile-list {
   flex-grow: 0;
 }
+
 .nav-mobile-section-label .MuiTypography-root {
-  font-size: 0.9rem;
-  color: #fff;
+  font-size: 0.8rem;
+  color: $text-primary;
   font-weight: 600;
-}
-.nav-mobile-list-item {
   margin-bottom: 16px;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
 }
+
+.nav-mobile-list-item {
+  margin-bottom: 8px;
+}
+
+.nav-mobile-list-btn {
+  border-radius: 8px !important;
+  margin: 2px 0 !important;
+  transition: all 0.2s ease-in-out !important;
+  
+  &:hover {
+    background-color: $hover-bg !important;
+  }
+}
+
 .nav-mobile-list-btn.Mui-selected,
-.nav-mobile-list-btn:hover,
 .nav-mobile-list-btn.Mui-selected:hover {
-  background-color: #151f1d;
-  border-radius: 6px;
-  color: #fff !important;
+  background-color: $accent-bg !important;
+  color: $text-accent !important;
 }
+
 .nav-mobile-list-icon {
-  color: #8dd52b;
+  color: $text-accent;
   min-width: 36px;
+  font-size: 1.125rem;
 }
+
 .nav-mobile-list-label .MuiTypography-root {
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: 0.8rem;
+  font-weight: 500;
   white-space: nowrap;
-  color: #9e9e9e;
+  color: $text-secondary;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+}
+
+// Mobile menu button
+.crm-mobile-menu-btn {
+  color: $text-secondary !important;
+  background-color: $hover-bg !important;
+  border-radius: 8px !important;
+  padding: 10px !important;
+  transition: all 0.2s ease-in-out !important;
+  border: 1px solid transparent !important;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: $text-primary !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
 } 

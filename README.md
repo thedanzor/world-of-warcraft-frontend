@@ -131,19 +131,24 @@ The system uses direct imports for optimal performance, with theme-aware compone
 
 ```jsx
 import DynamicScreenLoader from '@/core/dynamicScreenLoader'
+import DynamicThemeLoader from '@/core/dynamicThemeLoader'
 
 // Usage with automatic theme selection
-<DynamicScreenLoader 
-    screenName="dashboard"
-    props={{ guildData }}
-/>
+<DynamicThemeLoader>
+    <DynamicScreenLoader 
+        screenName="dashboard"
+        props={{ guildData }}
+    />
+</DynamicThemeLoader>
 
 // Usage with theme override
-<DynamicScreenLoader 
-    screenName="dashboard"
-    props={{ guildData }}
-    theme="custom"
-/>
+<DynamicThemeLoader theme="custom">
+    <DynamicScreenLoader 
+        screenName="dashboard"
+        props={{ guildData }}
+        theme="custom"
+    />
+</DynamicThemeLoader>
 ```
 
 #### 2. Theme Provider System
@@ -503,23 +508,34 @@ If you're upgrading from the old lazy loading system:
 import { lazy, Suspense } from 'react'
 import config from '@/app.config.js'
 
+// Theme provider
+const ThemeProvider = lazy(() => import(`@/core/themes/${config.THEME}`))
+
+// Screen component
 const Dashboard = lazy(() => import(`@/core/screens/${config.THEME}/dashboard`))
 
 // Wrap in Suspense
 <Suspense fallback={<div>Loading...</div>}>
-    <Dashboard guildData={guildData} />
+    <ThemeProvider>
+        <Suspense fallback={<div>Loading Dashboard...</div>}>
+            <Dashboard guildData={guildData} />
+        </Suspense>
+    </ThemeProvider>
 </Suspense>
 ```
 
 #### After (New Direct Import System)
 ```jsx
 import DynamicScreenLoader from '@/core/dynamicScreenLoader'
+import DynamicThemeLoader from '@/core/dynamicThemeLoader'
 
 // Simple, direct usage
-<DynamicScreenLoader 
-    screenName="dashboard"
-    props={{ guildData }}
-/>
+<DynamicThemeLoader>
+    <DynamicScreenLoader 
+        screenName="dashboard"
+        props={{ guildData }}
+    />
+</DynamicThemeLoader>
 ```
 
 ### Troubleshooting
@@ -570,7 +586,9 @@ This theme and screen system provides a robust foundation for customization whil
 
 ### Helper Functions
 
-The dynamic screen loader provides several helper functions for theme management:
+The dynamic screen loader and theme loader provide several helper functions for theme management:
+
+#### Screen Loader Helpers
 
 #### `registerTheme(themeName, screens)`
 Register a new theme with its screen components:
@@ -605,6 +623,28 @@ import { getAvailableScreens } from '@/core/dynamicScreenLoader'
 
 const screens = getAvailableScreens('default')
 console.log('Default theme screens:', screens) // ['dashboard', 'rosterBuilder', ...]
+```
+
+#### Theme Loader Helpers
+
+#### `registerThemeProvider(themeName, themeProvider)`
+Register a new theme provider:
+
+```jsx
+import { registerThemeProvider } from '@/core/dynamicThemeLoader'
+import CustomThemeProvider from './themes/my-theme'
+
+registerThemeProvider('my-theme', CustomThemeProvider)
+```
+
+#### `getAvailableThemeProviders()`
+Get a list of all available theme providers:
+
+```jsx
+import { getAvailableThemeProviders } from '@/core/dynamicThemeLoader'
+
+const themeProviders = getAvailableThemeProviders()
+console.log('Available theme providers:', themeProviders) // ['default', 'my-theme']
 ```
 
 ## 🔧 Environment Variables

@@ -59,7 +59,7 @@
 'use client'
 
 // React and Next.js
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 
 // Third-party libraries
@@ -85,10 +85,10 @@ import BuffSummary from '@/core/components/BuffSummary'
 import '@/core/screens/default/scss/roster.scss'
 
 /**
- * RosterPlanner - Drag-and-drop raid team composition builder
- * Manages roster assignments, persists state in URL, and calculates raid buffs
+ * RosterPlannerContent - The main roster planner component that uses useSearchParams
+ * This component is wrapped in Suspense to handle the useSearchParams hook properly
  */
-const RosterPlanner = ({ guildData }) => {
+const RosterPlannerContent = ({ guildData }) => {
     const router = useRouter()
     const searchParams = useSearchParams()
 
@@ -516,6 +516,29 @@ const TrashZone = ({ setAssignments }) => {
                 </Typography>
             </div>
         </section>
+    )
+}
+
+/**
+ * RosterPlanner - Main component wrapper with Suspense boundary
+ * This handles the useSearchParams hook properly for Next.js
+ */
+const RosterPlanner = ({ guildData }) => {
+    return (
+        <Suspense fallback={
+            <div style={{ 
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center', 
+                minHeight: '50vh',
+                fontSize: '1.2rem',
+                color: '#666'
+            }}>
+                
+            </div>
+        }>
+            <RosterPlannerContent guildData={guildData} />
+        </Suspense>
     )
 }
 

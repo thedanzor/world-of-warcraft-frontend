@@ -5,8 +5,6 @@ import DynamicScreenLoader from '@/core/dynamicScreenLoader'
 // Enable revalidation for this page
 export const revalidate = 600 // Revalidate every 10 minutes
 
-
-
 // Server-side data fetching
 async function getGuildData() {
     try {
@@ -61,8 +59,6 @@ const RosterPage = async () => {
     <DynamicScreenLoader 
       screenName="rosterBuilder"
       props={{ guildData }}
-      loadingMessage="Loading Roster Builder..."
-      minHeight="50vh"
     />
   );
 };

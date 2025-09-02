@@ -53,7 +53,9 @@ $color-divider: rgba(255, 255, 255, 0.08);
 
 // Base styles
 body, html {
-  background: $color-background;
+  background-color: #0b0b0b !important;
+  background:#0b0b0b  url('/design/artwork.png') no-repeat top center !important;
+  background-size: 100% auto !important;
   font-family: $font-family-base;
   font-size: 16px;
   color: $color-text-primary;
@@ -147,22 +149,24 @@ body, html {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: $color-background;
+  background: url('/design/artwork.png') no-repeat center center;
+  background-size: 100% auto;
+  
 }
 
 // Modern layout styles
 .layout-root {
-  background-color: $color-background;
   min-height: 100vh;
   font-family: $font-family-base;
+  background: none;
 }
 
 .layout-content {
-  background-color: $color-background;
   min-height: 100vh;
   padding: 24px;
   max-width: 1600px;
   margin: 0 auto;
+  background: none;
 }
 
 // Modern card styles

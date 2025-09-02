@@ -20,31 +20,31 @@ For full license details, visit: https://creativecommons.org/licenses/by-nc-nd/4
 
 ### Dashboard
 
-![Dashboard](_screenshots/screen-dashboard.png)
+![Dashboard](_screenshots/v1.3.2/dashboard.png)
 
 The Dashboard provides a comprehensive overview of your guild, including member statistics, top PvE and PvP performers, role distribution charts, missing enchants, and recent activity. It serves as the main landing page for quick insights into guild health and progression.
 
 ### Roster Builder
 
-![Roster Builder](_screenshots/screen-roster.png)
+![Roster Builder](_screenshots/v1.3.2/roster.png)
 
 The Roster Builder is an interactive tool for planning raid compositions. Drag and drop characters into raid slots, filter by role or class, and optimize your team for upcoming encounters. This tool helps raid leaders organize and balance their groups efficiently.
 
 ### Audit
 
-![Audit](_screenshots/screen-audit.png)
+![Audit](_screenshots/v1.3.2/audit.png)
 
 The Audit page offers detailed analysis of each guild member's character, including gear, missing enchants, item level, and raid lockout status. Use this section to identify areas for improvement and ensure your team is raid-ready.
 
 ### Mythic+ Overview
 
-![Mythic Plus](_screenshots/screen-mplus.png)
+![Mythic Plus](_screenshots/v1.3.2/mplus.png)
 
 The Mythic+ Overview tracks your guild's dungeon progression, displaying player M+ scores, top performers, and seasonal achievements. Quickly identify key pushers and monitor overall Mythic+ activity.
 
 ### Season 3 Signup
 
-![Season 3 Signup](_screenshots/screen-signup.png)
+![Season 3 Signup](_screenshots/v1.3.2/signup.png)
 
 The Season 3 Signup page allows members to register their interest and goals for the upcoming season. Collect information on returning players, preferred roles, and personal objectives to streamline roster planning.
 

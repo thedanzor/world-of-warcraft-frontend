@@ -50,6 +50,109 @@ The Season 3 Signup page allows members to register their interest and goals for
 
 ![With Design](_screenshots/with-design.png)
 
+## 🔧 Environment Variables
+
+Create a `.env.local` file in the root directory with the following variables:
+
+```bash
+# Backend API Configuration
+NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+NEXT_PUBLIC_CLIENT_BACKEND_URL=http://localhost:8000
+
+# Guild Information
+NEXT_PUBLIC_GUILD_NAME=Your Guild Name
+NEXT_PUBLIC_GUILD_REALM=Your Realm Name
+
+# Application URLs
+NEXT_PUBLIC_BASE_URL=https://your-domain.com
+NEXT_PUBLIC_APP_URL=https://your-domain.com
+```
+
+### Environment Variables Explained
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `NEXT_PUBLIC_BACKEND_URL` | URL of your backend API server | ✅ |
+| `NEXT_PUBLIC_CLIENT_BACKEND_URL` | Client-side backend URL (fallback) | ✅ |
+| `NEXT_PUBLIC_GUILD_NAME` | Your guild's name for display | ✅ |
+| `NEXT_PUBLIC_GUILD_REALM` | Your guild's realm name | ✅ |
+| `NEXT_PUBLIC_BASE_URL` | Your application's base URL for SEO | ✅ |
+| `NEXT_PUBLIC_APP_URL` | Your application's URL for API calls | ✅ |
+
+## ⚙️ Application Configuration
+
+The application configuration is managed in `app.config.js`:
+
+### Guild Settings
+```javascript
+{
+  "GUILD_NAME": "Your Guild Name",
+  "GUILD_REALM": "Your Realm",
+  "REGION": "eu",
+  "LEVEL_REQUIREMENT": 80,
+  "ITEM_LEVEL_REQUIREMENT": 450,
+  "MIN_CHECK_CAP": 450,
+  "MAX_CHECK_CAP": 720,
+  "MIN_TIER_ITEMLEVEL": 640
+}
+```
+
+### Role Definitions
+```javascript
+{
+  "TANKS": ["Blood", "Vengeance", "Guardian", "Brewmaster", "Protection"],
+  "HEALERS": ["Preservation", "Mistweaver", "Holy", "Discipline", "Restoration"],
+  "MAIN_RANKS": [0,1,2,3,4,5,6,7],
+  "ALT_RANKS": [8,9,10]
+}
+```
+
+### Guild Ranks
+```javascript
+{
+  "GUILLD_RANKS": [
+    "Guild Lead",
+    "Officer", 
+    "Officer Alt",
+    "Raider",
+    "Trial Raider",
+    "Member",
+    "Alt",
+    "New Recruit"
+  ]
+}
+```
+
+## 🚀 Key Features
+
+### Real-time Data Updates
+- 10-minute cache revalidation
+- Server-side data fetching
+- Optimistic UI updates
+
+### Responsive Design
+- Mobile-first approach
+- Material-UI components
+- Custom SCSS styling
+
+### Performance Optimizations
+- Next.js App Router
+- Server-side rendering
+- Image optimization
+- Code splitting
+
+### Accessibility
+- ARIA labels
+- Keyboard navigation
+- Screen reader support
+- High contrast mode
+
+### Theme & Screen System
+- Flexible theme system with direct imports for optimal performance
+- Easy customization without lazy loading overhead
+- Theme-aware component selection
+- Consistent patterns across themes
+
 
 
 ## 🏗️ Architecture Overview
@@ -76,6 +179,105 @@ The backend is an Express.js API server that:
 - **Charts**: Recharts
 - **Drag & Drop**: React DnD
 - **Fonts**: Google Fonts (Poppins, Public Sans)
+
+## 🗂️ Routes & Features
+
+### Main Pages
+
+#### `/` - Dashboard
+- **Purpose**: Main guild overview and statistics
+- **Features**: 
+  - Guild member overview
+  - Top players (PvE/PvP)
+  - Role distribution charts
+  - Missing enchants statistics
+  - Recent activity feed
+- **Data**: Fetches comprehensive guild data with statistics
+
+#### `/roster` - Roster Builder
+- **Purpose**: Interactive raid roster planning
+- **Features**:
+  - Drag & drop character assignment
+  - Role-based filtering
+  - Raid composition optimization
+  - Save/load roster configurations
+- **Data**: Full guild member list with roles and specs
+
+#### `/audit` - Guild Audit
+- **Purpose**: Detailed guild member analysis
+- **Features**:
+  - Character gear analysis
+  - Missing enchants tracking
+  - Item level requirements
+  - Raid lockout status
+  - Performance metrics
+- **Data**: Detailed character data with gear analysis
+
+#### `/mythic-plus` - Mythic+ Overview
+- **Purpose**: Mythic+ dungeon progression tracking
+- **Features**:
+  - Player M+ scores
+  - Top performers
+  - Key level tracking
+  - Seasonal progression
+- **Data**: M+ specific data filtered from guild roster
+
+#### `/rated-pvp` - PvP Overview
+- **Purpose**: Rated PvP player tracking
+- **Features**:
+  - Arena ratings
+  - RBG ratings
+  - Top PvP performers
+  - Season progression
+- **Data**: PvP specific data filtered from guild roster
+
+#### `/season3` - Season 3 Planning
+- **Purpose**: Season 3 preparation and signup
+- **Features**:
+  - Season 3 signup forms
+  - Character planning tools
+  - Goal setting
+  - Returning player tracking
+- **Data**: Season 3 specific data and signups
+
+#### `/mrt` - MRT Integration
+- **Purpose**: Method Raid Tools integration
+- **Features**:
+  - MRT note import/export
+  - Raid composition tools
+  - Character note management
+- **Data**: MRT compatible data structures
+
+#### `/join` - Recruitment
+- **Purpose**: Guild recruitment information
+- **Features**:
+  - Guild information
+  - Requirements
+  - Application process
+- **Data**: Static recruitment content
+
+### API Routes
+
+#### Data Endpoints
+- `GET /api/data` - Raw guild data
+- `GET /api/data/filtered` - Filtered and paginated guild data
+- `GET /api/health` - Backend health check
+- `GET /api/status` - Backend status information
+
+#### Statistics Endpoints
+- `GET /api/stats/missing-enchants` - Missing enchants statistics
+- `GET /api/stats/top-pvp` - Top PvP players
+- `GET /api/stats/top-pve` - Top PvE players
+- `GET /api/stats/role-counts` - Role distribution counts
+
+#### Season 3 Endpoints
+- `GET /api/season3/data` - Season 3 data
+- `POST /api/season3/signup` - Season 3 signup
+- `GET /api/season3/test` - Season 3 endpoint testing
+
+#### Utility Endpoints
+- `GET /api/test-connection` - Backend connectivity testing
+- `POST /api/update` - Trigger data updates
 
 ## 🎨 Theme & Screen System
 
@@ -646,178 +848,6 @@ import { getAvailableThemeProviders } from '@/core/dynamicThemeLoader'
 const themeProviders = getAvailableThemeProviders()
 console.log('Available theme providers:', themeProviders) // ['default', 'my-theme']
 ```
-
-## 🔧 Environment Variables
-
-Create a `.env.local` file in the root directory with the following variables:
-
-```bash
-# Backend API Configuration
-NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
-NEXT_PUBLIC_CLIENT_BACKEND_URL=http://localhost:8000
-
-# Guild Information
-NEXT_PUBLIC_GUILD_NAME=Your Guild Name
-NEXT_PUBLIC_GUILD_REALM=Your Realm Name
-
-# Application URLs
-NEXT_PUBLIC_BASE_URL=https://your-domain.com
-NEXT_PUBLIC_APP_URL=https://your-domain.com
-```
-
-### Environment Variables Explained
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `NEXT_PUBLIC_BACKEND_URL` | URL of your backend API server | ✅ |
-| `NEXT_PUBLIC_CLIENT_BACKEND_URL` | Client-side backend URL (fallback) | ✅ |
-| `NEXT_PUBLIC_GUILD_NAME` | Your guild's name for display | ✅ |
-| `NEXT_PUBLIC_GUILD_REALM` | Your guild's realm name | ✅ |
-| `NEXT_PUBLIC_BASE_URL` | Your application's base URL for SEO | ✅ |
-| `NEXT_PUBLIC_APP_URL` | Your application's URL for API calls | ✅ |
-
-## ⚙️ Application Configuration
-
-The application configuration is managed in `app.config.js`:
-
-### Guild Settings
-```javascript
-{
-  "GUILD_NAME": "Your Guild Name",
-  "GUILD_REALM": "Your Realm",
-  "REGION": "eu",
-  "LEVEL_REQUIREMENT": 80,
-  "ITEM_LEVEL_REQUIREMENT": 450,
-  "MIN_CHECK_CAP": 450,
-  "MAX_CHECK_CAP": 720,
-  "MIN_TIER_ITEMLEVEL": 640
-}
-```
-
-### Role Definitions
-```javascript
-{
-  "TANKS": ["Blood", "Vengeance", "Guardian", "Brewmaster", "Protection"],
-  "HEALERS": ["Preservation", "Mistweaver", "Holy", "Discipline", "Restoration"],
-  "MAIN_RANKS": [0,1,2,3,4,5,6,7],
-  "ALT_RANKS": [8,9,10]
-}
-```
-
-### Guild Ranks
-```javascript
-{
-  "GUILLD_RANKS": [
-    "Guild Lead",
-    "Officer", 
-    "Officer Alt",
-    "Raider",
-    "Trial Raider",
-    "Member",
-    "Alt",
-    "New Recruit"
-  ]
-}
-```
-
-## 🗂️ Routes & Features
-
-### Main Pages
-
-#### `/` - Dashboard
-- **Purpose**: Main guild overview and statistics
-- **Features**: 
-  - Guild member overview
-  - Top players (PvE/PvP)
-  - Role distribution charts
-  - Missing enchants statistics
-  - Recent activity feed
-- **Data**: Fetches comprehensive guild data with statistics
-
-#### `/roster` - Roster Builder
-- **Purpose**: Interactive raid roster planning
-- **Features**:
-  - Drag & drop character assignment
-  - Role-based filtering
-  - Raid composition optimization
-  - Save/load roster configurations
-- **Data**: Full guild member list with roles and specs
-
-#### `/audit` - Guild Audit
-- **Purpose**: Detailed guild member analysis
-- **Features**:
-  - Character gear analysis
-  - Missing enchants tracking
-  - Item level requirements
-  - Raid lockout status
-  - Performance metrics
-- **Data**: Detailed character data with gear analysis
-
-#### `/mythic-plus` - Mythic+ Overview
-- **Purpose**: Mythic+ dungeon progression tracking
-- **Features**:
-  - Player M+ scores
-  - Top performers
-  - Key level tracking
-  - Seasonal progression
-- **Data**: M+ specific data filtered from guild roster
-
-#### `/rated-pvp` - PvP Overview
-- **Purpose**: Rated PvP player tracking
-- **Features**:
-  - Arena ratings
-  - RBG ratings
-  - Top PvP performers
-  - Season progression
-- **Data**: PvP specific data filtered from guild roster
-
-#### `/season3` - Season 3 Planning
-- **Purpose**: Season 3 preparation and signup
-- **Features**:
-  - Season 3 signup forms
-  - Character planning tools
-  - Goal setting
-  - Returning player tracking
-- **Data**: Season 3 specific data and signups
-
-#### `/mrt` - MRT Integration
-- **Purpose**: Method Raid Tools integration
-- **Features**:
-  - MRT note import/export
-  - Raid composition tools
-  - Character note management
-- **Data**: MRT compatible data structures
-
-#### `/join` - Recruitment
-- **Purpose**: Guild recruitment information
-- **Features**:
-  - Guild information
-  - Requirements
-  - Application process
-- **Data**: Static recruitment content
-
-### API Routes
-
-#### Data Endpoints
-- `GET /api/data` - Raw guild data
-- `GET /api/data/filtered` - Filtered and paginated guild data
-- `GET /api/health` - Backend health check
-- `GET /api/status` - Backend status information
-
-#### Statistics Endpoints
-- `GET /api/stats/missing-enchants` - Missing enchants statistics
-- `GET /api/stats/top-pvp` - Top PvP players
-- `GET /api/stats/top-pve` - Top PvE players
-- `GET /api/stats/role-counts` - Role distribution counts
-
-#### Season 3 Endpoints
-- `GET /api/season3/data` - Season 3 data
-- `POST /api/season3/signup` - Season 3 signup
-- `GET /api/season3/test` - Season 3 endpoint testing
-
-#### Utility Endpoints
-- `GET /api/test-connection` - Backend connectivity testing
-- `POST /api/update` - Trigger data updates
 
 ## 📊 Data Structure
 

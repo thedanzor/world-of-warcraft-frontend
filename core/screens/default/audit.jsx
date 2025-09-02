@@ -72,6 +72,9 @@ import Badge from '@mui/material/Badge'
 import TextField from '@mui/material/TextField'
 import InputAdornment from '@mui/material/InputAdornment'
 import SearchIcon from '@mui/icons-material/Search'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+import Button from '@mui/material/Button'
 
 // Internal components
 import AuditBlock from '@/core/modules/auditBlock'
@@ -121,6 +124,7 @@ const GuildAudit = ({ auditable, initialData }) => {
     const [lockTimeStamp, setLockTimeStamp] = React.useState(
         getPreviousWednesdayAt1AM(Date.now())
     )
+    const [showAdvancedFilters, setShowAdvancedFilters] = React.useState(false)
 
     const builtClassList = useMemo(() => buildInitialClassList(data), [data])
     const dataToUse = useAuditData(data, [
@@ -258,221 +262,244 @@ const GuildAudit = ({ auditable, initialData }) => {
                                     />
                                 </Paper>
 
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        gap: 2,
-                                        flexWrap: 'wrap',
-                                    }}
-                                >
-                                    <Paper
+                                {/* Advanced Filters - Hidden by default */}
+                                {showAdvancedFilters && (
+                                    <Box
                                         sx={{
-                                            width: {
-                                                xs: '100%',
-                                                sm: 'calc(50% - 8px)',
-                                                md: 'calc(25% - 12px)',
-                                            },
-                                            p: 2,
-                                            borderRadius: 2,
-                                            bgcolor: 'background.paper',
+                                            display: 'flex',
+                                            gap: 2,
+                                            flexWrap: 'wrap',
+                                            mb: 2,
                                         }}
                                     >
-                                        <Typography
-                                            variant="h6"
-                                            sx={{ fontSize: '1.15rem' }}
+                                        <Paper
+                                            sx={{
+                                                width: {
+                                                    xs: '100%',
+                                                    sm: 'calc(50% - 8px)',
+                                                    md: 'calc(25% - 12px)',
+                                                },
+                                                p: 2,
+                                                borderRadius: 2,
+                                                bgcolor: 'background.paper',
+                                            }}
                                         >
-                                            Item Level Filter
-                                        </Typography>
-                                        <Typography
-                                            variant="body2"
-                                            color="text.secondary"
-                                            gutterBottom
-                                        >
-                                            Filter characters by minimum item
-                                            level
-                                        </Typography>
-                                        <Slider
-                                            value={ilevelFilter}
-                                            onChange={(e, newValue) =>
-                                                setIlevelFilter(newValue)
-                                            }
-                                            valueLabelDisplay="auto"
-                                            min={MIN_CHECK_CAP}
-                                            max={MAX_CHECK_CAP}
-                                            marks
-                                        />
-                                    </Paper>
-
-                                    <Paper
-                                        sx={{
-                                            width: {
-                                                xs: '100%',
-                                                sm: 'calc(50% - 8px)',
-                                                md: 'calc(25% - 12px)',
-                                            },
-                                            p: 2,
-                                            borderRadius: 2,
-                                            bgcolor: 'background.paper',
-                                        }}
-                                    >
-                                        <Typography
-                                            variant="h6"
-                                            sx={{ fontSize: '1.15rem' }}
-                                        >
-                                            Rank Filter
-                                        </Typography>
-                                        <Typography
-                                            variant="body2"
-                                            color="text.secondary"
-                                            gutterBottom
-                                        >
-                                            Filter characters by their guild
-                                            rank
-                                        </Typography>
-                                        <FormControl fullWidth>
-                                            <Select
-                                                value={rankFilter}
-                                                onChange={(e) =>
-                                                    setRankFilter(
-                                                        e.target.value
-                                                    )
-                                                }
+                                            <Typography
+                                                variant="h6"
+                                                sx={{ fontSize: '1.15rem' }}
                                             >
-                                                <MenuItem value="all">
-                                                    All (
-                                                    {numbOfCombinedMainsAndAlts}
-                                                    )
-                                                </MenuItem>
-                                                <MenuItem value="mains">
-                                                    Mains ({numbOfMains})
-                                                </MenuItem>
-                                                <MenuItem value="alts">
-                                                    Alts ({numbOfAlts})
-                                                </MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Paper>
-
-                                    <Paper
-                                        sx={{
-                                            width: {
-                                                xs: '100%',
-                                                sm: 'calc(50% - 8px)',
-                                                md: 'calc(25% - 12px)',
-                                            },
-                                            p: 2,
-                                            borderRadius: 2,
-                                            bgcolor: 'background.paper',
-                                        }}
-                                    >
-                                        <Typography
-                                            variant="h6"
-                                            sx={{ fontSize: '1.15rem' }}
-                                        >
-                                            Spec Filter
-                                        </Typography>
-                                        <Typography
-                                            variant="body2"
-                                            color="text.secondary"
-                                            gutterBottom
-                                        >
-                                            Filter characters by their role
-                                            specialization
-                                        </Typography>
-                                        <FormControl fullWidth>
-                                            <Select
-                                                value={specFilter}
-                                                onChange={(e) =>
-                                                    setSpecFilter(
-                                                        e.target.value
-                                                    )
-                                                }
+                                                Item Level Filter
+                                            </Typography>
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                                gutterBottom
                                             >
-                                                <MenuItem value="all">
-                                                    All
-                                                </MenuItem>
-                                                <MenuItem value="tanks">
-                                                    Tanks
-                                                </MenuItem>
-                                                <MenuItem value="healers">
-                                                    Healers
-                                                </MenuItem>
-                                                <MenuItem value="dps">
-                                                    DPS
-                                                </MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Paper>
-
-                                    <Paper
-                                        sx={{
-                                            width: {
-                                                xs: '100%',
-                                                sm: 'calc(50% - 8px)',
-                                                md: 'calc(25% - 12px)',
-                                            },
-                                            p: 2,
-                                            borderRadius: 2,
-                                            bgcolor: 'background.paper',
-                                        }}
-                                    >
-                                        <Typography
-                                            variant="h6"
-                                            sx={{ fontSize: '1.15rem' }}
-                                        >
-                                            Class Filter
-                                        </Typography>
-                                        <Typography
-                                            variant="body2"
-                                            color="text.secondary"
-                                            gutterBottom
-                                        >
-                                            Filter characters by their class
-                                        </Typography>
-                                        <FormControl fullWidth>
-                                            <Select
-                                                multiple
-                                                value={classFilter}
-                                                onChange={(e) =>
-                                                    setClassFilter(
-                                                        e.target.value
-                                                    )
+                                                Filter characters by minimum item
+                                                level
+                                            </Typography>
+                                            <Slider
+                                                value={ilevelFilter}
+                                                onChange={(e, newValue) =>
+                                                    setIlevelFilter(newValue)
                                                 }
-                                                input={<OutlinedInput />}
-                                                renderValue={(selected) => (
-                                                    <Box
-                                                        sx={{
-                                                            display: 'flex',
-                                                            flexWrap: 'wrap',
-                                                            gap: 0.5,
-                                                        }}
-                                                    >
-                                                        {selected.map(
-                                                            (value) => (
-                                                                <Chip
-                                                                    key={value}
-                                                                    label={
-                                                                        value
-                                                                    }
-                                                                />
-                                                            )
-                                                        )}
-                                                    </Box>
-                                                )}
+                                                valueLabelDisplay="auto"
+                                                min={MIN_CHECK_CAP}
+                                                max={MAX_CHECK_CAP}
+                                                marks
+                                            />
+                                        </Paper>
+
+                                        <Paper
+                                            sx={{
+                                                width: {
+                                                    xs: '100%',
+                                                    sm: 'calc(50% - 8px)',
+                                                    md: 'calc(25% - 12px)',
+                                                },
+                                                p: 2,
+                                                borderRadius: 2,
+                                                bgcolor: 'background.paper',
+                                            }}
+                                        >
+                                            <Typography
+                                                variant="h6"
+                                                sx={{ fontSize: '1.15rem' }}
                                             >
-                                                {builtClassList.map(
-                                                    (className) => (
-                                                        <MenuItem
-                                                            key={className}
-                                                            value={className}
+                                                Rank Filter
+                                            </Typography>
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                                gutterBottom
+                                            >
+                                                Filter characters by their guild
+                                                rank
+                                            </Typography>
+                                            <FormControl fullWidth>
+                                                <Select
+                                                    value={rankFilter}
+                                                    onChange={(e) =>
+                                                        setRankFilter(
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                >
+                                                    <MenuItem value="all">
+                                                        All (
+                                                        {numbOfCombinedMainsAndAlts}
+                                                        )
+                                                    </MenuItem>
+                                                    <MenuItem value="mains">
+                                                        Mains ({numbOfMains})
+                                                    </MenuItem>
+                                                    <MenuItem value="alts">
+                                                        Alts ({numbOfAlts})
+                                                    </MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Paper>
+
+                                        <Paper
+                                            sx={{
+                                                width: {
+                                                    xs: '100%',
+                                                    sm: 'calc(50% - 8px)',
+                                                    md: 'calc(25% - 12px)',
+                                                },
+                                                p: 2,
+                                                borderRadius: 2,
+                                                bgcolor: 'background.paper',
+                                            }}
+                                        >
+                                            <Typography
+                                                variant="h6"
+                                                sx={{ fontSize: '1.15rem' }}
+                                            >
+                                                Spec Filter
+                                            </Typography>
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                                gutterBottom
+                                            >
+                                                Filter characters by their role
+                                                specialization
+                                            </Typography>
+                                            <FormControl fullWidth>
+                                                <Select
+                                                    value={specFilter}
+                                                    onChange={(e) =>
+                                                        setSpecFilter(
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                >
+                                                    <MenuItem value="all">
+                                                        All
+                                                    </MenuItem>
+                                                    <MenuItem value="tanks">
+                                                        Tanks
+                                                    </MenuItem>
+                                                    <MenuItem value="healers">
+                                                        Healers
+                                                    </MenuItem>
+                                                    <MenuItem value="dps">
+                                                        DPS
+                                                    </MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Paper>
+
+                                        <Paper
+                                            sx={{
+                                                width: {
+                                                    xs: '100%',
+                                                    sm: 'calc(50% - 8px)',
+                                                    md: 'calc(25% - 12px)',
+                                                },
+                                                p: 2,
+                                                borderRadius: 2,
+                                                bgcolor: 'background.paper',
+                                            }}
+                                        >
+                                            <Typography
+                                                variant="h6"
+                                                sx={{ fontSize: '1.15rem' }}
+                                            >
+                                                Class Filter
+                                            </Typography>
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                                gutterBottom
+                                            >
+                                                Filter characters by their class
+                                            </Typography>
+                                            <FormControl fullWidth>
+                                                <Select
+                                                    multiple
+                                                    value={classFilter}
+                                                    onChange={(e) =>
+                                                        setClassFilter(
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    input={<OutlinedInput />}
+                                                    renderValue={(selected) => (
+                                                        <Box
+                                                            sx={{
+                                                                display: 'flex',
+                                                                flexWrap: 'wrap',
+                                                                gap: 0.5,
+                                                            }}
                                                         >
-                                                            {className}
-                                                        </MenuItem>
-                                                    )
-                                                )}
-                                            </Select>
-                                        </FormControl>
-                                    </Paper>
+                                                            {selected.map(
+                                                                (value) => (
+                                                                    <Chip
+                                                                        key={value}
+                                                                        label={
+                                                                            value
+                                                                        }
+                                                                    />
+                                                                )
+                                                            )}
+                                                        </Box>
+                                                    )}
+                                                >
+                                                    {builtClassList.map(
+                                                        (className) => (
+                                                            <MenuItem
+                                                                key={className}
+                                                                value={className}
+                                                            >
+                                                                {className}
+                                                            </MenuItem>
+                                                        )
+                                                    )}
+                                                </Select>
+                                            </FormControl>
+                                        </Paper>
+                                    </Box>
+                                )}
+
+                                {/* Show More/Less Toggle Button */}
+                                <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                                        startIcon={showAdvancedFilters ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                                        sx={{
+                                            borderRadius: 2,
+                                            textTransform: 'none',
+                                            fontWeight: 600,
+                                            fontSize: '0.875rem',
+                                            px: 3,
+                                            py: 1,
+                                        }}
+                                    >
+                                        {showAdvancedFilters ? 'Show Less' : 'Show More Filters'}
+                                    </Button>
                                 </Box>
 
                                 {!loading && showSearchError && (

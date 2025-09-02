@@ -61,6 +61,20 @@ import merge from 'lodash/merge'
 
 import './base.scss'
 
+// Import all screen SCSS files 
+
+import '@/core/screens/default/scss/dashboard.scss'
+import '@/core/screens/default/scss/roster.scss'
+import '@/core/screens/default/scss/recruitment.scss'
+import '@/core/screens/default/scss/guildAudit.scss'
+import '@/core/screens/default/scss/team.scss'
+import '@/core/screens/default/scss/peerOverview.scss'
+import '@/core/screens/default/scss/header.scss'
+import '@/core/screens/default/scss/mrt.scss'
+import '@/core/screens/default/scss/activities.scss'
+import '@/core/screens/default/scss/pvp.scss'
+import '@/core/screens/default/scss/mplus.scss'
+
 // ==============================|| PALETTE ||============================== //
 // Main color palette for the app (dark mode)
 const palette = {

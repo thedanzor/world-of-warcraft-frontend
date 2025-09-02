@@ -4,20 +4,6 @@ import config from '@/app.config.js';
 // Direct imports for all theme providers
 import DefaultThemeProvider from './themes/default';
 
-// Import all screen SCSS files 
-// CHANGE THIS BASED ON YOUR THEME
-import '@/core/screens/default/scss/dashboard.scss'
-import '@/core/screens/default/scss/roster.scss'
-import '@/core/screens/default/scss/recruitment.scss'
-import '@/core/screens/default/scss/guildAudit.scss'
-import '@/core/screens/default/scss/team.scss'
-import '@/core/screens/default/scss/peerOverview.scss'
-import '@/core/screens/default/scss/header.scss'
-import '@/core/screens/default/scss/mrt.scss'
-import '@/core/screens/default/scss/activities.scss'
-import '@/core/screens/default/scss/pvp.scss'
-import '@/core/screens/default/scss/mplus.scss'
-
 // Theme provider mapping
 const themeProviders = {
   default: DefaultThemeProvider,

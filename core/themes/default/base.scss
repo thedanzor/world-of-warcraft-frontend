@@ -73,6 +73,11 @@ body, html {
     margin: 0 0 1rem 0;
   }
 
+  .MuiTablePagination-input {
+    position: relative;
+    top: -6px;
+  }
+
   h1 {
     font-size: 2.25rem;
     font-weight: 700;

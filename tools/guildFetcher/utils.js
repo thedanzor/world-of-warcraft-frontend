@@ -120,11 +120,11 @@ const filterSearch = (
     })()
 
     // List of scenarios to check for
-    const guildRankIndex = GUILLD_RANKS.indexOf(character.guildRank)
+    const guildRankIndex = character.guildRank // guildRank is already the index
     const matchesRank =
         rank === 'all' ||
-        (rank === 'alts' && ALT_RANKS.indexOf(guildRankIndex) >= 0) ||
-        (rank === 'mains' && MAIN_RANKS.indexOf(guildRankIndex) >= 0)
+        (rank === 'alts' && ALT_RANKS.includes(guildRankIndex)) ||
+        (rank === 'mains' && MAIN_RANKS.includes(guildRankIndex))
     const matchesNameQuery =
         !query.length || (query.length && handledName.includes(handleQuery))
     const matchesClassQuery =

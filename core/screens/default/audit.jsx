@@ -486,7 +486,7 @@ const GuildAudit = ({ auditable, initialData }) => {
                                 {/* Show More/Less Toggle Button */}
                                 <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
                                     <Button
-                                        variant="outlined"
+                                        variant="contained"
                                         onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
                                         startIcon={showAdvancedFilters ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                                         sx={{

@@ -89,7 +89,7 @@ const getScoreColor = (score, color = null) => {
     if (score >= 2000) return '#cd7f32' // Bronze
     if (score >= 1500) return '#4CAF50' // Green
     if (score >= 1000) return '#B08D5A' // Brown (our theme color)
-    return '#666' // Gray
+    return '#A3A3A3' // Gray (matching dashboard secondary text)
 }
 
 const MythicPlusBlock = ({ data, name, hideControls }) => {
@@ -169,23 +169,33 @@ const MythicPlusBlock = ({ data, name, hideControls }) => {
         .sort(getComparator(order, orderBy))
 
     return (
-        <Paper sx={{ width: '100%', mb: 2 }}>
+        <Paper sx={{ 
+            width: '100%', 
+            mb: 2,
+            backgroundColor: 'rgba(17, 17, 17, 0.8)',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+        }}>
             <TableContainer sx={{ 
                 '& .MuiTable-root': {
-                    backgroundColor: '#060d12',
+                    backgroundColor: '#111111',
                     '& .MuiTableHead-root .MuiTableRow-root .MuiTableCell-root': {
-                        backgroundColor: '#0a1419',
-                        color: '#dcdada',
-                        borderBottom: '2px solid #1a2a35',
-                        fontWeight: 'bold'
+                        backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                        color: '#FFFFFF',
+                        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+                        fontWeight: '600',
+                        fontSize: '0.875rem',
+                        letterSpacing: '-0.025em'
                     },
                     '& .MuiTableBody-root .MuiTableRow-root': {
                         '&:hover': {
-                            backgroundColor: '#0a1419'
+                            backgroundColor: 'rgba(255, 255, 255, 0.02)'
                         },
                         '& .MuiTableCell-root': {
-                            color: '#dcdada',
-                            borderBottom: '1px solid #1a2a35'
+                            color: '#A3A3A3',
+                            borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
                         }
                     }
                 }
@@ -256,22 +266,24 @@ const MythicPlusBlock = ({ data, name, hideControls }) => {
                                             alignItems: 'center'
                                         }}>
                                             {character?.media?.assets?.length ? (
-                                                <img
-                                                    src={character?.media?.assets[0]?.value}
-                                                    alt={character.name}
-                                                    width={60}
-                                                    height={60}
-                                                    style={{
-                                                        borderRadius: '4px',
-                                                        border: '2px solid #1a2a35'
-                                                    }}
-                                                />
+                                                                                            <img
+                                                src={character?.media?.assets[0]?.value}
+                                                alt={character.name}
+                                                width={60}
+                                                height={60}
+                                                style={{
+                                                    borderRadius: '8px',
+                                                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                                                    boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
+                                                }}
+                                            />
                                             ) : (
                                                 <img
                                                     style={{ 
                                                         opacity: '0.4',
-                                                        borderRadius: '4px',
-                                                        border: '2px solid #1a2a35'
+                                                        borderRadius: '8px',
+                                                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                                                        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
                                                     }}
                                                     src={'/images/logo-without-text.png'}
                                                     alt={character.name}
@@ -294,8 +306,8 @@ const MythicPlusBlock = ({ data, name, hideControls }) => {
                                                                          <TableCell sx={{ width: 120 }}>
                                          <span style={{ 
                                              color: getScoreColor(getTotalScore(character), character.raw_mplus?.current_mythic_rating?.color),
-                                             fontWeight: 'bold',
-                                             fontSize: '1.1rem'
+                                             fontWeight: '700',
+                                             fontSize: '1.125rem'
                                          }}>
                                              {Math.round(getTotalScore(character))}
                                          </span>
@@ -307,7 +319,7 @@ const MythicPlusBlock = ({ data, name, hideControls }) => {
                                                 if (!dungeonScoreData) {
                                                     return (
                                                         <Tooltip title="No data available" placement="top">
-                                                            <span style={{ color: '#666' }}>-</span>
+                                                            <span style={{ color: '#A3A3A3' }}>-</span>
                                                         </Tooltip>
                                                     )
                                                 }
@@ -325,7 +337,7 @@ const MythicPlusBlock = ({ data, name, hideControls }) => {
                                                     >
                                                         <span style={{ 
                                                             color: getScoreColor(dungeonScoreData.rating, dungeonScoreData.color),
-                                                            fontWeight: 'bold'
+                                                            fontWeight: '700'
                                                         }}>
                                                             {Math.round(dungeonScoreData.rating)}
                                                         </span>

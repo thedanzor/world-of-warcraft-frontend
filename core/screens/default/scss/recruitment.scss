@@ -64,6 +64,7 @@ $text-primary: #FFFFFF;
 $text-secondary: #A3A3A3;
 $text-accent: #B08D5A;
 $shadow-light: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+$shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
 .recruitment {
   background: $recruitment-bg;
@@ -133,6 +134,219 @@ $shadow-light: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
     margin-top: 40px;
   }
 
+  // Enhanced Material-UI Paper styling
+  .MuiPaper-root {
+    background: $card-bg !important;
+    border: 1px solid $card-border !important;
+    box-shadow: $shadow-light !important;
+    transition: all 0.2s ease-in-out;
+    
+    &:hover {
+      box-shadow: $shadow-medium !important;
+      transform: translateY(-2px);
+    }
+  }
+
+  // Enhanced typography styling
+  .MuiTypography-root {
+    color: $text-primary !important;
+    
+    &.MuiTypography-body1 {
+      color: $text-secondary !important;
+      line-height: 1.6;
+    }
+    
+    &.MuiTypography-body2 {
+      color: $text-secondary !important;
+      opacity: 0.8;
+    }
+  }
+
+  // Enhanced list styling
+  ul, ol {
+    li {
+      padding: 12px 0;
+      color: $text-secondary;
+      font-size: 1rem;
+      line-height: 1.6;
+      position: relative;
+      
+      strong {
+        color: $text-accent;
+        font-weight: 600;
+      }
+    }
+  }
+
+  ul li {
+    padding-left: 24px;
+    position: relative;
+    
+    &:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: $text-accent;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+  }
+
+  ol li {
+    padding-left: 24px;
+    position: relative;
+    
+    &:before {
+      content: counter(list-item) ".";
+      position: absolute;
+      left: 0;
+      color: $text-accent;
+      font-weight: 600;
+    }
+  }
+
+  // Enhanced heading styling
+  h3 {
+    font-size: 2rem;
+    font-weight: 400;
+    padding: 32px 0 24px 0;
+    color: $text-accent;
+    text-align: left;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  h4 {
+    font-size: 1.5rem;
+    font-weight: 300;
+    padding: 0 0 16px 0;
+    color: $text-accent;
+    text-align: left;
+    letter-spacing: -0.025em;
+    line-height: 1.3;
+    margin: 0;
+  }
+
+  // Enhanced section styling
+  .recruitment-section {
+    margin-bottom: 48px;
+    
+    .section-header {
+      margin-bottom: 24px;
+      
+      .section-icon {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        margin-right: 12px;
+        vertical-align: middle;
+        color: $text-accent;
+      }
+    }
+  }
+
+  // Enhanced card styling
+  .recruitment-card {
+    background: $card-bg;
+    border: 1px solid $card-border;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: $shadow-light;
+    transition: all 0.2s ease-in-out;
+    
+    &:hover {
+      box-shadow: $shadow-medium;
+      transform: translateY(-2px);
+    }
+    
+    &.requirements {
+      border-left: 4px solid #f44336;
+    }
+    
+    &.benefits {
+      border-left: 4px solid #4caf50;
+    }
+    
+    &.process {
+      border-left: 4px solid #ff9800;
+    }
+    
+    &.needs {
+      border-left: 4px solid #2196f3;
+    }
+    
+    &.schedule {
+      border-left: 4px solid #9c27b0;
+    }
+    
+    &.contact {
+      border-left: 4px solid #00bcd4;
+    }
+  }
+
+  // Enhanced contact section
+  .contact-section {
+    background: $card-bg;
+    border: 1px solid $card-border;
+    border-radius: 12px;
+    padding: 32px;
+    text-align: center;
+    margin-top: 48px;
+    
+    .contact-button {
+      background: $text-accent;
+      color: $text-primary;
+      padding: 16px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      margin: 16px 8px;
+      transition: all 0.2s ease-in-out;
+      
+      &:hover {
+        background: lighten($text-accent, 10%);
+        transform: translateY(-2px);
+        box-shadow: $shadow-medium;
+      }
+    }
+  }
+
+  // Enhanced schedule section
+  .schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin: 24px 0;
+    
+    .schedule-item {
+      background: $card-bg;
+      border: 1px solid $card-border;
+      border-radius: 8px;
+      padding: 20px;
+      
+      .schedule-day {
+        color: $text-accent;
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin-bottom: 8px;
+      }
+      
+      .schedule-time {
+        color: $text-primary;
+        font-size: 1rem;
+        margin-bottom: 4px;
+      }
+      
+      .schedule-activity {
+        color: $text-secondary;
+        font-size: 0.875rem;
+      }
+    }
+  }
+
   @media screen and (max-width: 1200px) {
     .item {
       width: 50%;
@@ -141,6 +355,10 @@ $shadow-light: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
     .discordWrapperheader,
     .followUsWrapperHeader {
       display: none;
+    }
+    
+    .schedule-grid {
+      grid-template-columns: 1fr;
     }
   }
 
@@ -152,37 +370,18 @@ $shadow-light: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
     .headerContext {
       padding: 390px 0 100px;
     }
-  }
-
-  ul, li {
-    list-style: none;
-  }
-
-  h3 {
-    font-size: 2rem;
-    font-weight: 700;
-    padding: 32px 0 24px 0;
-    color: $text-accent;
-    text-align: left;
-    letter-spacing: -0.025em;
-    line-height: 1.2;
-  }
-
-  h4 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    padding: 0 0 16px 0;
-    color: $text-accent;
-    text-align: left;
-    letter-spacing: -0.025em;
-    line-height: 1.3;
-  }
-
-  li {
-    padding: 16px 0 0;
-    color: $text-secondary;
-    font-size: 1rem;
-    line-height: 1.6;
+    
+    .recruitment-card {
+      padding: 16px;
+    }
+    
+    h3 {
+      font-size: 1.5rem;
+    }
+    
+    h4 {
+      font-size: 1.25rem;
+    }
   }
 
   .leftalign {

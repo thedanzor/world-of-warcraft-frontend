@@ -76,6 +76,10 @@ const Season3Section = ({ guildData, season3Data }) => {
     const [error, setError] = useState('')
     const [successMessage, setSuccessMessage] = useState('')
 
+    // Handle case where guildData might be null
+    const safeGuildData = guildData?.data || []
+    const safeSeason3Data = season3Data || []
+
     const handleSignUpSubmit = async (formData) => {
         setLoading(true)
         setError('')
@@ -110,142 +114,7 @@ const Season3Section = ({ guildData, season3Data }) => {
         return 'DPS'
     }
 
-    // Process data similar to Season 2
-    const processedData = React.useMemo(() => {
-        const allPlayers = guildData.data || []
-
-        // Get unique classes from guildData
-        const uniqueClasses = [
-            ...new Set(allPlayers.map((player) => player.class)),
-        ]
-
-        // Count classes from current guild roster
-        const currentClassCounts = allPlayers.reduce((acc, player) => {
-            const playerClass = player.class
-            if (playerClass) {
-                acc[playerClass] = (acc[playerClass] || 0) + 1
-            }
-            return acc
-        }, {})
-
-        // Count signed up players by class
-        const signedClassCounts = season3Data.reduce((acc, player) => {
-            if (player.returningToRaid) {
-                const playerClass = player.characterClass
-                acc[playerClass] = (acc[playerClass] || 0) + 1
-            }
-            return acc
-        }, {})
-
-        // Process roster data
-        const allRosterCandidates = season3Data
-            .filter((player) => player.returningToRaid)
-            .map((player) => {
-                const cleanCharacterName = player.currentCharacterName
-                    .toLowerCase()
-                    .normalize('NFKD')
-                    .replace(/[\u0300-\u036f]/g, '')
-                
-                const guildPlayer = allPlayers.find(
-                    (p) => p.name.toLowerCase() === cleanCharacterName
-                )
-
-                let processedPlayer
-                if (!guildPlayer) {
-                    processedPlayer = {
-                        ...player,
-                        name: player.currentCharacterName,
-                        server: 'unknown',
-                        itemLevel: 0,
-                        class: player.characterClass,
-                        spec: player.mainSpec,
-                        guildRank: 8,
-                    }
-                } else {
-                    processedPlayer = {
-                        ...player,
-                        ...guildPlayer,
-                        name: guildPlayer.name,
-                    }
-                }
-
-                return processedPlayer
-            })
-
-        // Split roster data based on guild rank
-        const rosterData = allRosterCandidates.filter(
-            (player) => player.guildRank !== 9 // 9 is the rank for "Social"
-        )
-
-        // Combine social rank players with other roster data
-        const otherRosterData = [
-            ...allRosterCandidates.filter(
-                (player) => player.guildRank === 9 // Social rank players
-            ),
-            ...season3Data
-                .filter((player) => !player.returningToRaid)
-                .map((player) => {
-                    const cleanCharacterName = player.currentCharacterName
-                        .toLowerCase()
-                        .normalize('NFKD')
-                        .replace(/[\u0300-\u036f]/g, '')
-                    
-                    const guildPlayer = allPlayers.find(
-                        (p) => p.name.toLowerCase() === cleanCharacterName
-                    )
-
-                    if (!guildPlayer) {
-                        return {
-                            ...player,
-                            name: player.currentCharacterName,
-                            server: 'unknown',
-                            itemLevel: 0,
-                            class: player.characterClass,
-                            spec: player.mainSpec,
-                            guildRank: 8,
-                        }
-                    }
-
-                    return {
-                        ...player,
-                        ...guildPlayer,
-                        name: guildPlayer.name,
-                    }
-                }),
-        ]
-
-        return {
-            classCounts: uniqueClasses.map((className) => ({
-                name: className,
-                current: currentClassCounts[className] || 0,
-                signed: signedClassCounts[className] || 0,
-            })),
-            rosterData,
-            otherRosterData,
-        }
-    }, [season3Data, guildData])
-
-    // Map Season 3 data for the audit table
-    const mappedSeason3Data = React.useMemo(() => {
-        if (!season3Data || !Array.isArray(season3Data)) return [];
-        return season3Data.map(entry => ({
-            // Use fallback for missing fields
-            ilvl: entry.itemLevel || '-',
-            name: entry.season3CharacterName || entry.currentCharacterName || '-',
-            spec: entry.mainSpec || '-',
-            nextSeasonClass: entry.characterClass || '-',
-            primaryRole: getRoleFromSpec(entry.mainSpec),
-            secondaryRole: entry.offSpec ? getRoleFromSpec(entry.offSpec) : '-',
-            guildRank: entry.guildRank || '-',
-            mplus: entry.mplus || '-',
-            pvp: entry.pvp || '-',
-            season3Goal: entry.season3Goal || '-',
-            wantToPushKeys: entry.wantToPushKeys ? 'Yes' : 'No',
-            ...entry // keep all original fields for fallback
-        }));
-    }, [season3Data]);
-
-    // Update headCells for Season 3 mapped data
+    // Update headCells for Season 3 data
     const headCells = [
         { id: 'ilvl', label: 'ILVL' },
         { id: 'name', label: 'Name' },
@@ -262,10 +131,8 @@ const Season3Section = ({ guildData, season3Data }) => {
 
     // Calculate statistics for active dataset
     const getActiveData = (tabValue) => {
-        const activeData =
-            tabValue === 0
-                ? processedData.rosterData
-                : processedData.otherRosterData
+        // Use Season 3 signup data directly instead of processed guild data
+        const activeData = safeSeason3Data
 
         // Role counts calculation
         const roleCounts = activeData.reduce(
@@ -280,7 +147,7 @@ const Season3Section = ({ guildData, season3Data }) => {
             },
             { tanks: 0, healers: 0, dps: 0 }
         )
-
+        
         // Backup role counts calculation
         const backupRoleCounts = activeData.reduce(
             (acc, player) => {
@@ -325,7 +192,7 @@ const Season3Section = ({ guildData, season3Data }) => {
         const wantToPushKeysCount = activeData.filter(player => player.wantToPushKeys).length
         const notWantToPushKeysCount = activeData.filter(player => !player.wantToPushKeys).length
 
-        return {
+        const result = {
             roleCounts,
             backupRoleCounts,
             classCounts,
@@ -334,6 +201,8 @@ const Season3Section = ({ guildData, season3Data }) => {
             wantToPushKeysCount,
             notWantToPushKeysCount,
         }
+        
+        return result
     }
 
     const activeStats = getActiveData(tabValue)
@@ -399,14 +268,14 @@ const Season3Section = ({ guildData, season3Data }) => {
                         <div role="tabpanel" hidden={tabValue !== 0}>
                             {tabValue === 0 && (
                                 <TabPanel
-                                    data={season3Data}
+                                    data={safeSeason3Data}
                                     stats={activeStats}
-                                    totalClassCounts={processedData.classCounts}
+                                    totalClassCounts={activeStats.classCounts}
                                     headCells={headCells}
                                     title="Registered Applications"
                                     description="Registered Applications are players who are looking to continue raiding in season 3, this doesn't however *yet* mean that they have secured a spot."
                                     classIcons={classIcons}
-                                    guildData={guildData.data}
+                                    guildData={safeGuildData}
                                 />
                             )}
                         </div>
@@ -424,7 +293,7 @@ const Season3Section = ({ guildData, season3Data }) => {
                     onSubmit={handleSignUpSubmit}
                     loading={loading}
                     error={error}
-                    guildData={guildData.data}
+                    guildData={safeGuildData}
                 />
 
                 {/* Success Message */}

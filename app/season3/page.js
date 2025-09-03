@@ -18,34 +18,37 @@ export const revalidate = 0
 
 // Server-side data fetching
 async function getGuildData() {
+    let guildResponse = null;
+    let season3Response = null;
+    let error = null;
+
     try {
         // Fetch main guild data
-        const guildResponse = await api.getFilteredGuildData({
+        guildResponse = await api.getFilteredGuildData({
             filter: 'all',
             page: 1,
             limit: 300 // Get a reasonable amount for dashboard
         });
+    } catch (guildError) {
+        console.error('Error fetching guild data:', guildError);
+        error = guildError.message;
+    }
 
-        // Fetch missing enchants statistics
-        const season3Response = await api.getSeason3Data();
+    try {
+        // Fetch Season 3 data (try to fetch even if guild data failed)
+        season3Response = await api.getSeason3Data();
+    } catch (season3Error) {
+        console.error('Error fetching Season 3 data:', season3Error);
+        // Don't override guild error if it exists
+        if (!error) {
+            error = season3Error.message;
+        }
+    }
 
-        return {
-            data: guildResponse.data,
-            season3: season3Response.season3,
-            error: null
-        }
-    } catch (error) {
-        console.error('Error fetching guild data:', error)
-        return {
-            data: null,
-            statistics: null,
-            timestamp: null,
-            missingEnchants: null,
-            topPvp: null,
-            topPve: null,
-            roleCounts: null,
-            error: error.message
-        }
+    return {
+        data: guildResponse?.data || null,
+        season3: season3Response?.season3 || [],
+        error: error
     }
 }
 

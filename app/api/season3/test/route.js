@@ -11,7 +11,7 @@ export async function GET() {
 
   // Test 1: Season 3 data endpoint
   try {
-    const response = await fetch(`${BACKEND_URL}/season3/data`, {
+    const response = await fetch(`${BACKEND_URL}/api/season3/data`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ export async function GET() {
       wantToPushKeys: true
     };
 
-    const response = await fetch(`${BACKEND_URL}/season3/signup`, {
+    const response = await fetch(`${BACKEND_URL}/api/season3/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

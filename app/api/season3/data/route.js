@@ -4,7 +4,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export async function GET() {
   try {
-    const response = await fetch(`${BACKEND_URL}/season3/data`, {
+    const response = await fetch(`${BACKEND_URL}/api/season3/data`, {
       next: { 
         revalidate: 600, // Cache for 10 minutes
         tags: ['season3-data']
@@ -24,7 +24,7 @@ export async function GET() {
     }
     
     const data = await response.json();
-    return NextResponse.json(data, {
+    return NextResponse.json(data.season3 || [], {
       headers: {
         'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=300'
       }

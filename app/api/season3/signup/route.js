@@ -38,7 +38,7 @@ export async function POST(request) {
         const normalizedCurrentName = body.currentCharacterName.toLowerCase().trim();
         const normalizedSeason3Name = body.season3CharacterName.toLowerCase().trim();
         
-        const duplicate = existingData.find(entry => 
+        const duplicate = existingData.season3?.find(entry => 
           entry.currentCharacterName?.toLowerCase().trim() === normalizedCurrentName ||
           entry.season3CharacterName?.toLowerCase().trim() === normalizedSeason3Name
         );

@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/status`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/status`, {
       cache: 'no-store' // Disable caching for dynamic data
     });
     

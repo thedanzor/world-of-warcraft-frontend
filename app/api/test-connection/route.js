@@ -11,7 +11,7 @@ export async function GET() {
 
   // Test 1: Basic connectivity
   try {
-    const response = await fetch(`${BACKEND_URL}/health`, {
+    const response = await fetch(`${BACKEND_URL}/api/health`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ export async function GET() {
 
   // Test 2: Data endpoint
   try {
-    const response = await fetch(`${BACKEND_URL}/data`, {
+    const response = await fetch(`${BACKEND_URL}/api/data`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ export async function GET() {
 
   // Test 3: Status endpoint
   try {
-    const response = await fetch(`${BACKEND_URL}/status`, {
+    const response = await fetch(`${BACKEND_URL}/api/status`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

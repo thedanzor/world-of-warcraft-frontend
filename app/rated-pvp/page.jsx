@@ -25,7 +25,7 @@ async function getPvpGuildData() {
         });
         return {
             data: response.data,
-            statistics: response.statistics,
+            pagination: response.pagination,
             timestamp: response.timestamp,
             error: null
         }
@@ -33,7 +33,7 @@ async function getPvpGuildData() {
         console.error('Error fetching PvP guild data:', error)
         return {
             data: null,
-            statistics: null,
+            pagination: null,
             timestamp: null,
             error: error.message
         }

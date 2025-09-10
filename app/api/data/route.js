@@ -4,7 +4,7 @@ const BACKEND_URL =  process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export async function GET() {
   try {
-    const response = await fetch(`${BACKEND_URL}/data`, {
+    const response = await fetch(`${BACKEND_URL}/api/data`, {
       next: { 
         revalidate: 600, // Cache for 10 minutes
         tags: ['guild-data', 'guild-stats']

@@ -26,7 +26,7 @@ async function getMplusGuildData() {
 
         return {
             data: response.data,
-            statistics: response.statistics,
+            pagination: response.pagination,
             timestamp: response.timestamp,
             error: null
         }
@@ -34,7 +34,7 @@ async function getMplusGuildData() {
         console.error('Error fetching M+ guild data:', error)
         return {
             data: null,
-            statistics: null,
+            pagination: null,
             timestamp: null,
             error: error.message
         }

@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/update`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/update`, {
       method: 'POST',
       cache: 'no-store' // Disable caching for dynamic data
     });

@@ -37,7 +37,7 @@ async function getGuildData() {
 
         return {
             data: guildResponse.data,
-            statistics: guildResponse.statistics,
+            pagination: guildResponse.pagination,
             timestamp: guildResponse.timestamp,
             missingEnchants: missingEnchantsResponse.data,
             topPvp: topPvpResponse.data,
@@ -51,7 +51,7 @@ async function getGuildData() {
         // Return empty data on error so the page still loads
         return {
             data: null,
-            statistics: null,
+            pagination: null,
             timestamp: null,
             missingEnchants: null,
             topPvp: null,

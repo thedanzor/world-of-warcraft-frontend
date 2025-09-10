@@ -130,8 +130,8 @@ const Dashboard = ({ guildData }) => {
     const data = useMemo(() => {
         const allPlayers = guildDataToUse || []
 
-        // Use statistics from API response
-        const statistics = guildData.statistics || {};
+        // Use pagination from API response
+        const pagination = guildData.pagination || {};
         const missingEnchants = guildData.missingEnchants || { all: 0, mains: 0, alts: 0 };
         const topPvp = guildData.topPvp || [];
         const topPve = guildData.topPve || [];

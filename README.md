@@ -261,8 +261,7 @@ The backend is an Express.js API server that:
 ### API Routes
 
 #### Data Endpoints
-- `GET /api/data` - Raw guild data
-- `GET /api/data/filtered` - Filtered and paginated guild data
+- `GET /api/data` - Filtered and paginated guild data
 - `GET /api/health` - Backend health check
 - `GET /api/status` - Backend status information
 

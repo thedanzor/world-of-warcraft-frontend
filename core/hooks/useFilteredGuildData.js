@@ -71,17 +71,17 @@ export function useFilteredGuildData(initialParams = {}) {
 
   // Next page
   const nextPage = useCallback(() => {
-    if (data?.statistics?.hasNextPage) {
+    if (data?.pagination?.hasNextPage) {
       setParams(prev => ({ ...prev, page: prev.page + 1 }));
     }
-  }, [data?.statistics?.hasNextPage]);
+  }, [data?.pagination?.hasNextPage]);
 
   // Previous page
   const prevPage = useCallback(() => {
-    if (data?.statistics?.hasPreviousPage) {
+    if (data?.pagination?.hasPreviousPage) {
       setParams(prev => ({ ...prev, page: prev.page - 1 }));
     }
-  }, [data?.statistics?.hasPreviousPage]);
+  }, [data?.pagination?.hasPreviousPage]);
 
   // Reset filters
   const resetFilters = useCallback(() => {

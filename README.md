@@ -48,6 +48,10 @@ The Mythic+ Overview tracks your guild's dungeon progression, displaying player 
 
 The Season 3 Signup page allows members to register their interest and goals for the upcoming season. Collect information on returning players, preferred roles, and personal objectives to streamline roster planning.
 
+![Season 3 Signup](_screenshots/v1.3.2/errors.png)
+
+The errors screen allows you to gather insight on what is happening in the application, for example if you hit rate limits, characters are not found or the service goes down.
+
 ### UI/Design Example
 
 ![With Design](_screenshots/with-design.png)

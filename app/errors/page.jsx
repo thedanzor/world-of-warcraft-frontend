@@ -201,19 +201,30 @@ const ErrorManagementPage = () => {
         }
       })
 
+      console.log('Bulk delete request:', `/api/errors?${queryParams}`)
+      
       const response = await fetch(`/api/errors?${queryParams}`, {
         method: 'DELETE'
       })
+      
+      console.log('Bulk delete response status:', response.status)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      }
+      
       const data = await response.json()
+      console.log('Bulk delete response data:', data)
       
       if (data.success) {
         setSnackbar({
           open: true,
-          message: data.message,
+          message: data.message || `Successfully deleted ${data.result?.deletedCount || 0} errors`,
           severity: 'success'
         })
-        fetchErrors()
-        fetchStats()
+        // Refresh the data
+        await fetchErrors()
+        await fetchStats()
       } else {
         throw new Error(data.error || 'Failed to delete errors')
       }

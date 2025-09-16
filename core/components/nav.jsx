@@ -20,62 +20,34 @@ import Typography from '@mui/material/Typography'
 import GroupAddIcon from '@mui/icons-material/GroupAdd'
 import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing'
 import HowToRegIcon from '@mui/icons-material/HowToReg'
+import BugReportIcon from '@mui/icons-material/BugReport'
 
 import './scss/nav.scss'
+import config from '@/app.config.js'
 
-const navigationItems = {
-    OVERVIEW: {
-        label: 'OVERVIEW',
-        items: [
-            {
-                label: 'DASHBOARD',
-                path: '/',
-                icon: DashboardIcon,
-            },
-            {
-                label: 'RECRUITMENT',
-                path: '/join',
-                icon: HowToRegIcon,
-            },
-            {
-                label: 'AUDIT',
-                path: '/audit',
-                icon: AssessmentIcon,
-            },
-            
-        ],
-    },
-    SEASON3: {
-        label: 'SEASON 3',
-        items: [
-            {
-                label: 'MYTHIC PLUS',
-                path: '/mythic-plus',
-                icon: StarIcon,
-            },
-            {
-                label: 'PVP',
-                path: '/rated-pvp',
-                icon: EmojiEventsIcon,
-            },
-            {
-                label: 'SIGN UP',
-                path: '/season3',
-                icon: HowToRegIcon,
-            },
-        ],
-    },
-    TOOLS: {
-        label: 'TOOLS',
-        items: [
-            {
-                label: 'ROSTER BUILDER',
-                path: '/roster',
-                icon: GroupAddIcon,
-            },
-        ],
-    }
+// Icon mapping for dynamic icon loading
+const iconMap = {
+    DashboardIcon,
+    AssessmentIcon,
+    StarIcon,
+    EmojiEventsIcon,
+    GroupAddIcon,
+    HowToRegIcon,
+    BugReportIcon,
+    PrecisionManufacturingIcon
 }
+
+// Convert config navigation to component format with icon components
+const navigationItems = Object.entries(config.NAVIGATION).reduce((acc, [key, section]) => {
+    acc[key] = {
+        ...section,
+        items: section.items.map(item => ({
+            ...item,
+            icon: iconMap[item.icon]
+        }))
+    }
+    return acc
+}, {})
 
 function getInitialSection(path) {
     let bestMatch = { section: 'OVERVIEW', length: 0 }

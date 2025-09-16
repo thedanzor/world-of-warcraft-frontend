@@ -125,6 +125,80 @@ The application configuration is managed in `app.config.js`:
 }
 ```
 
+### Navigation Configuration
+```javascript
+{
+  "NAVIGATION": {
+    "OVERVIEW": {
+      "label": "OVERVIEW",
+      "items": [
+        {
+          "label": "DASHBOARD",
+          "path": "/",
+          "icon": "DashboardIcon"
+        },
+        {
+          "label": "RECRUITMENT",
+          "path": "/join",
+          "icon": "HowToRegIcon"
+        },
+        {
+          "label": "AUDIT",
+          "path": "/audit",
+          "icon": "AssessmentIcon"
+        },
+        {
+          "label": "ERRORS",
+          "path": "/errors",
+          "icon": "BugReportIcon"
+        }
+      ]
+    },
+    "SEASON3": {
+      "label": "SEASON 3",
+      "items": [
+        {
+          "label": "MYTHIC PLUS",
+          "path": "/mythic-plus",
+          "icon": "StarIcon"
+        },
+        {
+          "label": "PVP",
+          "path": "/rated-pvp",
+          "icon": "EmojiEventsIcon"
+        },
+        {
+          "label": "SIGN UP",
+          "path": "/season3",
+          "icon": "HowToRegIcon"
+        }
+      ]
+    },
+    "TOOLS": {
+      "label": "TOOLS",
+      "items": [
+        {
+          "label": "ROSTER BUILDER",
+          "path": "/roster",
+          "icon": "GroupAddIcon"
+        }
+      ]
+    }
+  }
+}
+```
+
+#### Available Icons
+The following Material-UI icons are available for navigation items:
+- `DashboardIcon` - Dashboard/home icon
+- `AssessmentIcon` - Assessment/audit icon
+- `StarIcon` - Star icon for Mythic+ features
+- `EmojiEventsIcon` - Trophy icon for PvP features
+- `GroupAddIcon` - Group/add icon for roster tools
+- `HowToRegIcon` - Registration/signup icon
+- `BugReportIcon` - Bug report icon for error management
+- `PrecisionManufacturingIcon` - Tools/manufacturing icon
+
 ## 🚀 Key Features
 
 ### Real-time Data Updates
@@ -258,6 +332,17 @@ The backend is an Express.js API server that:
   - Application process
 - **Data**: Static recruitment content
 
+#### `/errors` - Error Management
+- **Purpose**: Monitor and manage application errors
+- **Features**:
+  - Error statistics dashboard
+  - Advanced filtering (type, endpoint, severity, resolution status)
+  - Error resolution tracking
+  - Bulk error deletion
+  - Detailed error views with stack traces
+  - Real-time error monitoring
+- **Data**: Error logs and statistics from backend API
+
 ### API Routes
 
 #### Data Endpoints
@@ -275,6 +360,14 @@ The backend is an Express.js API server that:
 - `GET /api/season3/data` - Season 3 data
 - `POST /api/season3/signup` - Season 3 signup
 - `GET /api/season3/test` - Season 3 endpoint testing
+
+#### Error Management Endpoints
+- `GET /api/errors` - Fetch errors with filtering options
+- `GET /api/errors/stats` - Get error statistics
+- `GET /api/errors/[id]` - Get specific error details
+- `PUT /api/errors/[id]/resolve` - Mark error as resolved
+- `DELETE /api/errors/[id]` - Delete specific error
+- `DELETE /api/errors` - Bulk delete errors (with filters)
 
 #### Utility Endpoints
 - `GET /api/test-connection` - Backend connectivity testing

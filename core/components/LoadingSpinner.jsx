@@ -4,12 +4,16 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Fade from '@mui/material/Fade';
+import WoWLoadingScreen from './WoWLoadingScreen';
 
 /**
  * Generic Loading Component
  * 
  * A reusable loading spinner with fade-in animation and customizable text.
  * Designed to prevent layout shifts and provide consistent loading states.
+ * 
+ * By default, uses the WoW-themed loading screen for full-screen loading.
+ * Falls back to Material-UI spinner for inline loading states.
  */
 const LoadingSpinner = ({ 
   message = 'Loading...', 
@@ -18,8 +22,20 @@ const LoadingSpinner = ({
   color = 'primary',
   showText = true,
   minHeight = '200px',
-  fadeIn = true 
+  fadeIn = true,
+  useWoWTheme = false,
+  fullScreen = false
 }) => {
+  // Use WoW theme for full-screen loading or when explicitly requested
+  if (useWoWTheme || fullScreen) {
+    return (
+      <WoWLoadingScreen 
+        message={message}
+        subtitle={fullScreen ? 'Application by ScottJones.nl' : undefined}
+      />
+    );
+  }
+
   const content = (
     <Box
       sx={{

@@ -13,10 +13,7 @@ export async function GET(request) {
       : `${BACKEND_URL}/api/errors`
     
     const response = await fetch(backendUrl, {
-      next: { 
-        revalidate: 60, // Cache for 1 minute
-        tags: ['error-logs']
-      }
+      cache: 'no-store' // No caching for error logs
     });
     
     if (!response.ok) {
@@ -26,7 +23,9 @@ export async function GET(request) {
     const data = await response.json();
     return NextResponse.json(data, {
       headers: {
-        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=30'
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
       }
     });
   } catch (error) {

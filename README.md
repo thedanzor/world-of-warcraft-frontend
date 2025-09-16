@@ -2,6 +2,36 @@
 
 A modern, responsive web application for managing and displaying World of Warcraft guild information, raid progression, and player statistics. Built with Next.js 14, React 18, and Material-UI.
 
+## Version 1.5.0 Changelog 🆕
+
+### New Features
+- **Comprehensive Seasonal Statistics System**: Complete Mythic+ seasonal data processing and analysis
+- **Individual Character Profiles**: New detailed character pages with seasonal statistics and performance tracking
+- **Enhanced Mythic+ Overview**: Redesigned with tabbed interface including Weekly Recap, Leaderboard, and Statistics
+- **Seasonal Leaderboards**: Player, dungeon, and role-based rankings with real-time data
+- **Character Detail Pages**: Individual character profiles with seasonal performance, team play history, and dungeon statistics
+- **Advanced Data Visualization**: Enhanced charts and statistics for better guild insights
+
+### New Pages & Components
+- **Individual Character Pages**: `/member/[realm]/[character]` - Detailed character profiles with seasonal statistics
+- **Enhanced Mythic+ Page**: Redesigned with three tabs (Weekly Recap, Leaderboard, Statistics)
+- **SeasonalStatistics Component**: Comprehensive seasonal data visualization
+- **SeasonalLeaderboard Component**: Interactive leaderboards with filtering and sorting
+- **MemberDetail Screen**: Complete character profile with gear, stats, and seasonal performance
+
+### New API Routes
+- **GET `/api/seasonal-stats`** - Fetch latest seasonal statistics
+- **GET `/api/seasonal-stats/character/[realm]/[character]`** - Get character seasonal statistics
+- **GET `/api/seasonal-stats/leaderboard`** - Get seasonal leaderboards (players, dungeons, roles)
+
+### Enhanced Data Features
+- **Seasonal Performance Tracking**: Detailed analysis of Mythic+ runs, completion rates, and team compositions
+- **Character Activity Detection**: Smart detection of character activity since season start
+- **Team Play Analysis**: Track which players run together most frequently
+- **Dungeon Performance**: Individual dungeon statistics with highest keys and completion rates
+- **Role-Based Statistics**: Tank, healer, and DPS performance analysis
+
+
 ## 📄 License
 
 This project is licensed under the **Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License (CC BY-NC-ND 4.0)**.
@@ -40,7 +70,55 @@ The Audit page offers detailed analysis of each guild member's character, includ
 
 ![Mythic Plus](_screenshots/v1.3.2/mplus.png)
 
-The Mythic+ Overview tracks your guild's dungeon progression, displaying player M+ scores, top performers, and seasonal achievements. Quickly identify key pushers and monitor overall Mythic+ activity.
+The Mythic+ Overview has been completely redesigned with a tabbed interface featuring three main sections:
+
+#### Weekly Recap Tab
+Displays current guild M+ activity, player scores, and recent achievements. Shows top performers and tracks overall Mythic+ activity.
+
+#### Leaderboard Tab
+![Mythic Plus Leaderboard](_screenshots/v1.3.2/mplusleaderboard.png)
+
+Interactive leaderboards with multiple ranking types:
+- **Player Rankings**: Based on completion rate, total score, and highest key
+- **Dungeon Rankings**: Performance across different dungeons
+- **Role Rankings**: Tank, healer, and DPS performance comparisons
+
+#### Statistics Tab
+Comprehensive seasonal statistics including:
+- Guild participation rates
+- Total runs and completion statistics
+- Key achievements and milestones
+- Role distribution and performance metrics
+
+### Individual Character Profiles
+
+![Profile](_screenshots/v1.3.2/profile.png)
+
+New detailed character profile pages (`/member/[realm]/[character]`) featuring:
+
+#### Character Overview
+- Character avatar and basic information
+- Current Mythic+ rating and item level
+- Class, spec, and realm information
+- Equipment status and readiness indicators
+
+#### Seasonal Performance
+- Detailed seasonal statistics
+- Highest timed and overall keys
+- Total runs and completion rates
+- Team play history and most-played-with members
+
+#### Dungeon Performance
+- Individual dungeon statistics
+- Highest keys per dungeon
+- Completion rates and average ratings
+- Performance trends and improvements
+
+#### Equipment Analysis
+- Gear status and enchantment tracking
+- Tier set detection
+- Raid readiness indicators
+- Missing enchantments and improvements
 
 ### Season 3 Signup
 
@@ -294,13 +372,14 @@ The backend is an Express.js API server that:
 - **Data**: Detailed character data with gear analysis
 
 #### `/mythic-plus` - Mythic+ Overview
-- **Purpose**: Mythic+ dungeon progression tracking
+- **Purpose**: Comprehensive Mythic+ dungeon progression tracking with seasonal statistics
 - **Features**:
-  - Player M+ scores
-  - Top performers
-  - Key level tracking
-  - Seasonal progression
-- **Data**: M+ specific data filtered from guild roster
+  - **Weekly Recap Tab**: Current guild M+ activity and player scores
+  - **Leaderboard Tab**: Interactive rankings for players, dungeons, and roles
+  - **Statistics Tab**: Comprehensive seasonal statistics and achievements
+  - Player M+ scores and progression tracking
+  - Seasonal performance analysis
+- **Data**: M+ specific data with seasonal statistics and leaderboards
 
 #### `/rated-pvp` - PvP Overview
 - **Purpose**: Rated PvP player tracking
@@ -327,6 +406,17 @@ The backend is an Express.js API server that:
   - Raid composition tools
   - Character note management
 - **Data**: MRT compatible data structures
+
+#### `/member/[realm]/[character]` - Individual Character Profiles 🆕 **NEW v1.5.0**
+- **Purpose**: Detailed character profiles with seasonal statistics and performance tracking
+- **Features**:
+  - **Character Overview**: Avatar, basic info, current rating, and equipment status
+  - **Seasonal Performance**: Detailed M+ statistics, highest keys, and completion rates
+  - **Team Play Analysis**: Most-played-with members and team composition history
+  - **Dungeon Performance**: Individual dungeon statistics and performance trends
+  - **Equipment Analysis**: Gear status, enchantments, tier sets, and raid readiness
+  - **Activity Tracking**: Season activity detection and performance metrics
+- **Data**: Complete character data with seasonal statistics and team play analysis
 
 #### `/join` - Recruitment
 - **Purpose**: Guild recruitment information
@@ -359,6 +449,11 @@ The backend is an Express.js API server that:
 - `GET /api/stats/top-pvp` - Top PvP players
 - `GET /api/stats/top-pve` - Top PvE players
 - `GET /api/stats/role-counts` - Role distribution counts
+
+#### Seasonal Statistics Endpoints 🆕 **NEW v1.5.0**
+- `GET /api/seasonal-stats` - Fetch latest seasonal statistics
+- `GET /api/seasonal-stats/character/[realm]/[character]` - Get character seasonal statistics
+- `GET /api/seasonal-stats/leaderboard` - Get seasonal leaderboards (players, dungeons, roles)
 
 #### Season 3 Endpoints
 - `GET /api/season3/data` - Season 3 data
@@ -972,6 +1067,39 @@ console.log('Available theme providers:', themeProviders) // ['default', 'my-the
   "pvp": {
     "arenaRating": 1800,
     "rbgRating": 1600
+  },
+  "seasonalStats": {
+    "highestTimedKey": 24,
+    "highestKeyOverall": 25,
+    "totalRuns": 150,
+    "completedRuns": 128,
+    "averageRating": 2850,
+    "completionRate": 85.3,
+    "topPlayedMembers": [
+      {
+        "name": "Player1",
+        "spec": "Protection",
+        "server": "sylvanas",
+        "count": 45
+      }
+    ],
+    "dungeonStats": {
+      "Dungeon Name": {
+        "totalRuns": 25,
+        "timedRuns": 22,
+        "highestKey": 25,
+        "averageRating": 2800
+      }
+    },
+    "affixStats": {
+      "Fortified": { "runs": 75, "averageRating": 2800 },
+      "Tyrannical": { "runs": 75, "averageRating": 2900 }
+    },
+    "roleStats": {
+      "TANK": { "runs": 30, "averageRating": 2750 },
+      "HEALER": { "runs": 120, "averageRating": 2850 }
+    },
+    "totalPlaytime": 45000
   }
 }
 ```
@@ -996,6 +1124,41 @@ console.log('Available theme providers:', themeProviders) // ['default', 'my-the
   },
   "topPvp": [...],
   "topPve": [...]
+}
+```
+
+### Seasonal Statistics Data Structure 🆕 **NEW v1.5.0**
+```javascript
+{
+  "season": 15,
+  "lastUpdated": "2024-01-01T00:00:00.000Z",
+  "totalCharacters": 150,
+  "charactersWithMplus": 120,
+  "totalRuns": 2500,
+  "totalTimedRuns": 2100,
+  "topPlayers": [
+    {
+      "name": "Player1",
+      "server": "sylvanas",
+      "highestKey": 25,
+      "highestTimedKey": 24,
+      "totalRuns": 150,
+      "completionRate": 85.5,
+      "averageRating": 2850
+    }
+  ],
+  "dungeonLeaderboard": {
+    "Dungeon Name": {
+      "highestKey": 25,
+      "totalRuns": 45,
+      "averageRating": 2800
+    }
+  },
+  "roleStats": {
+    "TANK": { "averageRating": 2700, "totalPlayers": 5 },
+    "HEALER": { "averageRating": 2750, "totalPlayers": 8 },
+    "DPS": { "averageRating": 2800, "totalPlayers": 17 }
+  }
 }
 ```
 
@@ -1061,17 +1224,26 @@ console.log('Available theme providers:', themeProviders) // ['default', 'my-the
 repo-name/
 ├── app/                    # Next.js App Router pages
 │   ├── api/               # API routes
+│   │   ├── seasonal-stats/ # Seasonal statistics endpoints
+│   │   └── member/         # Character profile endpoints
 │   ├── audit/             # Audit page
-│   ├── mythic-plus/       # M+ page
+│   ├── mythic-plus/       # M+ page with tabs
+│   ├── member/            # Individual character profiles
 │   ├── rated-pvp/         # PvP page
 │   ├── roster/            # Roster page
 │   ├── season3/           # Season 3 page
 │   └── mrt/               # MRT page
 ├── core/                   # Core application code
 │   ├── components/         # Reusable components
+│   │   └── Season3Stats/   # Season 3 statistics components
 │   ├── hooks/             # Custom React hooks
-│   ├── sections/          # Page sections
 │   ├── modules/           # Feature modules
+│   │   ├── SeasonalStatistics.jsx    # Seasonal stats display
+│   │   └── SeasonalLeaderboard.jsx   # Leaderboard display
+│   ├── screens/           # Screen components
+│   │   └── default/       # Default screen implementations
+│   │       ├── memberDetail.jsx      # Character profile screen
+│   │       └── mythicPlus.jsx       # Enhanced M+ screen
 │   └── utils/             # Utility functions
 ├── lib/                    # Library code
 │   ├── api.js             # API client

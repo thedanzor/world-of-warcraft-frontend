@@ -352,7 +352,7 @@ const ErrorDetailPage = () => {
             </Card>
 
             {/* Query Parameters */}
-            {Object.keys(error.context.query).length > 0 && (
+            {error.context.query && Object.keys(error.context.query).length > 0 && (
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
@@ -368,7 +368,7 @@ const ErrorDetailPage = () => {
             )}
 
             {/* Route Parameters */}
-            {Object.keys(error.context.params).length > 0 && (
+            {error.context.params && Object.keys(error.context.params).length > 0 && (
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>

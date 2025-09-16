@@ -13,6 +13,7 @@ import Box from '@mui/material/Box'
 import { visuallyHidden } from '@mui/utils'
 import Badge from '@mui/material/Badge'
 import Tooltip from '@mui/material/Tooltip'
+import Link from 'next/link'
 
 import config from '@/app.config.js'
 
@@ -294,14 +295,22 @@ const MythicPlusBlock = ({ data, name, hideControls }) => {
                                         </div>
                                     </TableCell>
                                     <TableCell sx={{ width: 200 }}>
-                                        <div className={`name ${character.class}`}>
-                                            <P>{character.name}</P>
-                                        </div>
-                                                                                 <div className="classandspec">
-                                             <P className="spec">
-                                                 {character.metaData?.spec || character.spec} {character.class}
-                                             </P>
-                                         </div>
+                                        <Link href={`/member/${character.server}/${character.name}`} style={{ textDecoration: 'none' }}>
+                                            <div className={`name ${character.class}`} style={{ cursor: 'pointer' }}>
+                                                <P sx={{ 
+                                                    color: '#FFFFFF', 
+                                                    fontWeight: '600',
+                                                    '&:hover': { color: '#B08D5A' }
+                                                }}>
+                                                    {character.name}
+                                                </P>
+                                            </div>
+                                            <div className="classandspec">
+                                                <P className="spec" sx={{ color: '#A3A3A3' }}>
+                                                    {character.metaData?.spec || character.spec} {character.class}
+                                                </P>
+                                            </div>
+                                        </Link>
                                     </TableCell>
                                                                          <TableCell sx={{ width: 120 }}>
                                          <span style={{ 

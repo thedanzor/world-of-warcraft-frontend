@@ -6,6 +6,7 @@ import config from '@/app.config.js';
 import Dashboard from './screens/default/dashboard';
 import RosterBuilder from './screens/default/rosterBuilder';
 import MythicPlus from './screens/default/mythicPlus';
+import MemberDetail from './screens/default/memberDetail';
 import Pvp from './screens/default/pvp';
 import Audit from './screens/default/audit';
 import Recruitment from './screens/default/recruitment';
@@ -19,6 +20,7 @@ const screenComponents = {
     dashboard: Dashboard,
     rosterBuilder: RosterBuilder,
     mythicPlus: MythicPlus,
+    memberDetail: MemberDetail,
     pvp: Pvp,
     audit: Audit,
     recruitment: Recruitment,

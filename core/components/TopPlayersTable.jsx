@@ -8,6 +8,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import config from '@/app.config.js'
 import getRatingColor from '@/core/utils/getRatingColor'
+import Link from 'next/link'
 
 const TopPlayersTable = ({ data, title, scoreKey }) => {
     const getValue = (player) => {
@@ -64,20 +65,26 @@ const TopPlayersTable = ({ data, title, scoreKey }) => {
                                     </div>
                                 </TableCell>
                                 <TableCell sx={{ width: 240 }}>
-                                    <div
-                                        className={`name ${player.class}`}
-                                    >
-                                        <span
-                                            style={{
-                                                textTransform: 'capitalize',
-                                            }}
+                                    <Link href={`/member/${player.server}/${player.name}`} style={{ textDecoration: 'none' }}>
+                                        <div
+                                            className={`name ${player.class}`}
+                                            style={{ cursor: 'pointer' }}
                                         >
-                                            {player.name}
-                                        </span>
-                                    </div>
-                                    <div className="classandspec">
-                                        {player.spec} {player.class}
-                                    </div>
+                                            <span
+                                                style={{
+                                                    textTransform: 'capitalize',
+                                                    color: '#FFFFFF',
+                                                    fontWeight: '600',
+                                                    '&:hover': { color: '#B08D5A' }
+                                                }}
+                                            >
+                                                {player.name}
+                                            </span>
+                                        </div>
+                                        <div className="classandspec">
+                                            {player.spec} {player.class}
+                                        </div>
+                                    </Link>
                                 </TableCell>
                                 <TableCell>
                                     {config.GUILLD_RANKS[player.guildRank] || player.guildRank || '-'}

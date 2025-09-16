@@ -50,13 +50,15 @@
 'use client'
 
 // React
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 // Material-UI components
-import { Typography, Box, Alert, CircularProgress } from '@mui/material'
+import { Typography, Box, Alert, CircularProgress, Tabs, Tab, Paper } from '@mui/material'
 
 // Internal components
 import MythicPlusBlock from '@/core/modules/MythicPlusBlock'
+import SeasonalLeaderboard from '@/core/modules/SeasonalLeaderboard'
+import SeasonalStatistics from '@/core/modules/SeasonalStatistics'
 
 // Styles
 import '@/core/screens/default/scss/mplus.scss'
@@ -67,7 +69,13 @@ import '@/core/screens/default/scss/guildAudit.scss'
  * Shows Mythic+ scores and rankings for guild members in a detailed table format
  * with individual dungeon scores displayed as columns
  */
-const MPlus = ({ auditable, guildData }) => {
+const MPlus = ({ auditable, guildData, seasonalData }) => {
+    const [activeTab, setActiveTab] = useState(0)
+
+    const handleTabChange = (event, newValue) => {
+        setActiveTab(newValue)
+    }
+
     // Handle loading and error states
     if (!guildData) {
         return (
@@ -86,6 +94,51 @@ const MPlus = ({ auditable, guildData }) => {
                 </Alert>
             </Box>
         )
+    }
+
+    const renderTabContent = () => {
+        switch (activeTab) {
+            case 0: // Weekly Recap
+                return (
+                    <MythicPlusBlock
+                        data={guildData}
+                        name="data"
+                    />
+                )
+            case 1: // Leaderboard
+                if (seasonalData?.errors?.players) {
+                    return (
+                        <Alert severity="error">
+                            <Typography variant="h6">Failed to load leaderboard</Typography>
+                            <Typography variant="body2">{seasonalData.errors.players}</Typography>
+                        </Alert>
+                    )
+                }
+                return (
+                    <SeasonalLeaderboard 
+                        data={seasonalData?.stats} 
+                        leaderboardData={seasonalData?.leaderboard}
+                        guildData={guildData}
+                    />
+                )
+            case 2: // Statistics
+                if (seasonalData?.errors?.stats) {
+                    return (
+                        <Alert severity="error">
+                            <Typography variant="h6">Failed to load statistics</Typography>
+                            <Typography variant="body2">{seasonalData.errors.stats}</Typography>
+                        </Alert>
+                    )
+                }
+                return (
+                    <SeasonalStatistics 
+                        data={seasonalData?.stats}
+                        guildData={guildData}
+                    />
+                )
+            default:
+                return null
+        }
     }
 
     //
@@ -118,14 +171,49 @@ const MPlus = ({ auditable, guildData }) => {
                                     textAlign: 'left',
                                 }}
                             >
-                                This information is based on each weekly reset.
+                                {activeTab === 0 
+                                    ? "This information is based on each weekly reset."
+                                    : "Seasonal statistics and leaderboards for current Mythic+ season."
+                                }
                             </Typography>
                         </div>
+                        
+                        {/* Tabs */}
+                        <Paper sx={{ 
+                            mb: 3,
+                            backgroundColor: 'rgba(17, 17, 17, 0.8)',
+                            backdropFilter: 'blur(10px)',
+                            WebkitBackdropFilter: 'blur(10px)',
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+                        }}>
+                            <Tabs
+                                value={activeTab}
+                                onChange={handleTabChange}
+                                sx={{
+                                    '& .MuiTab-root': {
+                                        color: '#A3A3A3',
+                                        fontWeight: '600',
+                                        textTransform: 'none',
+                                        fontSize: '1rem',
+                                        '&.Mui-selected': {
+                                            color: '#FFFFFF'
+                                        }
+                                    },
+                                    '& .MuiTabs-indicator': {
+                                        backgroundColor: '#B08D5A'
+                                    }
+                                }}
+                            >
+                                <Tab label="Weekly Recap" />
+                                <Tab label="Leaderboard" />
+                                <Tab label="Statistics" />
+                            </Tabs>
+                        </Paper>
+
+                        {/* Tab Content */}
                         <div className="">
-                            <MythicPlusBlock
-                                data={guildData}
-                                name="data"
-                            />
+                            {renderTabContent()}
                         </div>
                     </div>
                 </div>

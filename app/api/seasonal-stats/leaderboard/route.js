@@ -2,10 +2,18 @@ import { NextResponse } from 'next/server';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-export async function GET() {
+export async function GET(request) {
   try {
-    const response = await fetch(`${BACKEND_URL}/api/errors/stats`, {
-      cache: 'no-store' // No caching for error stats
+    const { searchParams } = new URL(request.url);
+    
+    // Build query string for backend
+    const queryString = searchParams.toString();
+    const backendUrl = queryString 
+      ? `${BACKEND_URL}/api/seasonal-stats/leaderboard?${queryString}`
+      : `${BACKEND_URL}/api/seasonal-stats/leaderboard`;
+    
+    const response = await fetch(backendUrl, {
+      cache: 'no-store' // No caching for leaderboard data
     });
     
     if (!response.ok) {
@@ -21,11 +29,11 @@ export async function GET() {
       }
     });
   } catch (error) {
-    console.error('Error fetching error stats:', error);
+    console.error('Error fetching leaderboard:', error);
     return NextResponse.json(
       { 
         success: false, 
-        error: 'Failed to fetch error stats',
+        error: 'Failed to fetch leaderboard',
         message: error.message 
       },
       { status: 500 }

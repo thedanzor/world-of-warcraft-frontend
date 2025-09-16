@@ -60,11 +60,11 @@ const data = {
                     "path": "/audit",
                     "icon": "AssessmentIcon"
                 },
-                {
-                    "label": "ERRORS",
-                    "path": "/errors",
-                    "icon": "BugReportIcon"
-                }
+                // {
+                //     "label": "ERRORS",
+                //     "path": "/errors",
+                //     "icon": "BugReportIcon"
+                // }
             ]
         },
         "SEASON3": {

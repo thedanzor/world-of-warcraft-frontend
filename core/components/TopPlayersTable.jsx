@@ -75,7 +75,7 @@ const TopPlayersTable = ({ data, title, scoreKey }) => {
                                                     textTransform: 'capitalize',
                                                     color: '#FFFFFF',
                                                     fontWeight: '600',
-                                                    '&:hover': { color: '#B08D5A' }
+                                                    '&:hover': { color: '#FFD700' }
                                                 }}
                                             >
                                                 {player.name}

@@ -1,12 +1,12 @@
 'use client'
 
-import { jockeyone, systemui } from '@/app/fonts'
+import { telex, systemui } from '@/app/fonts'
 
 import './scss/typo.scss'
 
 export const SocialText = ({ children }) => {
     return (
-        <span className={`${jockeyone.className} socialText`}>{children}</span>
+        <span className={`${telex.className} socialText`}>{children}</span>
     )
 }
 
@@ -17,7 +17,7 @@ export const MultiColorHeadingH1 = ({
     goFancy,
 }) => {
     return (
-        <h1 className={`${jockeyone.className} primaryTitle`}>
+        <h1 className={`${telex.className} primaryTitle`}>
             <span>
                 {highlightText && (
                     <span className={` ${goFancy ? 'goFancy' : ''}`}>
@@ -68,7 +68,7 @@ export const Span = ({
 
 export const Button = ({ children, variant = 'primaryButton' }) => {
     return (
-        <span className={`${jockeyone.className} ${variant}`}>{children}</span>
+        <span className={`${telex.className} ${variant}`}>{children}</span>
     )
 }
 export const ButtonEle = ({
@@ -79,7 +79,7 @@ export const ButtonEle = ({
 }) => {
     return (
         <span
-            className={`${jockeyone.className} ${variant} ${className}`}
+            className={`${telex.className} ${variant} ${className}`}
             onClick={onClick}
         >
             {children}
@@ -91,7 +91,7 @@ export const CardTitle = ({ children, className = '', onClick = () => {} }) => {
     return (
         <h3
             onClick={onClick}
-            className={`${jockeyone.className} cardTitle ${className}`}
+            className={`${telex.className} cardTitle ${className}`}
         >
             {children}
         </h3>
@@ -99,18 +99,18 @@ export const CardTitle = ({ children, className = '', onClick = () => {} }) => {
 }
 
 export const OrElement = ({}) => {
-    return <div className={`${jockeyone.className} orElement`}>or</div>
+    return <div className={`${telex.className} orElement`}>or</div>
 }
 
 export const H3 = ({ children }) => {
     return (
-        <h3 className={`${jockeyone.className} sectionHeading`}>{children}</h3>
+        <h3 className={`${telex.className} sectionHeading`}>{children}</h3>
     )
 }
 
 export const H4 = ({ children }) => {
     return (
-        <h4 className={`${jockeyone.className} sectionSubHeading`}>
+        <h4 className={`${telex.className} sectionSubHeading`}>
             {children}
         </h4>
     )

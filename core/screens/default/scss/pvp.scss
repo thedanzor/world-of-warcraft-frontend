@@ -9,7 +9,9 @@
     margin: 10px;
     padding: 10px;
     border-radius: 8px;
-    background-color: #000;
+    background-color: #101a29;
+    border: 1px solid rgba(176, 196, 222, 0.15);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
     position: relative;
 
     @media screen and (max-width: 2100px) {

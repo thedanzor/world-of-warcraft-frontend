@@ -28,7 +28,7 @@
  * - Preloading is disabled to prevent build-time issues
  */
 
-import { Poppins, Jockey_One } from 'next/font/google'
+import { Poppins, Jockey_One, Telex } from 'next/font/google'
 
 // Create font configurations with fallbacks
 export const systemui = Poppins({
@@ -45,4 +45,13 @@ export const jockeyone = Jockey_One({
     display: 'swap',
     fallback: ['system-ui', 'arial', 'sans-serif'],
     preload: false, // Disable preloading to avoid build issues
+})
+
+// Telex font for titles and across the app
+export const telex = Telex({
+    subsets: ['latin'],
+    weight: ['400'],
+    display: 'swap',
+    fallback: ['system-ui', 'arial', 'sans-serif'],
+    preload: false,
 })

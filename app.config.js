@@ -57,63 +57,6 @@ const data = {
     ],
     "RESULTS_PAGINATION": {
         "MAX_ITEMS": 20
-    },
-    "NAVIGATION": {
-        "OVERVIEW": {
-            "label": "OVERVIEW",
-            "items": [
-                {
-                    "label": "DASHBOARD",
-                    "path": "/",
-                    "icon": "DashboardIcon"
-                },
-                {
-                    "label": "RECRUITMENT",
-                    "path": "/join",
-                    "icon": "HowToRegIcon"
-                },
-                {
-                    "label": "AUDIT",
-                    "path": "/audit",
-                    "icon": "AssessmentIcon"
-                },
-                // {
-                //     "label": "ERRORS",
-                //     "path": "/errors",
-                //     "icon": "BugReportIcon"
-                // }
-            ]
-        },
-        "SEASON3": {
-            "label": "SEASON 3",
-            "items": [
-                {
-                    "label": "MYTHIC PLUS",
-                    "path": "/mythic-plus",
-                    "icon": "StarIcon"
-                },
-                {
-                    "label": "PVP",
-                    "path": "/rated-pvp",
-                    "icon": "EmojiEventsIcon"
-                },
-                {
-                    "label": "SIGN UP",
-                    "path": "/season3",
-                    "icon": "HowToRegIcon"
-                }
-            ]
-        },
-        "TOOLS": {
-            "label": "TOOLS",
-            "items": [
-                {
-                    "label": "ROSTER BUILDER",
-                    "path": "/roster",
-                    "icon": "GroupAddIcon"
-                }
-            ]
-        }
     }
 }
 export default data;

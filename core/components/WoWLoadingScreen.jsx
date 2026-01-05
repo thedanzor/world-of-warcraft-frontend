@@ -33,12 +33,12 @@ const WoWLoadingScreen = ({
           margin: '0 auto 24px',
           position: 'relative',
           borderRadius: '12px',
-          background: 'linear-gradient(135deg, #B08D5A 0%, #D4A574 50%, #E8D4B8 100%)',
+          background: 'linear-gradient(135deg, #FFD700 0%, #FFED4E 50%, #FFE135 100%)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           animation: 'pulse 2s ease-in-out infinite',
-          boxShadow: '0 8px 32px rgba(176, 141, 90, 0.3)'
+          boxShadow: '0 8px 32px rgba(255, 215, 0, 0.3)'
         }}>
           <div style={{
             width: '32px',
@@ -55,7 +55,7 @@ const WoWLoadingScreen = ({
               transform: 'translate(-50%, -50%)',
               width: '16px',
               height: '16px',
-              background: '#B08D5A',
+              background: '#FFD700',
               borderRadius: '3px'
             }}></div>
           </div>
@@ -74,7 +74,7 @@ const WoWLoadingScreen = ({
         
         {/* Subtitle text */}
         <div style={{ 
-          color: '#A3A3A3', 
+          color: '#B0C4DE', 
           fontSize: '0.875rem',
           fontWeight: '400',
           marginBottom: '16px',
@@ -95,7 +95,7 @@ const WoWLoadingScreen = ({
               width: '6px',
               height: '6px',
               borderRadius: '50%',
-              background: '#B08D5A',
+              background: '#FFD700',
               animation: 'bounce 1.4s ease-in-out infinite both',
               animationDelay: '0s'
             }}></div>
@@ -103,7 +103,7 @@ const WoWLoadingScreen = ({
               width: '6px',
               height: '6px',
               borderRadius: '50%',
-              background: '#B08D5A',
+              background: '#FFD700',
               animation: 'bounce 1.4s ease-in-out infinite both',
               animationDelay: '0.16s'
             }}></div>
@@ -111,7 +111,7 @@ const WoWLoadingScreen = ({
               width: '6px',
               height: '6px',
               borderRadius: '50%',
-              background: '#B08D5A',
+              background: '#FFD700',
               animation: 'bounce 1.4s ease-in-out infinite both',
               animationDelay: '0.32s'
             }}></div>
@@ -132,7 +132,7 @@ const WoWLoadingScreen = ({
             <div style={{
               width: '100%',
               height: '100%',
-              background: 'linear-gradient(90deg, #B08D5A, #D4A574)',
+              background: 'linear-gradient(90deg, #FFD700, #FFED4E)',
               borderRadius: '1px',
               animation: 'progress 2s ease-in-out infinite',
               transformOrigin: 'left'

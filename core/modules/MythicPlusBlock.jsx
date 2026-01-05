@@ -89,8 +89,8 @@ const getScoreColor = (score, color = null) => {
     if (score >= 2500) return '#c0c0c0' // Silver
     if (score >= 2000) return '#cd7f32' // Bronze
     if (score >= 1500) return '#4CAF50' // Green
-    if (score >= 1000) return '#B08D5A' // Brown (our theme color)
-    return '#A3A3A3' // Gray (matching dashboard secondary text)
+    if (score >= 1000) return '#FFD700' // Gold (our theme color)
+    return '#B0C4DE' // Gray (matching dashboard secondary text)
 }
 
 const MythicPlusBlock = ({ data, name, hideControls }) => {
@@ -181,7 +181,7 @@ const MythicPlusBlock = ({ data, name, hideControls }) => {
         }}>
             <TableContainer sx={{ 
                 '& .MuiTable-root': {
-                    backgroundColor: '#111111',
+                    backgroundColor: '#101a29',
                     '& .MuiTableHead-root .MuiTableRow-root .MuiTableCell-root': {
                         backgroundColor: 'rgba(255, 255, 255, 0.02)',
                         color: '#FFFFFF',
@@ -195,7 +195,7 @@ const MythicPlusBlock = ({ data, name, hideControls }) => {
                             backgroundColor: 'rgba(255, 255, 255, 0.02)'
                         },
                         '& .MuiTableCell-root': {
-                            color: '#A3A3A3',
+                            color: '#B0C4DE',
                             borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
                         }
                     }
@@ -300,13 +300,13 @@ const MythicPlusBlock = ({ data, name, hideControls }) => {
                                                 <P sx={{ 
                                                     color: '#FFFFFF', 
                                                     fontWeight: '600',
-                                                    '&:hover': { color: '#B08D5A' }
+                                                    '&:hover': { color: '#FFD700' }
                                                 }}>
                                                     {character.name}
                                                 </P>
                                             </div>
                                             <div className="classandspec">
-                                                <P className="spec" sx={{ color: '#A3A3A3' }}>
+                                                <P className="spec" sx={{ color: '#B0C4DE' }}>
                                                     {character.metaData?.spec || character.spec} {character.class}
                                                 </P>
                                             </div>
@@ -328,7 +328,7 @@ const MythicPlusBlock = ({ data, name, hideControls }) => {
                                                 if (!dungeonScoreData) {
                                                     return (
                                                         <Tooltip title="No data available" placement="top">
-                                                            <span style={{ color: '#A3A3A3' }}>-</span>
+                                                            <span style={{ color: '#B0C4DE' }}>-</span>
                                                         </Tooltip>
                                                     )
                                                 }

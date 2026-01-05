@@ -103,6 +103,7 @@ export default function SettingsPage() {
     }
   };
 
+
   useEffect(() => {
     // Fetch settings when component mounts (layout handles authentication)
     const authStatus = sessionStorage.getItem('settings_authenticated');
@@ -181,6 +182,7 @@ export default function SettingsPage() {
       console.error('Error fetching reset info:', error);
     }
   };
+
 
   const handleResetDatabase = async () => {
     setResetLoading(true);

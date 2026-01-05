@@ -27,8 +27,9 @@
                 top: 10px;
                 left: 52px;
             }
-            box-shadow: 0px 0px 40px #181c37;
-            background: #181c37;
+            box-shadow: 0px 0px 40px rgba(15, 27, 46, 0.8);
+            background: #101a29;
+            border: 1px solid rgba(176, 196, 222, 0.15);
             margin-bottom: 32px;
         }
     }
@@ -66,7 +67,11 @@
     h3 {
         font-size: 2rem;
         padding: 80px 0 20px 0;
-        color: #8dd52b;
+        color: #C8D8E8;
+        font-family: "Telex", sans-serif;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        text-shadow: 0 0 6px rgba(200, 216, 232, 0.15);
         text-align: left;
     }
 
@@ -111,7 +116,7 @@
 
         &.mrt-item-needsCD {
             .mrt-item-ability {
-                color: #8dd52b;
+                color: #FFD700;
             }
         }
 
@@ -154,7 +159,7 @@
         margin: 20px 0;
         padding: 22px;
         text-align: center;
-        background: #8dd52b;
+        background: #FFD700;
         color: #000;
         cursor: pointer;
     }

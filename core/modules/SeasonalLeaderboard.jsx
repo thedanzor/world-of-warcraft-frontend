@@ -110,18 +110,18 @@ const SeasonalLeaderboard = ({ data, leaderboardData, guildData }) => {
                         <TableBody>
                             {currentLeaderboardData.map((player, index) => (
                                 <TableRow key={index}>
-                                    <TableCell sx={{ color: '#A3A3A3' }}>
+                                    <TableCell sx={{ color: '#B0C4DE' }}>
                                         <Chip 
                                             label={`#${index + 1}`}
                                             size="small"
                                             sx={{ 
-                                                backgroundColor: index < 3 ? '#B08D5A' : 'rgba(255, 255, 255, 0.1)',
+                                                backgroundColor: index < 3 ? '#FFD700' : 'rgba(255, 255, 255, 0.1)',
                                                 color: '#FFFFFF',
                                                 fontWeight: '600'
                                             }}
                                         />
                                     </TableCell>
-                                    <TableCell sx={{ color: '#A3A3A3' }}>
+                                    <TableCell sx={{ color: '#B0C4DE' }}>
                                         <div className="mediaWrapper" style={{ 
                                             display: 'flex', 
                                             justifyContent: 'center',
@@ -162,23 +162,23 @@ const SeasonalLeaderboard = ({ data, leaderboardData, guildData }) => {
                                             })()}
                                         </div>
                                     </TableCell>
-                                    <TableCell sx={{ color: '#A3A3A3' }}>
+                                    <TableCell sx={{ color: '#B0C4DE' }}>
                                         <Link href={getPlayerUrl(player.name, guildData, player.realm)} style={{ textDecoration: 'none' }}>
                                             <div className={`name ${player.class}`} style={{ cursor: 'pointer' }}>
                                                 <P sx={{ 
                                                     fontWeight: '600', 
                                                     color: '#FFFFFF',
-                                                    '&:hover': { color: '#B08D5A' }
+                                                    '&:hover': { color: '#FFD700' }
                                                 }}>
                                                     {player.name}
                                                 </P>
-                                                <P sx={{ fontSize: '0.875rem', color: '#A3A3A3' }}>
+                                                <P sx={{ fontSize: '0.875rem', color: '#B0C4DE' }}>
                                                     {player.spec} {player.class}
                                                 </P>
                                             </div>
                                         </Link>
                                     </TableCell>
-                                    <TableCell sx={{ color: '#A3A3A3' }}>
+                                    <TableCell sx={{ color: '#B0C4DE' }}>
                                         {(() => {
                                             const guildPlayer = getGuildPlayerData(player.name)
                                             const currentScore = guildPlayer?.raw_mplus?.current_mythic_rating?.rating || player.rating || 0
@@ -195,17 +195,17 @@ const SeasonalLeaderboard = ({ data, leaderboardData, guildData }) => {
                                             )
                                         })()}
                                     </TableCell>
-                                    <TableCell sx={{ color: '#A3A3A3' }}>
+                                    <TableCell sx={{ color: '#B0C4DE' }}>
                                         <Tooltip title={`Timed: ${player.highestTimedKey}, Overall: ${player.highestKeyOverall}`}>
                                             <span style={{ fontWeight: '600' }}>
                                                 {player.highestTimedKey}
                                             </span>
                                         </Tooltip>
                                     </TableCell>
-                                    <TableCell sx={{ color: '#A3A3A3' }}>
+                                    <TableCell sx={{ color: '#B0C4DE' }}>
                                         {player.totalRuns}
                                     </TableCell>
-                                    <TableCell sx={{ color: '#A3A3A3' }}>
+                                    <TableCell sx={{ color: '#B0C4DE' }}>
                                         <span style={{ 
                                             color: player.completionRate >= 80 ? '#4CAF50' : 
                                                    player.completionRate >= 60 ? '#FF9800' : '#F44336',
@@ -244,12 +244,12 @@ const SeasonalLeaderboard = ({ data, leaderboardData, guildData }) => {
                 <TableBody>
                     {currentLeaderboardData.map((dungeon, index) => (
                         <TableRow key={index}>
-                            <TableCell sx={{ color: '#A3A3A3' }}>
+                            <TableCell sx={{ color: '#B0C4DE' }}>
                                 <P sx={{ fontWeight: '600', color: '#FFFFFF' }}>
                                     {dungeon.name}
                                 </P>
                             </TableCell>
-                            <TableCell sx={{ color: '#A3A3A3' }}>
+                            <TableCell sx={{ color: '#B0C4DE' }}>
                                 <span style={{ 
                                     color: getScoreColor(dungeon.highestKey * 100),
                                     fontWeight: '700',
@@ -258,13 +258,13 @@ const SeasonalLeaderboard = ({ data, leaderboardData, guildData }) => {
                                     {dungeon.highestKey}
                                 </span>
                             </TableCell>
-                            <TableCell sx={{ color: '#A3A3A3' }}>
+                            <TableCell sx={{ color: '#B0C4DE' }}>
                                 {dungeon.totalRuns}
                             </TableCell>
-                            <TableCell sx={{ color: '#A3A3A3' }}>
+                            <TableCell sx={{ color: '#B0C4DE' }}>
                                 {dungeon.timedRuns}
                             </TableCell>
-                            <TableCell sx={{ color: '#A3A3A3' }}>
+                            <TableCell sx={{ color: '#B0C4DE' }}>
                                 <span style={{ 
                                     color: dungeon.completionRate >= 80 ? '#4CAF50' : 
                                            dungeon.completionRate >= 60 ? '#FF9800' : '#F44336',
@@ -273,7 +273,7 @@ const SeasonalLeaderboard = ({ data, leaderboardData, guildData }) => {
                                     {Math.round(dungeon.completionRate)}%
                                 </span>
                             </TableCell>
-                            <TableCell sx={{ color: '#A3A3A3' }}>
+                            <TableCell sx={{ color: '#B0C4DE' }}>
                                 {dungeon.playerCount}
                             </TableCell>
                         </TableRow>
@@ -303,12 +303,12 @@ const SeasonalLeaderboard = ({ data, leaderboardData, guildData }) => {
                 <TableBody>
                     {currentLeaderboardData.map((role, index) => (
                         <TableRow key={index}>
-                            <TableCell sx={{ color: '#A3A3A3' }}>
+                            <TableCell sx={{ color: '#B0C4DE' }}>
                                 <P sx={{ fontWeight: '600', color: '#FFFFFF' }}>
                                     {role.name}
                                 </P>
                             </TableCell>
-                            <TableCell sx={{ color: '#A3A3A3' }}>
+                            <TableCell sx={{ color: '#B0C4DE' }}>
                                 <span style={{ 
                                     color: getScoreColor(role.averageRating),
                                     fontWeight: '700',
@@ -317,13 +317,13 @@ const SeasonalLeaderboard = ({ data, leaderboardData, guildData }) => {
                                     {Math.round(role.averageRating)}
                                 </span>
                             </TableCell>
-                            <TableCell sx={{ color: '#A3A3A3' }}>
+                            <TableCell sx={{ color: '#B0C4DE' }}>
                                 {role.totalRuns}
                             </TableCell>
-                            <TableCell sx={{ color: '#A3A3A3' }}>
+                            <TableCell sx={{ color: '#B0C4DE' }}>
                                 {role.timedRuns}
                             </TableCell>
-                            <TableCell sx={{ color: '#A3A3A3' }}>
+                            <TableCell sx={{ color: '#B0C4DE' }}>
                                 <span style={{ 
                                     color: role.completionRate >= 80 ? '#4CAF50' : 
                                            role.completionRate >= 60 ? '#FF9800' : '#F44336',
@@ -359,12 +359,12 @@ const SeasonalLeaderboard = ({ data, leaderboardData, guildData }) => {
                         label={type.charAt(0).toUpperCase() + type.slice(1)}
                         onClick={() => setLeaderboardType(type)}
                         sx={{
-                            backgroundColor: leaderboardType === type ? '#B08D5A' : 'rgba(255, 255, 255, 0.1)',
+                            backgroundColor: leaderboardType === type ? '#FFD700' : 'rgba(255, 255, 255, 0.1)',
                             color: '#FFFFFF',
                             fontWeight: '600',
                             cursor: 'pointer',
                             '&:hover': {
-                                backgroundColor: leaderboardType === type ? '#B08D5A' : 'rgba(255, 255, 255, 0.2)'
+                                backgroundColor: leaderboardType === type ? '#FFD700' : 'rgba(255, 255, 255, 0.2)'
                             }
                         }}
                     />

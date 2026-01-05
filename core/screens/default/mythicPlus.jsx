@@ -192,7 +192,7 @@ const MPlus = ({ auditable, guildData, seasonalData }) => {
                                 onChange={handleTabChange}
                                 sx={{
                                     '& .MuiTab-root': {
-                                        color: '#A3A3A3',
+                                        color: '#B0C4DE',
                                         fontWeight: '600',
                                         textTransform: 'none',
                                         fontSize: '1rem',
@@ -201,7 +201,7 @@ const MPlus = ({ auditable, guildData, seasonalData }) => {
                                         }
                                     },
                                     '& .MuiTabs-indicator': {
-                                        backgroundColor: '#B08D5A'
+                                        backgroundColor: '#FFD700'
                                     }
                                 }}
                             >

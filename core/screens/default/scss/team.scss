@@ -24,7 +24,11 @@
 
                     h4 {
                         font-size: 1.4rem;
-                        color: #8dd52b;
+                        color: #C8D8E8;
+                        font-family: "Telex", sans-serif;
+                        font-weight: 600;
+                        letter-spacing: 0.02em;
+                        text-shadow: 0 0 5px rgba(200, 216, 232, 0.1);
                         padding: 0 0 12px 0;
                     }
 
@@ -44,10 +48,11 @@
     .imgHolder {
         width: 220px;
         height: 220px;
-        background: #0b0a0f;
+        background: #101a29;
         margin: 0 auto 15px;
         border-radius: 30px;
         overflow:hidden;
+        border: 1px solid rgba(176, 196, 222, 0.15);
 
         img {
             width: 100%;

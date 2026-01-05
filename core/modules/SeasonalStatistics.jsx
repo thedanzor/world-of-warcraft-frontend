@@ -72,14 +72,14 @@ const SeasonalStatistics = ({ data, guildData }) => {
             height: '100%'
         }}>
             <CardContent>
-                <Typography variant="h6" sx={{ color: '#A3A3A3', mb: 1 }}>
+                <Typography variant="h6" sx={{ color: '#B0C4DE', mb: 1 }}>
                     {title}
                 </Typography>
                 <Typography variant="h4" sx={{ color, fontWeight: '700', mb: 1 }}>
                     {value}
                 </Typography>
                 {subtitle && (
-                    <Typography variant="body2" sx={{ color: '#A3A3A3' }}>
+                    <Typography variant="body2" sx={{ color: '#B0C4DE' }}>
                         {subtitle}
                     </Typography>
                 )}
@@ -103,7 +103,7 @@ const SeasonalStatistics = ({ data, guildData }) => {
                     <Box sx={{ mb: 2 }}>
                         <Link href={getPlayerUrl(achievement.player.name, achievement.player.realm)} style={{ textDecoration: 'none' }}>
                             <Typography variant="h4" sx={{ 
-                                color: '#B08D5A', 
+                                color: '#FFD700', 
                                 fontWeight: '700',
                                 cursor: 'pointer',
                                 '&:hover': { color: '#FFFFFF' }
@@ -111,7 +111,7 @@ const SeasonalStatistics = ({ data, guildData }) => {
                                 {achievement.player.name}
                             </Typography>
                         </Link>
-                        <Typography variant="body2" sx={{ color: '#A3A3A3' }}>
+                        <Typography variant="body2" sx={{ color: '#B0C4DE' }}>
                             {achievement.player.spec} {achievement.player.class}
                         </Typography>
                     </Box>
@@ -139,7 +139,7 @@ const SeasonalStatistics = ({ data, guildData }) => {
                 <Typography variant="h4" sx={{ color: '#FFFFFF', mb: 1 }}>
                     Season {data.season} Statistics
                 </Typography>
-                <Typography variant="body1" sx={{ color: '#A3A3A3' }}>
+                <Typography variant="body1" sx={{ color: '#B0C4DE' }}>
                     Last updated: {new Date(data.lastUpdated).toLocaleString()}
                 </Typography>
             </Paper>
@@ -234,7 +234,7 @@ const SeasonalStatistics = ({ data, guildData }) => {
                                             label={`#${index + 1}`}
                                             size="small"
                                             sx={{ 
-                                                backgroundColor: index < 3 ? '#B08D5A' : 'rgba(255, 255, 255, 0.1)',
+                                                backgroundColor: index < 3 ? '#FFD700' : 'rgba(255, 255, 255, 0.1)',
                                                 color: '#FFFFFF',
                                                 fontWeight: '600'
                                             }}
@@ -277,11 +277,11 @@ const SeasonalStatistics = ({ data, guildData }) => {
                                                 <Typography variant="h6" sx={{ 
                                                     color: '#FFFFFF', 
                                                     fontWeight: '600',
-                                                    '&:hover': { color: '#B08D5A' }
+                                                    '&:hover': { color: '#FFD700' }
                                                 }}>
                                                     {player.name}
                                                 </Typography>
-                                                <Typography variant="body2" sx={{ color: '#A3A3A3' }}>
+                                                <Typography variant="body2" sx={{ color: '#B0C4DE' }}>
                                                     {player.spec} {player.class}
                                                 </Typography>
                                             </div>
@@ -302,7 +302,7 @@ const SeasonalStatistics = ({ data, guildData }) => {
                                             </Typography>
                                         )
                                     })()}
-                                    <Typography variant="body2" sx={{ color: '#A3A3A3' }}>
+                                    <Typography variant="body2" sx={{ color: '#B0C4DE' }}>
                                         {player.totalRuns} runs
                                     </Typography>
                                 </Box>
@@ -335,7 +335,7 @@ const SeasonalStatistics = ({ data, guildData }) => {
                                 <Typography variant="h5" sx={{ color: getScoreColor(stats.highestKey * 100), fontWeight: '700', mb: 1 }}>
                                     +{stats.highestKey}
                                 </Typography>
-                                <Typography variant="body2" sx={{ color: '#A3A3A3' }}>
+                                <Typography variant="body2" sx={{ color: '#B0C4DE' }}>
                                     {stats.totalRuns} runs ({stats.playerCount} players)
                                 </Typography>
                                 <Typography variant="body2" sx={{ 

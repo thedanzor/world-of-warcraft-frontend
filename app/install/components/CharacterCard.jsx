@@ -90,7 +90,7 @@ const CharacterCard = ({ character, index, delay = 0 }) => {
         <Typography
           variant="body2"
           sx={{
-            color: '#A3A3A3',
+            color: '#B0C4DE',
             mb: 1,
             fontSize: '0.85rem',
           }}

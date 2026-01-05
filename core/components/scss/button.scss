@@ -3,10 +3,11 @@ a {
     border: 0;
 
     &.secondary {
-        color: #c0c0c0;
+        color: #B0C4DE;
 
         &:hover {
-            color: #fff;
+            color: #FFD700;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
         }
     }
 
@@ -16,13 +17,17 @@ a {
         display: inline-block;
         margin: 0 auto;
         color: #fff;
+        font-family: "Telex", sans-serif;
+        letter-spacing: 0.02em;
+        font-size: 1.1rem;
+        font-weight: 600;
     
         background-image: url('/images/button-bg.png');
         background-position: center;
         background-repeat: no-repeat;
     
         &:hover {
-            color: #8dd52b;
+            color: #FFD700;
         }
     
         span {

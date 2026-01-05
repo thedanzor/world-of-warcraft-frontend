@@ -12,7 +12,7 @@
  * - Modern component styling with subtle shadows and borders
  * 
  * COLOR SYSTEM:
- * - Primary: Warm brown (#D4A574) for accents and primary actions
+ * - Primary: Gold (#FFD700) for accents and primary actions
  * - Secondary: Cool grays for backgrounds and secondary elements
  * - Text: High contrast whites and grays for readability
  * - Background: Deep dark grays for depth and focus
@@ -73,29 +73,29 @@ const palette = {
         white: '#FFFFFF' 
     },
     primary: {
-        lighter: '#E8D4B8',
-        100: '#E8D4B8',
-        200: '#D4A574',
-        light: '#D4A574',
-        400: '#C19A6B',
-        main: '#B08D5A',
-        dark: '#9A7B4A',
-        700: '#8A6D3D',
-        darker: '#7A5F30',
-        900: '#6A5123',
-        contrastText: '#FFFFFF',
+        lighter: '#FFED4E',
+        100: '#FFED4E',
+        200: '#FFE135',
+        light: '#FFED4E',
+        400: '#FFD700',
+        main: '#FFD700',
+        dark: '#FFA500',
+        700: '#FF8C00',
+        darker: '#FF7F00',
+        900: '#FF6B00',
+        contrastText: '#000000',
     },
     secondary: {
-        lighter: '#1A1A1A',
-        100: '#1A1A1A',
-        200: '#2A2A2A',
-        light: '#3A3A3A',
-        400: '#4A4A4A',
-        500: '#5A5A5A',
-        main: '#6A6A6A',
-        dark: '#7A7A7A',
-        800: '#8A8A8A',
-        darker: '#9A9A9A',
+        lighter: '#152238',
+        100: '#152238',
+        200: '#1a2d4a',
+        light: '#1f3a5c',
+        400: '#2a4a6e',
+        500: '#355a80',
+        main: '#406a92',
+        dark: '#4b7aa4',
+        800: '#568ab6',
+        darker: '#619ac8',
         contrastText: '#FFFFFF',
     },
     error: {
@@ -144,28 +144,28 @@ const palette = {
     },
     text: {
         primary: '#FFFFFF',
-        secondary: '#A3A3A3',
-        disabled: '#525252',
+        secondary: '#B0C4DE',
+        disabled: '#6B7A99',
     },
     action: {
         active: alpha('#FFFFFF', 0.54),
-        hover: alpha('#FFFFFF', 0.04),
-        selected: alpha('#FFFFFF', 0.08),
+        hover: alpha('#FFD700', 0.08),
+        selected: alpha('#FFD700', 0.15),
         disabled: alpha('#FFFFFF', 0.26),
         disabledBackground: alpha('#FFFFFF', 0.12),
-        focus: alpha('#FFFFFF', 0.12),
-        hoverOpacity: 0.04,
-        selectedOpacity: 0.08,
+        focus: alpha('#FFD700', 0.12),
+        hoverOpacity: 0.08,
+        selectedOpacity: 0.15,
         disabledOpacity: 0.26,
         focusOpacity: 0.12,
         activatedOpacity: 0.12,
     },
-    divider: alpha('#FFFFFF', 0.08),
+    divider: alpha('#B0C4DE', 0.15),
     background: {
-        default: '#0A0A0A',
-        paper: '#111111',
-        secondary: '#1A1A1A',
-        tertiary: '#262626',
+        default: '#0a1628',
+        paper: '#101a29',
+        secondary: '#152238',
+        tertiary: '#1a2d4a',
     },
 }
 
@@ -478,7 +478,7 @@ function Paper(theme) {
             styleOverrides: {
                 root: {
                     borderRadius: 8,
-                    backgroundColor: theme.palette.background.paper,
+                    background: 'rgb(25 21 29 / 80%) !important',
                     border: `1px solid ${theme.palette.divider}`,
                 },
             },
@@ -615,40 +615,56 @@ function Typography(theme) {
         MuiTypography: {
             styleOverrides: {
                 h1: { 
+                    fontFamily: '"Telex", sans-serif',
                     fontWeight: 700, 
-                    fontSize: '2.25rem', 
+                    fontSize: '2.5rem', 
                     lineHeight: 1.2,
-                    letterSpacing: '-0.025em',
+                    letterSpacing: '0.02em',
+                    color: '#C8D8E8',
+                    textShadow: '0 0 10px rgba(200, 216, 232, 0.25), 0 2px 4px rgba(0, 0, 0, 0.4)',
                 },
                 h2: { 
-                    fontWeight: 500, 
-                    fontSize: '1.875rem', 
-                    lineHeight: 1.25,
-                    letterSpacing: '-0.025em',
+                    fontFamily: '"Telex", sans-serif',
+                    fontWeight: 700, 
+                    fontSize: '2rem', 
+                    lineHeight: 1.2,
+                    letterSpacing: '0.02em',
+                    color: '#C8D8E8',
+                    textShadow: '0 0 8px rgba(200, 216, 232, 0.2), 0 2px 3px rgba(0, 0, 0, 0.3)',
                 },
                 h3: { 
-                    fontWeight: 400, 
-                    fontSize: '1.5rem', 
-                    lineHeight: 1.3,
-                    letterSpacing: '-0.025em',
+                    fontFamily: '"Telex", sans-serif',
+                    fontWeight: 600, 
+                    fontSize: '1.75rem', 
+                    lineHeight: 1.2,
+                    letterSpacing: '0.02em',
+                    color: '#D8D8D8',
+                    textShadow: '0 0 6px rgba(200, 216, 232, 0.15)',
                 },
                 h4: { 
-                    fontWeight: 400, 
-                    fontSize: '1.25rem', 
-                    lineHeight: 1.35,
-                    letterSpacing: '-0.025em',
+                    fontFamily: '"Telex", sans-serif',
+                    fontWeight: 600, 
+                    fontSize: '1.5rem', 
+                    lineHeight: 1.2,
+                    letterSpacing: '0.02em',
+                    color: '#D8D8D8',
+                    textShadow: '0 0 5px rgba(200, 216, 232, 0.1)',
                 },
                 h5: { 
-                    fontWeight: 400, 
-                    fontSize: '1.125rem', 
-                    lineHeight: 1.4,
-                    letterSpacing: '-0.025em',
+                    fontFamily: '"Telex", sans-serif',
+                    fontWeight: 600, 
+                    fontSize: '1.25rem', 
+                    lineHeight: 1.2,
+                    letterSpacing: '0.02em',
+                    color: '#D8D8D8',
                 },
                 h6: { 
-                    fontWeight: 400, 
-                    fontSize: '1rem', 
-                    lineHeight: 1.5,
-                    letterSpacing: '-0.025em',
+                    fontFamily: '"Telex", sans-serif',
+                    fontWeight: 600, 
+                    fontSize: '1.125rem', 
+                    lineHeight: 1.2,
+                    letterSpacing: '0.02em',
+                    color: '#D8D8D8',
                 },
                 body1: { 
                     fontSize: '1rem', 
@@ -782,7 +798,7 @@ export default function ThemeCustomization({ children }) {
     if (!stylesLoaded) {
         return (
             <div style={{ 
-                backgroundColor: '#0A0A0A', 
+                        backgroundColor: '#0a1628',
                 minHeight: '100vh',
                 display: 'flex',
                 alignItems: 'center',
@@ -800,12 +816,12 @@ export default function ThemeCustomization({ children }) {
                         margin: '0 auto 24px',
                         position: 'relative',
                         borderRadius: '12px',
-                        background: 'linear-gradient(135deg, #B08D5A 0%, #D4A574 50%, #E8D4B8 100%)',
+                        background: 'linear-gradient(135deg, #FFD700 0%, #FFED4E 50%, #FFE135 100%)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         animation: 'pulse 2s ease-in-out infinite',
-                        boxShadow: '0 8px 32px rgba(176, 141, 90, 0.3)'
+                        boxShadow: '0 8px 32px rgba(255, 215, 0, 0.3)'
                     }}>
                         <div style={{
                             width: '32px',
@@ -822,7 +838,7 @@ export default function ThemeCustomization({ children }) {
                                 transform: 'translate(-50%, -50%)',
                                 width: '16px',
                                 height: '16px',
-                                background: '#B08D5A',
+                                background: '#FFD700',
                                 borderRadius: '3px'
                             }}></div>
                         </div>
@@ -841,7 +857,7 @@ export default function ThemeCustomization({ children }) {
                     
                     {/* Subtitle text */}
                     <div style={{ 
-                        color: '#A3A3A3', 
+                        color: '#B0C4DE', 
                         fontSize: '0.875rem',
                         fontWeight: '400',
                         marginBottom: '16px',
@@ -861,7 +877,7 @@ export default function ThemeCustomization({ children }) {
                             width: '6px',
                             height: '6px',
                             borderRadius: '50%',
-                            background: '#B08D5A',
+                            background: '#FFD700',
                             animation: 'bounce 1.4s ease-in-out infinite both',
                             animationDelay: '0s'
                         }}></div>
@@ -869,7 +885,7 @@ export default function ThemeCustomization({ children }) {
                             width: '6px',
                             height: '6px',
                             borderRadius: '50%',
-                            background: '#B08D5A',
+                            background: '#FFD700',
                             animation: 'bounce 1.4s ease-in-out infinite both',
                             animationDelay: '0.16s'
                         }}></div>
@@ -877,7 +893,7 @@ export default function ThemeCustomization({ children }) {
                             width: '6px',
                             height: '6px',
                             borderRadius: '50%',
-                            background: '#B08D5A',
+                            background: '#FFD700',
                             animation: 'bounce 1.4s ease-in-out infinite both',
                             animationDelay: '0.32s'
                         }}></div>
@@ -896,7 +912,7 @@ export default function ThemeCustomization({ children }) {
                         <div style={{
                             width: '100%',
                             height: '100%',
-                            background: 'linear-gradient(90deg, #B08D5A, #D4A574)',
+                            background: 'linear-gradient(90deg, #FFD700, #FFED4E)',
                             borderRadius: '1px',
                             animation: 'progress 2s ease-in-out infinite',
                             transformOrigin: 'left'

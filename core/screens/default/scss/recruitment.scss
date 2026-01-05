@@ -56,15 +56,15 @@
  * - Test content layouts with various text lengths
  */
 
-// Modern color variables
+// Modern color variables - Dark Blue Theme
 $recruitment-bg: none;
-$card-bg: #111111;
-$card-border: rgba(255, 255, 255, 0.08);
+$card-bg: #101a29;
+$card-border: rgba(176, 196, 222, 0.15);
 $text-primary: #FFFFFF;
-$text-secondary: #A3A3A3;
-$text-accent: #B08D5A;
-$shadow-light: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-$shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$text-secondary: #B0C4DE;
+$text-accent: #FFD700;
+$shadow-light: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+$shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
 
 .recruitment {
   background: $recruitment-bg;
@@ -162,14 +162,18 @@ $shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 
     }
   }
 
-  // Enhanced list styling
+  // Enhanced list styling - no automatic bullets/numbers since content is pre-formatted
   ul, ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    
     li {
-      padding: 12px 0;
+      padding: 8px 0;
       color: $text-secondary;
       font-size: 1rem;
       line-height: 1.6;
-      position: relative;
+      padding-left: 0;
       
       strong {
         color: $text-accent;
@@ -178,53 +182,26 @@ $shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 
     }
   }
 
-  ul li {
-    padding-left: 24px;
-    position: relative;
-    
-    &:before {
-      content: "•";
-      position: absolute;
-      left: 0;
-      color: $text-accent;
-      font-weight: bold;
-      font-size: 1.2rem;
-    }
-  }
-
-  ol li {
-    padding-left: 24px;
-    position: relative;
-    
-    &:before {
-      content: counter(list-item) ".";
-      position: absolute;
-      left: 0;
-      color: $text-accent;
-      font-weight: 600;
-    }
-  }
-
   // Enhanced heading styling
   h3 {
-    font-size: 2rem;
-    font-weight: 400;
-    padding: 32px 0 24px 0;
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding: 24px 0 16px 0;
     color: $text-accent;
     text-align: left;
-    letter-spacing: -0.025em;
-    line-height: 1.2;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
     margin: 0;
   }
 
   h4 {
-    font-size: 1.5rem;
-    font-weight: 300;
-    padding: 0 0 16px 0;
+    font-size: 1.125rem;
+    font-weight: 500;
+    padding: 0 0 12px 0;
     color: $text-accent;
     text-align: left;
-    letter-spacing: -0.025em;
-    line-height: 1.3;
+    letter-spacing: -0.01em;
+    line-height: 1.4;
     margin: 0;
   }
 
@@ -255,6 +232,10 @@ $shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 
     margin-bottom: 24px;
     box-shadow: $shadow-light;
     transition: all 0.2s ease-in-out;
+    
+    h4 {
+      margin-bottom: 16px;
+    }
     
     &:hover {
       box-shadow: $shadow-medium;
@@ -376,11 +357,11 @@ $shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 
     }
     
     h3 {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
     }
     
     h4 {
-      font-size: 1.25rem;
+      font-size: 1rem;
     }
   }
 
@@ -419,7 +400,7 @@ $shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 
   .sub-section {
     margin: 20px 0 20px 0;
     padding: 20px 0 20px 24px;
-    border-left: 3px solid rgba(176, 141, 90, 0.3);
+    border-left: 3px solid rgba(255, 215, 0, 0.3);
     background: rgba(255, 255, 255, 0.02);
     border-radius: 0 8px 8px 0;
     

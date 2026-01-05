@@ -56,8 +56,8 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
         if (score >= 2500) return '#c0c0c0' // Silver
         if (score >= 2000) return '#cd7f32' // Bronze
         if (score >= 1500) return '#4CAF50' // Green
-        if (score >= 1000) return '#B08D5A' // Brown
-        return '#A3A3A3' // Gray
+        if (score >= 1000) return '#FFD700' // Gold
+        return '#B0C4DE' // Gray
     }
 
     const StatCard = ({ title, value, subtitle, color = '#FFFFFF' }) => (
@@ -69,14 +69,14 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
             height: '100%'
         }}>
             <CardContent>
-                <Typography variant="h6" sx={{ color: '#A3A3A3', mb: 1 }}>
+                <Typography variant="h6" sx={{ color: '#B0C4DE', mb: 1 }}>
                     {title}
                 </Typography>
                 <Typography variant="h4" sx={{ color, fontWeight: '700', mb: 1 }}>
                     {value}
                 </Typography>
                 {subtitle && (
-                    <Typography variant="body2" sx={{ color: '#A3A3A3' }}>
+                    <Typography variant="body2" sx={{ color: '#B0C4DE' }}>
                         {subtitle}
                     </Typography>
                 )}
@@ -121,11 +121,11 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
                                 variant="outlined" 
                                 onClick={handleBackClick}
                                 sx={{ 
-                                    color: '#B08D5A',
-                                    borderColor: '#B08D5A',
+                                    color: '#FFD700',
+                                    borderColor: '#FFD700',
                                     '&:hover': {
-                                        borderColor: '#B08D5A',
-                                        backgroundColor: 'rgba(176, 141, 90, 0.1)'
+                                        borderColor: '#FFD700',
+                                        backgroundColor: 'rgba(255, 215, 0, 0.1)'
                                     }
                                 }}
                             >
@@ -200,18 +200,18 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
                                         <Typography variant="h6" sx={{ color: '#A3A3A3' }}>
                                             {characterData?.metaData?.spec} {characterData?.metaData?.class}
                                         </Typography>
-                                        <Typography variant="body2" sx={{ color: '#A3A3A3' }}>
+                                        <Typography variant="body2" sx={{ color: '#B0C4DE' }}>
                                             {decodedRealm} • Level {characterData?.metaData?.level || 'Unknown'} • 
                                             Item Level: 
                                             <span style={{ 
-                                                color: '#B08D5A',
+                                                color: '#FFD700',
                                                 fontWeight: '700',
                                                 marginLeft: '4px'
                                             }}>
                                                 {characterData?.itemlevel?.equiped || 0}
                                             </span>
                                         </Typography>
-                                        <Typography variant="body2" sx={{ color: '#A3A3A3' }}>
+                                        <Typography variant="body2" sx={{ color: '#B0C4DE' }}>
                                             Current Rating: 
                                             <span style={{ 
                                                 color: getScoreColor(characterData?.processedStats?.mythicPlusScore),
@@ -289,7 +289,7 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
                                             }}>
                                                 {characterData.ready ? 'Ready' : 'Not Ready'}
                                             </Typography>
-                                            <Typography variant="body2" sx={{ color: '#A3A3A3' }}>
+                                            <Typography variant="body2" sx={{ color: '#B0C4DE' }}>
                                                 {characterData.ready ? 'All enchants applied' : `${characterData.missingEnchants} missing enchants`}
                                             </Typography>
                                         </CardContent>
@@ -308,7 +308,7 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
                                             }}>
                                                 {characterData.hasTierSet ? 'Tier Set' : 'No Tier Set'}
                                             </Typography>
-                                            <Typography variant="body2" sx={{ color: '#A3A3A3' }}>
+                                            <Typography variant="body2" sx={{ color: '#B0C4DE' }}>
                                                 {characterData.hasTierSet ? 'Tier pieces equipped' : 'No tier pieces found'}
                                             </Typography>
                                         </CardContent>
@@ -327,7 +327,7 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
                                             }}>
                                                 {characterData.isActiveInSeason2 ? 'Active' : 'Inactive'}
                                             </Typography>
-                                            <Typography variant="body2" sx={{ color: '#A3A3A3' }}>
+                                            <Typography variant="body2" sx={{ color: '#B0C4DE' }}>
                                                 {characterData.isActiveInSeason2 ? 'Active this season' : 'Inactive this season'}
                                             </Typography>
                                         </CardContent>
@@ -376,7 +376,7 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
                                                                 label={`${member.count} runs`}
                                                                 size="small"
                                                                 sx={{ 
-                                                                    backgroundColor: '#B08D5A',
+                                                                    backgroundColor: '#FFD700',
                                                                     color: '#FFFFFF',
                                                                     fontWeight: '600'
                                                                 }}
@@ -417,23 +417,23 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
                                                 <TableBody>
                                                     {Object.entries(seasonalData.dungeonStats).map(([dungeon, stats]) => (
                                                         <TableRow key={dungeon}>
-                                                            <TableCell sx={{ color: '#A3A3A3' }}>
+                                                            <TableCell sx={{ color: '#B0C4DE' }}>
                                                                 <Typography variant="body1" sx={{ fontWeight: '600', color: '#FFFFFF' }}>
                                                                     {dungeon}
                                                                 </Typography>
                                                             </TableCell>
-                                                            <TableCell sx={{ color: '#A3A3A3' }}>
+                                                            <TableCell sx={{ color: '#B0C4DE' }}>
                                                                 {stats.totalRuns}
                                                             </TableCell>
-                                                            <TableCell sx={{ color: '#A3A3A3' }}>
+                                                            <TableCell sx={{ color: '#B0C4DE' }}>
                                                                 <span style={{ 
-                                                                    color: stats.timedRuns > 0 ? '#4CAF50' : '#A3A3A3',
+                                                                    color: stats.timedRuns > 0 ? '#4CAF50' : '#B0C4DE',
                                                                     fontWeight: '600'
                                                                 }}>
                                                                     {stats.timedRuns}
                                                                 </span>
                                                             </TableCell>
-                                                            <TableCell sx={{ color: '#A3A3A3' }}>
+                                                            <TableCell sx={{ color: '#B0C4DE' }}>
                                                                 <span style={{ 
                                                                     color: getScoreColor(stats.highestKey * 100),
                                                                     fontWeight: '700'
@@ -441,7 +441,7 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
                                                                     +{stats.highestKey}
                                                                 </span>
                                                             </TableCell>
-                                                            <TableCell sx={{ color: '#A3A3A3' }}>
+                                                            <TableCell sx={{ color: '#B0C4DE' }}>
                                                                 <span style={{ 
                                                                     color: getScoreColor(stats.averageRating),
                                                                     fontWeight: '600'

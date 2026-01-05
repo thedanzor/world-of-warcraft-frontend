@@ -12,7 +12,12 @@ export default function RootLayout({ children }) {
             <head>
                 <link rel="icon" href="/favicon.ico" sizes="any" />
                 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-                <meta name="theme-color" content="#1a1a1a" />
+                <meta name="theme-color" content="#0a1628" />
+                
+                {/* Google Fonts - Telex */}
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+                <link href="https://fonts.googleapis.com/css2?family=Telex:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
                 
                 {/* Preload critical styles to prevent FOUC */}
                 <link 

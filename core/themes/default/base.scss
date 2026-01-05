@@ -12,11 +12,11 @@
  * - Modern component styling with subtle shadows and borders
  * 
  * COLOR SYSTEM:
- * - Primary: Warm brown (#B08D5A) for accents and primary actions
- * - Secondary: Cool grays for backgrounds and secondary elements
- * - Text: High contrast whites and grays for readability
- * - Background: Deep dark grays for depth and focus
- * - Accents: Subtle browns and warm tones for visual interest
+ * - Primary: Gold (#FFD700) for accents and primary actions
+ * - Secondary: Dark blues for backgrounds and secondary elements
+ * - Text: High contrast whites and light blues for readability
+ * - Background: Deep dark blues for depth and focus
+ * - Accents: Gold/yellow for links and highlights
  * 
  * TYPOGRAPHY:
  * - Clean, modern font stack with excellent readability
@@ -30,31 +30,48 @@
  * - Generous whitespace for breathing room
  */
 
-// Modern font stack for excellent readability
-$font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-$font-family-heading: $font-family-base;
+// Telex font stack - used across the app
+$font-family-title: "Telex", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-menu: "Telex", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-base: "Telex", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-heading: $font-family-title;
 
-// Base colors
+// Base colors - Dark Blue Theme
 $color-background: none;
-$color-surface: #111111;
-$color-surface-secondary: #1A1A1A;
-$color-surface-tertiary: #262626;
+$color-surface: #0a1628;
+$color-surface-secondary: #101a29;
+$color-surface-tertiary: #152238;
 
 $color-text-primary: #FFFFFF;
-$color-text-secondary: #A3A3A3;
-$color-text-disabled: #525252;
+$color-text-secondary: #B0C4DE;
+$color-text-disabled: #6B7A99;
 
-$color-primary: #B08D5A;
-$color-primary-light: #D4A574;
-$color-primary-dark: #9A7B4A;
+// Link colors - Yellow/Gold
+$color-link: #FFD700;
+$color-link-hover: #FFED4E;
+$color-link-active: #FFA500;
 
-$color-border: rgba(255, 255, 255, 0.08);
-$color-divider: rgba(255, 255, 255, 0.08);
+// Title colors - Softer Light Blue/Silver
+$color-title: #C8D8E8;
+$color-title-secondary: #D8D8D8;
+$color-title-accent: #A8C8D8;
+
+// Accent colors
+$color-primary: #FFD700;
+$color-primary-light: #FFED4E;
+$color-primary-dark: #FFA500;
+
+$color-border: rgba(176, 196, 222, 0.15);
+$color-divider: rgba(176, 196, 222, 0.15);
 
 // Base styles
 body, html {
   background-color: #0b0b0b !important;
-  background:#0b0b0b  url('/design/artwork.png') no-repeat top center !important;
+  background-image: 
+    linear-gradient(rgba(26, 15, 36, 0.6), rgba(26, 15, 36, 0.6)),
+    url('/design/main-bg.avif') !important;
+  background-repeat: no-repeat !important;
+  background-position: top center !important;
   background-size: 100% auto !important;
   font-family: $font-family-base;
   font-size: 16px;
@@ -66,11 +83,13 @@ body, html {
   -moz-osx-font-smoothing: grayscale;
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: $font-family-heading;
+    font-family: $font-family-title;
     font-weight: 600;
     line-height: 1.2;
-    letter-spacing: -0.025em;
+    letter-spacing: 0.02em;
     margin: 0 0 1rem 0;
+    color: $color-title;
+    text-shadow: 0 0 8px rgba(200, 216, 232, 0.2);
   }
 
   .MuiTablePagination-input {
@@ -79,33 +98,43 @@ body, html {
   }
 
   h1 {
-    font-size: 2.25rem;
+    font-size: 2.5rem;
     font-weight: 700;
+    color: $color-title;
+    text-shadow: 0 0 10px rgba(200, 216, 232, 0.25), 0 2px 4px rgba(0, 0, 0, 0.4);
   }
 
   h2 {
-    font-size: 1.875rem;
+    font-size: 2rem;
     font-weight: 700;
+    color: $color-title;
+    text-shadow: 0 0 8px rgba(200, 216, 232, 0.2), 0 2px 3px rgba(0, 0, 0, 0.3);
   }
 
   h3 {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-weight: 600;
+    color: $color-title-secondary;
+    text-shadow: 0 0 6px rgba(200, 216, 232, 0.15);
   }
 
   h4 {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 600;
+    color: $color-title-secondary;
+    text-shadow: 0 0 5px rgba(200, 216, 232, 0.1);
   }
 
   h5 {
-    font-size: 1.125rem;
-    font-weight: 600;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: $color-title-secondary;
   }
 
   h6 {
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: $color-title-secondary;
   }
 
   p {
@@ -115,11 +144,17 @@ body, html {
 
   a {
     text-decoration: none;
-    color: $color-primary;
-    transition: color 0.2s ease-in-out;
+    color: $color-link;
+    transition: all 0.2s ease-in-out;
+    font-weight: 500;
     
     &:hover {
-      color: $color-primary-light;
+      color: $color-link-hover;
+      text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+    }
+    
+    &:active {
+      color: $color-link-active;
     }
   }
 
@@ -140,12 +175,12 @@ body, html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: $color-surface-tertiary;
+  background: #1a2d4a;
   border-radius: 4px;
   transition: background 0.2s ease-in-out;
   
   &:hover {
-    background: lighten($color-surface-tertiary, 10%);
+    background: #2a3d5a;
   }
 }
 
@@ -179,11 +214,11 @@ body, html {
   border: 1px solid $color-border;
   border-radius: 8px;
   padding: 24px;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
   transition: all 0.2s ease-in-out;
   
   &:hover {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
   }
 }
 
@@ -347,8 +382,9 @@ body, html {
     }
     
     &.active {
-      background: rgba($color-primary, 0.1);
-      color: $color-primary;
+      background: rgba($color-link, 0.15);
+      color: $color-link;
+      text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
     }
   }
 }
@@ -362,9 +398,9 @@ body, html {
   margin-bottom: 16px;
   
   &-info {
-    background: rgba(176, 141, 90, 0.1);
-    border-color: rgba(176, 141, 90, 0.2);
-    color: #B08D5A;
+    background: rgba(255, 215, 0, 0.1);
+    border-color: rgba(255, 215, 0, 0.3);
+    color: $color-link;
   }
   
   &-success {
@@ -431,7 +467,7 @@ body, html {
 .text-primary { color: $color-text-primary; }
 .text-secondary { color: $color-text-secondary; }
 .text-disabled { color: $color-text-disabled; }
-.text-accent { color: $color-primary; }
+.text-accent { color: $color-link; }
 
 .text-sm { font-size: 0.875rem; }
 .text-xs { font-size: 0.75rem; }
@@ -617,4 +653,9 @@ body, html {
     font-weight: 800;
     text-transform: capitalize;
   }
+}
+
+// MUI Paper styling
+.MuiPaper-root {
+  background: rgb(25 21 29 / 80%) !important;
 }

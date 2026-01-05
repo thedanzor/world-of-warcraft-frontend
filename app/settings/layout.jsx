@@ -24,6 +24,7 @@ import {
   Settings as SettingsIcon,
   BugReport as BugReportIcon,
   Refresh as RefreshIcon,
+  PersonAdd as PersonAddIcon,
 } from '@mui/icons-material';
 import Link from 'next/link';
 
@@ -158,7 +159,7 @@ export default function SettingsLayout({ children }) {
   }
 
   // Show settings interface when authenticated
-  const currentTab = pathname === '/settings' ? 0 : pathname?.startsWith('/settings/errors') ? 1 : 0;
+  const currentTab = pathname === '/settings' ? 0 : pathname === '/settings/join' ? 1 : pathname?.startsWith('/settings/errors') ? 2 : 0;
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -186,12 +187,20 @@ export default function SettingsLayout({ children }) {
             value={0}
           />
           <Tab
+            label="Join Page"
+            icon={<PersonAddIcon />}
+            iconPosition="start"
+            component={Link}
+            href="/settings/join"
+            value={1}
+          />
+          <Tab
             label="Errors"
             icon={<BugReportIcon />}
             iconPosition="start"
             component={Link}
             href="/settings/errors"
-            value={1}
+            value={2}
           />
         </Tabs>
       </Box>

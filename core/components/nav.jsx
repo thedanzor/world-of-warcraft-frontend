@@ -16,14 +16,25 @@ import StarIcon from '@mui/icons-material/Star'
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents'
 import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
+import SettingsIcon from '@mui/icons-material/Settings'
 import Typography from '@mui/material/Typography'
 import GroupAddIcon from '@mui/icons-material/GroupAdd'
 import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing'
 import HowToRegIcon from '@mui/icons-material/HowToReg'
 import BugReportIcon from '@mui/icons-material/BugReport'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
+import Alert from '@mui/material/Alert'
+import CircularProgress from '@mui/material/CircularProgress'
+import Grid from '@mui/material/Grid'
 
 import './scss/nav.scss'
 import { useConfig } from '@/core/hooks/useConfig'
+import menuConfig from '@/menu.config'
 
 // Icon mapping for dynamic icon loading
 const iconMap = {
@@ -41,10 +52,19 @@ export default function Nav() {
     const { config, loading } = useConfig()
     const pathname = usePathname()
     const [mobileOpen, setMobileOpen] = useState(false)
+    const [loginDialogOpen, setLoginDialogOpen] = useState(false)
+    const [loginCredentials, setLoginCredentials] = useState({ username: '', password: '' })
+    const [loginError, setLoginError] = useState('')
+    const [loginLoading, setLoginLoading] = useState(false)
     const handleDrawerToggle = () => setMobileOpen(!mobileOpen)
     
+    // Get guild name from config and format it (replace hyphens with spaces)
+    const guildName = config?.GUILD_NAME 
+        ? config.GUILD_NAME.replace(/-/g, ' ')
+        : process.env.NEXT_PUBLIC_GUILD_NAME?.replace(/-/g, ' ') || 'Guild'
+    
     // Convert config navigation to component format with icon components
-    const navigationItems = config?.NAVIGATION ? Object.entries(config.NAVIGATION).reduce((acc, [key, section]) => {
+    const navigationItems = menuConfig?.NAVIGATION ? Object.entries(menuConfig.NAVIGATION).reduce((acc, [key, section]) => {
         acc[key] = {
             ...section,
             items: section.items.map(item => ({
@@ -54,7 +74,10 @@ export default function Nav() {
         }
         return acc
     }, {}) : {}
-    
+
+    console.log('config', config)
+    console.log('menuConfig', menuConfig)
+    console.log('navigationItems', navigationItems)
     // Helper functions
     function isActive(path, pathname) {
         if (path === '/') return pathname === path
@@ -72,7 +95,7 @@ export default function Nav() {
         return 'OVERVIEW'
     }
     
-    if (loading || !config?.NAVIGATION) {
+    if (loading || !navigationItems) {
         return <nav className="crm-nav-root"><div></div></nav>
     }
     
@@ -137,8 +160,86 @@ export default function Nav() {
                     ))}
                 </div>
             ))}
+            {/* Settings menu item */}
+            <ListItem disablePadding className="nav-mobile-list-item">
+                <ListItemButton
+                    className="nav-mobile-list-btn"
+                    onClick={() => {
+                        handleDrawerToggle()
+                        handleSettingsClick()
+                    }}
+                >
+                    <ListItemIcon className="nav-mobile-list-icon">
+                        <SettingsIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Settings" className="nav-mobile-list-label" />
+                </ListItemButton>
+            </ListItem>
         </List>
     )
+
+    const handleSettingsClick = () => {
+        // Check if already authenticated
+        const authStatus = sessionStorage.getItem('settings_authenticated')
+        if (authStatus === 'true') {
+            // Already authenticated, navigate directly
+            window.location.href = '/settings'
+        } else {
+            // Not authenticated, show login dialog
+            setLoginDialogOpen(true)
+            setLoginError('')
+            setLoginCredentials({ username: '', password: '' })
+        }
+    }
+
+    const handleLogin = async (e) => {
+        e.preventDefault()
+        setLoginLoading(true)
+        setLoginError('')
+
+        try {
+            const response = await fetch('/api/install/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginCredentials),
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                setLoginError(data.message || data.error || 'Login failed')
+                return
+            }
+
+            // Store authentication state and credentials
+            sessionStorage.setItem('settings_authenticated', 'true')
+            sessionStorage.setItem('settings_username', loginCredentials.username)
+            sessionStorage.setItem('settings_password', loginCredentials.password)
+            
+            // Close dialog and redirect to settings
+            setLoginDialogOpen(false)
+            setLoginError('')
+            setLoginCredentials({ username: '', password: '' })
+            window.location.href = '/settings'
+        } catch (error) {
+            console.error('Error logging in:', error)
+            setLoginError('Failed to login. Please try again.')
+        } finally {
+            setLoginLoading(false)
+        }
+    }
+
+    const handleCloseLoginDialog = () => {
+        if (!loginLoading) {
+            setLoginDialogOpen(false)
+            setLoginError('')
+            setLoginCredentials({ username: '', password: '' })
+        }
+    }
+
+    console.log('guildName', guildName)
 
     return (
         <nav className="crm-nav-root">
@@ -146,11 +247,22 @@ export default function Nav() {
             <div className="crm-logo-bar">
                 <div className="crm-logo-bar-inner">
                     <Link href="/" className="crm-logo-link">
-                        {process.env.NEXT_PUBLIC_GUILD_NAME}
+                        {guildName}
                     </Link>
+                    <div className="crm-logo-separator"></div>
                     {/* Desktop group navigation */}
                     <div className="crm-desktop-group-nav-wrapper">
                         <DesktopGroupNav />
+                    </div>
+                    {/* Desktop settings icon (right side) */}
+                    <div className="crm-desktop-settings-wrapper">
+                        <IconButton
+                            aria-label="settings"
+                            onClick={handleSettingsClick}
+                            className="crm-settings-icon-btn"
+                        >
+                            <SettingsIcon />
+                        </IconButton>
                     </div>
                     {/* Mobile menu button (right side) */}
                     <div className="crm-mobile-menu-btn-wrapper">
@@ -179,11 +291,85 @@ export default function Nav() {
             >
                 <div className="nav-mobile-drawer-content">
                     <div className="logoSmall">
-                        {process.env.NEXT_PUBLIC_GUILD_NAME}
+                        {guildName}
                     </div>
                     {renderNavItems()}
+                    {/* Mobile settings item */}
+                    <ListItem disablePadding className="nav-mobile-list-item">
+                        <ListItemButton
+                            onClick={() => {
+                                handleDrawerToggle()
+                                handleSettingsClick()
+                            }}
+                            className="nav-mobile-list-btn"
+                        >
+                            <ListItemIcon className="nav-mobile-list-icon">
+                                <SettingsIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Settings" className="nav-mobile-list-label" />
+                        </ListItemButton>
+                    </ListItem>
                 </div>
             </Drawer>
+            
+            {/* Login Dialog */}
+            <Dialog 
+                open={loginDialogOpen} 
+                onClose={handleCloseLoginDialog}
+                maxWidth="sm"
+                fullWidth
+            >
+                <DialogTitle>Admin Login</DialogTitle>
+                <DialogContent>
+                    <DialogContentText sx={{ mb: 3 }}>
+                        Please enter your admin credentials to access the settings panel.
+                    </DialogContentText>
+                    
+                    {loginError && (
+                        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setLoginError('')}>
+                            {loginError}
+                        </Alert>
+                    )}
+                    
+                    <form onSubmit={handleLogin}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Username"
+                                    value={loginCredentials.username}
+                                    onChange={(e) => setLoginCredentials(prev => ({ ...prev, username: e.target.value }))}
+                                    required
+                                    disabled={loginLoading}
+                                    autoFocus
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Password"
+                                    type="password"
+                                    value={loginCredentials.password}
+                                    onChange={(e) => setLoginCredentials(prev => ({ ...prev, password: e.target.value }))}
+                                    required
+                                    disabled={loginLoading}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    fullWidth
+                                    disabled={loginLoading || !loginCredentials.username || !loginCredentials.password}
+                                    startIcon={loginLoading ? <CircularProgress size={20} /> : null}
+                                >
+                                    {loginLoading ? 'Logging in...' : 'Login'}
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </nav>
     )
 } 

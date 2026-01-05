@@ -6,13 +6,17 @@
 .primaryTitle {
     text-transform: uppercase;
     font-size: 54px;
-    color: #fff;
+    color: #C8D8E8;
+    font-family: "Telex", sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.02em;
     text-align: center;
     min-height: 140px;
+    text-shadow: 0 0 10px rgba(200, 216, 232, 0.25), 0 2px 4px rgba(0, 0, 0, 0.4);
 
     @media screen and (max-width: 1000px) {
         font-size: 48px;
-        color: #fff;
+        color: #C8D8E8;
     }
 
     @media screen and (max-width: 600px) {
@@ -23,16 +27,17 @@
         position: relative;
 
         span {
-            color: #d38a2a;
+            color: #FFD700;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
         }
 
         div {
             position: absolute;
             bottom: -15px;
             right: 0;
-            color: #d38a2a;
+            color: #FFD700;
             font-size: 16px;
-            font-weight: 400;
+            font-weight: 500;
         }
     }
 
@@ -41,7 +46,7 @@
         background-image: linear-gradient(
             -225deg,
             #ff1361 0%,
-            #d38a2a 50%,
+            #FFD700 50%,
             #ff1361 67%,
             #44107a 100%,
         );
@@ -80,7 +85,10 @@
 .orElement {
     font-size: 16px;
     text-transform: uppercase;
-    color: #d38822;
+    color: #FFD700;
+    font-family: "Telex", sans-serif;
+    letter-spacing: 0.02em;
+    font-weight: 500;
     padding: 22px 0;
 }
 
@@ -92,14 +100,17 @@
     padding: 8px 32px;
     margin-bottom: 20px;
     display: inline-block;
-    border-bottom: 4px solid #fff;
-    color: #fff;
+    border-bottom: 4px solid #C8D8E8;
+    color: #C8D8E8;
+    font-family: "Telex", sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.02em;
     margin-right: 8px;
 
     &.active,
     &:hover {
-        color:#d38a2a !important;
-        border-color: #d38a2a;
+        color: #FFD700 !important;
+        border-color: #FFD700;
         cursor: pointer;
     }
 
@@ -127,6 +138,11 @@ h3.sectionHeading {
     display: block;
     text-align: center;
     font-size: 2.4rem;
+    font-family: "Telex", sans-serif;
+    font-weight: 700;
+    color: #C8D8E8;
+    letter-spacing: 0.02em;
+    text-shadow: 0 0 8px rgba(200, 216, 232, 0.2);
 }
 
 button {

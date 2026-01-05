@@ -1717,7 +1717,7 @@ export default function InstallPage() {
                 <Typography
                   variant="body1"
                   sx={{
-                    color: '#A3A3A3',
+                    color: '#B0C4DE',
                     mb: 3,
                     fontSize: '1.1rem',
                   }}

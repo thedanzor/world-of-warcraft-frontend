@@ -46,32 +46,41 @@
  * - Test navigation with various content lengths
  */
 
-// Modern color variables
-$nav-bg-primary: #0A0A0A;
-$nav-bg-secondary: #111111;
-$nav-bg-tertiary: #0D0D0D;
-$nav-border: rgba(255, 255, 255, 0.08);
+// Modern color variables - Dark Blue Theme
+$nav-bg-primary: #0a1628;
+$nav-bg-secondary: #101a29;
+$nav-bg-tertiary: #152238;
+$nav-border: rgba(200, 216, 232, 0.1);
 $text-primary: #FFFFFF;
-$text-secondary: #A3A3A3;
-$text-accent: #B08D5A;
-$accent-bg: rgba(176, 141, 90, 0.15);
-$accent-border: rgba(176, 141, 90, 0.3);
-$hover-bg: rgba(255, 255, 255, 0.04);
+$text-secondary: #C8D8E8;
+$text-accent: #FFD700;
+$accent-bg: rgba(255, 215, 0, 0.12);
+$accent-border: rgba(255, 215, 0, 0.25);
+$hover-bg: rgba(255, 255, 255, 0.05);
+$link-color: #FFD700;
+$link-hover: #FFED4E;
 
 .crm-nav-root {
   width: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Poppins", "Helvetica", "Arial", sans-serif;
   background: $nav-bg-primary;
   border-bottom: 1px solid $nav-border;
   position: sticky;
   top: 0;
   z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 // Main bar: Logo and group navigation
 .crm-logo-bar {
   width: 100%;
-  background: $nav-bg-secondary;
+  background: #1a0f24;
+  background-image: 
+    linear-gradient(rgba(26, 15, 36, 0.85), rgba(26, 15, 36, 0.85)),
+    url('/design/above-logo.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   border-bottom: 1px solid $nav-border;
   position: relative;
   z-index: 10;
@@ -83,22 +92,32 @@ $hover-bg: rgba(255, 255, 255, 0.04);
   justify-content: flex-start;
   max-width: 1600px;
   margin: 0 auto;
-  padding: 16px 24px;
+  padding: 20px 24px;
   gap: 32px;
 }
 
 .crm-logo-link {
   font-size: 1.5rem;
   font-weight: 700;
-  color: $text-primary;
+  color: #C8D8E8;
   text-decoration: none;
-  letter-spacing: -0.025em;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  transition: color 0.2s ease-in-out;
+  letter-spacing: 0.02em;
+  font-family: "Telex", sans-serif;
+  transition: all 0.2s ease-in-out;
+  text-shadow: 0 0 8px rgba(200, 216, 232, 0.2);
+  text-transform: capitalize;
   
   &:hover {
-    color: $text-accent;
+    color: #E0E0E0;
+    text-shadow: 0 0 10px rgba(200, 216, 232, 0.3);
   }
+}
+
+.crm-logo-separator {
+  width: 1px;
+  height: 24px;
+  background: rgba(200, 216, 232, 0.3);
+  margin: 0 16px;
 }
 
 // Desktop group navigation (next to logo)
@@ -121,41 +140,74 @@ $hover-bg: rgba(255, 255, 255, 0.04);
 .crm-group-item {
   display: flex;
   align-items: center;
-  padding: 10px 16px;
-  border-radius: 8px;
+  padding: 12px 16px;
   background: transparent;
-  color: $text-secondary;
+  color: #A3A3A3;
   font-weight: 600;
-  font-size: 0.875rem;
-  transition: all 0.2s ease-in-out;
+  font-size: 16px;
+  font-family: "Poppins", "Helvetica", "Arial", sans-serif;
+  font-feature-settings: "kern";
+  font-kerning: normal;
+  letter-spacing: 0;
+  transition: color 0.2s ease-in-out;
   cursor: pointer;
-  border: 2px solid transparent;
-  letter-spacing: -0.025em;
+  border: none;
   
   &:hover {
-    background: $hover-bg;
-    color: $text-primary;
-    border-color: rgba(255, 255, 255, 0.1);
+    color: #FFFFFF;
   }
 }
 
 .crm-group-item-active {
-  background: $accent-bg;
-  border-color: $accent-border;
-  color: $text-accent;
+  background: transparent;
+  border: none;
+  color: #FFFFFF;
+  font-weight: 600;
   
   &:hover {
-    background: rgba(176, 141, 90, 0.2);
-    color: $text-accent;
+    color: #FFFFFF;
   }
 }
 
 .crm-group-label {
   color: inherit;
-  font-size: 0.875rem;
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: -0.025em;
-  text-transform: uppercase;
+  font-family: "Poppins", "Helvetica", "Arial", sans-serif;
+  font-feature-settings: "kern";
+  font-kerning: normal;
+  letter-spacing: 0;
+  text-transform: capitalize;
+}
+
+.crm-desktop-settings-wrapper {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.crm-settings-icon-btn {
+  color: #FFFFFF !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 10px !important;
+  transition: opacity 0.2s ease-in-out !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  font-family: "Poppins", "Helvetica", "Arial", sans-serif !important;
+  font-feature-settings: "kern" !important;
+  font-kerning: normal !important;
+  
+  &:hover {
+    background-color: transparent !important;
+    opacity: 0.8 !important;
+  }
+  
+  svg {
+    font-size: 1.25rem;
+    color: #FFFFFF !important;
+  }
 }
 
 .crm-mobile-menu-btn-wrapper {
@@ -167,7 +219,11 @@ $hover-bg: rgba(255, 255, 255, 0.04);
 .crm-desktop-sub-nav-wrapper {
   width: 100%;
   background: $nav-bg-tertiary;
+  background-image: url('/design/nav.png');
+  background-repeat: repeat;
+  background-size: 50%;
   border-bottom: 1px solid $nav-border;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .crm-sub-nav-bar {
@@ -175,7 +231,7 @@ $hover-bg: rgba(255, 255, 255, 0.04);
   align-items: center;
   max-width: 1600px;
   margin: 0 auto;
-  padding: 12px 24px;
+  padding: 20px 24px;
   gap: 16px;
   min-height: 48px;
 }
@@ -187,51 +243,60 @@ $hover-bg: rgba(255, 255, 255, 0.04);
 .crm-nav-item {
   display: flex;
   align-items: center;
-  padding: 8px 12px;
-  border-radius: 6px;
+  padding: 12px 12px;
   background: transparent;
-  color: $text-secondary;
-  font-weight: 500;
-  font-size: 0.8rem;
-  transition: all 0.2s ease-in-out;
+  color: #A3A3A3;
+  font-weight: 600;
+  font-size: 16px;
+  font-family: "Poppins", "Helvetica", "Arial", sans-serif;
+  font-feature-settings: "kern";
+  font-kerning: normal;
+  letter-spacing: 0;
+  transition: color 0.2s ease-in-out;
   cursor: pointer;
-  border: 1px solid transparent;
-  letter-spacing: -0.025em;
+  border: none;
   
   &:hover {
-    background: $hover-bg;
-    color: $text-primary;
+    color: #FFFFFF;
+  }
+
+  svg {
+    width: 0.8em !important;
+    height: 0.8em !important;
   }
 }
 
 .crm-nav-item-icon {
   color: inherit;
   margin-right: 8px;
-  font-size: 1rem;
+  font-size: 0.8rem;
   transition: color 0.2s ease-in-out;
 }
 
 .crm-nav-item-active {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
-  color: $text-primary;
+  background: transparent;
+  border: none;
+  color: #FFFFFF;
+  font-weight: 600;
   
   .crm-nav-item-icon {
-    color: $text-primary;
+    color: #FFFFFF;
   }
   
   &:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: $text-primary;
+    color: #FFFFFF;
   }
 }
 
 .crm-nav-item-label {
   color: inherit;
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  text-transform: uppercase;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: "Poppins", "Helvetica", "Arial", sans-serif;
+  font-feature-settings: "kern";
+  font-kerning: normal;
+  letter-spacing: 0;
+  text-transform: capitalize;
 }
 
 // Responsive styles
@@ -306,12 +371,13 @@ $hover-bg: rgba(255, 255, 255, 0.04);
 .logoSmall {
   width: 180px !important;
   height: auto !important;
-  color: $text-accent;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #B0E0E6;
+  font-family: "Cinzel", "Georgia", "Times New Roman", serif;
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 600;
   margin-bottom: 32px;
-  letter-spacing: -0.025em;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 10px rgba(176, 224, 230, 0.4);
 }
 
 // Mobile nav list
@@ -320,12 +386,15 @@ $hover-bg: rgba(255, 255, 255, 0.04);
 }
 
 .nav-mobile-section-label .MuiTypography-root {
-  font-size: 0.8rem;
-  color: $text-primary;
+  font-size: 16px;
+  color: #FFFFFF;
   font-weight: 600;
+  font-family: "Poppins", "Helvetica", "Arial", sans-serif;
+  font-feature-settings: "kern";
+  font-kerning: normal;
+  letter-spacing: 0;
   margin-bottom: 16px;
-  letter-spacing: -0.025em;
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 
 .nav-mobile-list-item {
@@ -333,48 +402,74 @@ $hover-bg: rgba(255, 255, 255, 0.04);
 }
 
 .nav-mobile-list-btn {
-  border-radius: 8px !important;
+  background: transparent !important;
+  border: none !important;
   margin: 2px 0 !important;
-  transition: all 0.2s ease-in-out !important;
+  transition: color 0.2s ease-in-out !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  font-family: "Poppins", "Helvetica", "Arial", sans-serif !important;
+  font-feature-settings: "kern" !important;
+  font-kerning: normal !important;
+  color: #A3A3A3 !important;
   
   &:hover {
-    background-color: $hover-bg !important;
+    background-color: transparent !important;
+    color: #FFFFFF !important;
   }
 }
 
 .nav-mobile-list-btn.Mui-selected,
 .nav-mobile-list-btn.Mui-selected:hover {
-  background-color: $accent-bg !important;
-  color: $text-accent !important;
+  background-color: transparent !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
 }
 
 .nav-mobile-list-icon {
-  color: $text-accent;
+  color: inherit;
   min-width: 36px;
-  font-size: 1.125rem;
+  font-size: 0.9rem;
 }
 
 .nav-mobile-list-label .MuiTypography-root {
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: "Poppins", "Helvetica", "Arial", sans-serif;
+  font-feature-settings: "kern";
+  font-kerning: normal;
+  letter-spacing: 0;
   white-space: nowrap;
-  color: $text-secondary;
-  letter-spacing: -0.025em;
-  text-transform: uppercase;
+  color: #A3A3A3;
+  text-transform: capitalize;
 }
 
 // Mobile menu button
 .crm-mobile-menu-btn {
-  color: $text-secondary !important;
-  background-color: $hover-bg !important;
-  border-radius: 8px !important;
+  color: #A3A3A3 !important;
+  background: transparent !important;
+  border: none !important;
   padding: 10px !important;
-  transition: all 0.2s ease-in-out !important;
-  border: 1px solid transparent !important;
+  transition: color 0.2s ease-in-out !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  font-family: "Poppins", "Helvetica", "Arial", sans-serif !important;
+  font-feature-settings: "kern" !important;
+  font-kerning: normal !important;
   
   &:hover {
-    background-color: rgba(255, 255, 255, 0.08) !important;
-    color: $text-primary !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
+    background-color: transparent !important;
+    color: #FFFFFF !important;
+  }
+}
+
+// Responsive: Hide desktop settings on mobile, show mobile menu
+@media screen and (max-width: 900px) {
+  .crm-desktop-settings-wrapper {
+    display: none;
+  }
+  
+  .crm-mobile-menu-btn-wrapper {
+    display: flex;
   }
 } 

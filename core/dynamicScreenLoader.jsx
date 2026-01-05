@@ -1,5 +1,5 @@
 import React from 'react';
-import config from '@/app.config.js';
+import { getConfig } from '@/lib/config';
 
 // Direct imports for all screen components by theme
 // Default theme imports
@@ -77,11 +77,12 @@ export const getAvailableScreens = (themeName) => {
  * @param {Object} props - Props to pass to the loaded screen component
  * @param {string} theme - Optional theme override (defaults to config.THEME)
  */
-const DynamicScreenLoader = ({ 
+const DynamicScreenLoader = async ({ 
   screenName, 
   props = {},
   theme = null
 }) => {
+  const config = await getConfig();
   const currentTheme = theme || config.THEME || 'default';
   
   // Get the screen components for the current theme

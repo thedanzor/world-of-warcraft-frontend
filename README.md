@@ -2,7 +2,52 @@
 
 A modern, responsive web application for managing and displaying World of Warcraft guild information, raid progression, and player statistics. Built with Next.js 14, React 18, and Material-UI.
 
-## Version 1.5.0 Changelog 🆕
+## Version 2.0 Changelog 🆕
+
+### Major Features
+- **Admin Settings Management**: New protected `/settings` route for comprehensive app configuration
+- **Admin Authentication System**: Secure authentication required for install and settings pages
+- **Database Reset Functionality**: Ability to reset database collections while preserving critical settings
+- **Enhanced Security**: Protected routes with admin-only access for sensitive operations
+
+### New Pages & Routes
+- **`/settings`** - Admin settings management page (protected)
+  - View and edit app configuration
+  - Protected fields (Guild Name, Realm, API Key) - view only or hidden
+  - Editable fields for all other settings
+  - Database reset functionality
+- **`/settings/errors`** - Error management (moved from `/errors`, now protected)
+  - All error management features now require admin authentication
+  - Same functionality as before, but secured behind admin login
+
+### Installation & Setup Improvements
+- **Guided Installation Process**: Step-by-step installation wizard at `/install`
+  - App Settings configuration with Battle.net API validation
+  - Automatic guild data fetching with real-time progress
+  - Admin account creation with password strength requirements
+- **Protected Install Page**: Once admin account exists, install page requires authentication
+- **Settings Management**: Post-installation configuration changes through protected settings page
+
+### New API Routes
+- **POST `/api/install/login`** - Admin authentication for protected routes
+- **GET `/api/settings`** - Get app settings (admin only, includes sensitive data)
+- **PUT `/api/settings`** - Update app settings (admin only, protected fields excluded)
+- **POST `/api/reset`** - Reset database collections (admin only)
+- **GET `/api/reset/info`** - Get information about what will be reset
+
+### Security Enhancements
+- **Session-based Authentication**: Secure admin authentication using sessionStorage
+- **Protected Routes**: All settings and error management routes require admin login
+- **Field Protection**: Critical settings (Guild Name, Realm, API Key) cannot be changed after initial setup
+- **Audit Logging**: Admin actions logged for security monitoring
+
+### Configuration Management
+- **Centralized Settings**: All app configuration managed through database
+- **Protected Fields**: Guild name, realm, and API credentials protected from modification
+- **Flexible Updates**: Most settings can be updated without full reinstallation
+- **Settings Validation**: Real-time validation of Battle.net API credentials
+
+## Version 1.5.0 Changelog
 
 ### New Features
 - **Comprehensive Seasonal Statistics System**: Complete Mythic+ seasonal data processing and analysis
@@ -45,6 +90,19 @@ This project is licensed under the **Creative Commons Attribution-NonCommercial-
 For full license details, visit: https://creativecommons.org/licenses/by-nc-nd/4.0/
 
 ## 🖼️ Screenshots
+
+### Version 2.0 Screenshots 🆕
+
+![Settings Page](_screenshots/2.0/settings.png)
+The new Admin Settings page allows comprehensive configuration management with protected fields and database reset functionality.
+
+![Installation Wizard](_screenshots/2.0/install.png)
+The guided installation process walks you through app configuration, guild data fetching, and admin account creation.
+
+![Installation Progress](_screenshots/2.0/install-progress.png)
+Real-time progress updates during guild data fetching with character cards and detailed statistics.
+
+### Previous Versions
 
 ![Dashboard](_screenshots/reloading.png)
 
@@ -165,7 +223,24 @@ NEXT_PUBLIC_APP_URL=https://your-domain.com
 
 ## ⚙️ Application Configuration
 
-The application configuration is managed in `app.config.js`:
+### Installation-Based Configuration (v2.0+)
+
+Starting with version 2.0, application configuration is primarily managed through the database via the installation wizard. The `app.config.js` file serves as a fallback and default values source.
+
+**Configuration Flow:**
+1. **Initial Setup**: Use `/install` page to configure all settings
+2. **Database Storage**: Settings are saved to MongoDB `AppSettings` collection
+3. **Runtime Loading**: Application loads settings from database at runtime
+4. **Fallback**: If database settings don't exist, falls back to `app.config.js` defaults
+
+**Updating Configuration:**
+- **Most Settings**: Update via `/settings` page (admin login required)
+- **Protected Settings**: Guild Name, Realm, API Key can only be changed via `/install` page
+- **Database Reset**: Use `/settings` → Reset Database to start fresh
+
+### Legacy Configuration (app.config.js)
+
+The `app.config.js` file still exists for reference and fallback purposes:
 
 ### Guild Settings
 ```javascript
@@ -426,8 +501,19 @@ The backend is an Express.js API server that:
   - Application process
 - **Data**: Static recruitment content
 
-#### `/errors` - Error Management
-- **Purpose**: Monitor and manage application errors
+#### `/settings` - Admin Settings Management 🆕 **NEW v2.0**
+- **Purpose**: Comprehensive app configuration and management (admin only)
+- **Features**:
+  - View and edit app settings (most fields editable)
+  - Protected fields: Guild Name, Realm, API Key (view only or hidden)
+  - Database reset functionality
+  - Real-time settings validation
+  - Secure admin authentication required
+- **Data**: App configuration from database
+- **Access**: Requires admin login
+
+#### `/settings/errors` - Error Management 🆕 **MOVED in v2.0**
+- **Purpose**: Monitor and manage application errors (admin only)
 - **Features**:
   - Error statistics dashboard
   - Advanced filtering (type, endpoint, severity, resolution status)
@@ -436,6 +522,7 @@ The backend is an Express.js API server that:
   - Detailed error views with stack traces
   - Real-time error monitoring
 - **Data**: Error logs and statistics from backend API
+- **Access**: Requires admin login (moved from `/errors`)
 
 ### API Routes
 
@@ -467,6 +554,18 @@ The backend is an Express.js API server that:
 - `PUT /api/errors/[id]/resolve` - Mark error as resolved
 - `DELETE /api/errors/[id]` - Delete specific error
 - `DELETE /api/errors` - Bulk delete errors (with filters)
+
+#### Admin & Settings Endpoints 🆕 **NEW v2.0**
+- `POST /api/install/login` - Admin authentication
+- `GET /api/settings` - Get app settings (admin only)
+- `PUT /api/settings` - Update app settings (admin only)
+- `POST /api/reset` - Reset database collections (admin only)
+- `GET /api/reset/info` - Get reset information
+
+#### Installation Endpoints 🆕 **NEW v2.0**
+- `GET /api/install` - Check installation status
+- `POST /api/install` - Save app settings (with validation)
+- `POST /api/install/admin` - Create admin account
 
 #### Utility Endpoints
 - `GET /api/test-connection` - Backend connectivity testing
@@ -1168,6 +1267,8 @@ console.log('Available theme providers:', themeProviders) // ['default', 'my-the
 - Node.js 18+ 
 - Yarn or npm
 - Backend API server running
+- MongoDB database
+- Battle.net API credentials (Client ID and Secret)
 
 ### Installation
 
@@ -1189,16 +1290,87 @@ console.log('Available theme providers:', themeProviders) // ['default', 'my-the
    cp .env.example .env.local
    # Edit .env.local with your configuration
    ```
-
-4. **Start the development server**
+   
+   Required environment variables:
    ```bash
+   NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+   NEXT_PUBLIC_CLIENT_BACKEND_URL=http://localhost:8000
+   NEXT_PUBLIC_GUILD_NAME=Your Guild Name
+   NEXT_PUBLIC_GUILD_REALM=Your Realm Name
+   NEXT_PUBLIC_BASE_URL=https://your-domain.com
+   NEXT_PUBLIC_APP_URL=https://your-domain.com
+   ```
+
+4. **Start the backend API server**
+   ```bash
+   cd ../world-of-warcraft-api
+   yarn install
+   # Configure backend .env file with MongoDB connection and Battle.net API credentials
+   yarn dev
+   ```
+
+5. **Start the frontend development server**
+   ```bash
+   cd ../world-of-warcraft-frontend
    yarn dev
    # or
    npm run dev
    ```
 
-5. **Open your browser**
-   Navigate to `http://localhost:3000`
+6. **Run the installation wizard**
+   - Navigate to `http://localhost:3000/install`
+   - Follow the guided installation process:
+     
+     **Step 1: App Settings**
+     - Enter your Battle.net API Client ID and Secret
+     - Configure guild name and realm (use slugs, e.g., `time-and-tide` for "Time and Tide")
+     - Set region (EU, US, KR, TW)
+     - Configure guild requirements (level, item level, ranks, etc.)
+     - Settings are validated against Battle.net API before saving
+     
+     **Step 2: Fetch Guild Data**
+     - Automatically fetches all guild member data
+     - Real-time progress updates via WebSocket
+     - Can be skipped and run later
+     
+     **Step 3: Create Admin Account**
+     - Create your admin username and password
+     - Password must meet strength requirements:
+       - Minimum 12 characters
+       - At least one uppercase letter
+       - At least one lowercase letter
+       - At least one number
+       - At least one special character
+     - After creating admin account, installation is complete
+
+7. **Access the application**
+   - After installation, navigate to `http://localhost:3000`
+   - The dashboard will display your guild data
+   - Access settings at `/settings` (requires admin login)
+   - View errors at `/settings/errors` (requires admin login)
+
+### Post-Installation Configuration
+
+#### Updating App Settings
+1. Navigate to `/settings` (requires admin login)
+2. Edit any editable settings (most fields can be changed)
+3. Protected fields (Guild Name, Realm, API Key) cannot be modified
+4. Click "Save Changes" to update
+
+#### Resetting the Database
+1. Navigate to `/settings`
+2. Scroll to "Danger Zone"
+3. Click "Reset Database"
+4. Confirm with admin credentials
+5. This will delete all data collections but preserve app settings
+6. You'll need to recreate your admin account and re-fetch guild data
+
+#### Changing Protected Settings
+To change Guild Name, Realm, or API credentials:
+1. Navigate to `/install` (requires admin login if admin exists)
+2. Enter admin credentials to access
+3. Update settings and save (will overwrite existing configuration)
+4. Re-fetch guild data if needed
 
 ### Production Build
 

@@ -3,7 +3,6 @@
  * @module app/member/[realm]/[character]/page
  */
 
-import config from '@/app.config.js'
 import { api } from '@/lib/api'
 import DynamicScreenLoader from '@/core/dynamicScreenLoader'
 

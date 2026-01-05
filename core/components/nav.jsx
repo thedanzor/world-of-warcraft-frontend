@@ -23,7 +23,7 @@ import HowToRegIcon from '@mui/icons-material/HowToReg'
 import BugReportIcon from '@mui/icons-material/BugReport'
 
 import './scss/nav.scss'
-import config from '@/app.config.js'
+import { useConfig } from '@/core/hooks/useConfig'
 
 // Icon mapping for dynamic icon loading
 const iconMap = {
@@ -37,58 +37,47 @@ const iconMap = {
     PrecisionManufacturingIcon
 }
 
-// Convert config navigation to component format with icon components
-const navigationItems = Object.entries(config.NAVIGATION).reduce((acc, [key, section]) => {
-    acc[key] = {
-        ...section,
-        items: section.items.map(item => ({
-            ...item,
-            icon: iconMap[item.icon]
-        }))
-    }
-    return acc
-}, {})
-
-function getInitialSection(path) {
-    let bestMatch = { section: 'OVERVIEW', length: 0 }
-    for (const [section, data] of Object.entries(navigationItems)) {
-        data.items.forEach((item) => {
-            if (
-                path.startsWith(item.path) &&
-                item.path.length > bestMatch.length
-            ) {
-                bestMatch = { section, length: item.path.length }
-            }
-        })
-    }
-    return bestMatch.section
-}
-
-function isActive(path, pathname) {
-    if (path === '/') return pathname === path
-    if (path === '/season2') return pathname === path
-    return pathname.startsWith(path)
-}
-
-function getCurrentSection(pathname) {
-    for (const [section, data] of Object.entries(navigationItems)) {
-        const hasActiveItem = data.items.some(item => isActive(item.path, pathname))
-        if (hasActiveItem) {
-            return section
-        }
-    }
-    return 'OVERVIEW'
-}
-
-export { navigationItems, getInitialSection, isActive }
-
 export default function Nav() {
+    const { config, loading } = useConfig()
     const pathname = usePathname()
     const [mobileOpen, setMobileOpen] = useState(false)
     const handleDrawerToggle = () => setMobileOpen(!mobileOpen)
     
+    // Convert config navigation to component format with icon components
+    const navigationItems = config?.NAVIGATION ? Object.entries(config.NAVIGATION).reduce((acc, [key, section]) => {
+        acc[key] = {
+            ...section,
+            items: section.items.map(item => ({
+                ...item,
+                icon: iconMap[item.icon]
+            }))
+        }
+        return acc
+    }, {}) : {}
+    
+    // Helper functions
+    function isActive(path, pathname) {
+        if (path === '/') return pathname === path
+        if (path === '/season2') return pathname === path
+        return pathname.startsWith(path)
+    }
+    
+    function getCurrentSection(pathname) {
+        for (const [section, data] of Object.entries(navigationItems)) {
+            const hasActiveItem = data.items.some(item => isActive(item.path, pathname))
+            if (hasActiveItem) {
+                return section
+            }
+        }
+        return 'OVERVIEW'
+    }
+    
+    if (loading || !config?.NAVIGATION) {
+        return <nav className="crm-nav-root"><div></div></nav>
+    }
+    
     const currentSection = getCurrentSection(pathname)
-    const currentSectionItems = navigationItems[currentSection].items
+    const currentSectionItems = navigationItems[currentSection]?.items || []
 
     // Desktop group navigation (next to logo)
     const DesktopGroupNav = () => (

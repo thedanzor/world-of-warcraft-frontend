@@ -1,5 +1,7 @@
+'use client';
+
 import React from 'react';
-import config from '@/app.config.js';
+import { useConfig } from '@/core/hooks/useConfig';
 
 // Direct imports for all theme providers
 import DefaultThemeProvider from './themes/default';
@@ -44,7 +46,16 @@ const DynamicThemeLoader = ({
   children,
   theme = null
 }) => {
-  const currentTheme = theme || config.THEME || 'default';
+  const { config, loading } = useConfig();
+  
+  // Show loading state or use default theme while config loads
+  const currentTheme = theme || config?.THEME || 'default';
+  
+  if (loading) {
+    // Return default theme provider while loading
+    const DefaultThemeProvider = themeProviders.default;
+    return <DefaultThemeProvider>{children}</DefaultThemeProvider>;
+  }
   
   const ThemeProvider = themeProviders[currentTheme];
   

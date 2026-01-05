@@ -19,6 +19,23 @@ const data = {
     "DIFFICULTY": ["Mythic", "Heroic", "Normal"],
     "_DRAFT_DIFFICULTY": ["LFR", "Raid Finder", "Mythic", "Heroic", "Normal"],
     "SEASON_START_DATE": "2025-02-25",
+    "CURRENT_RAID": "Manaforge Omega",
+    "CURRENT_MPLUS_SEASON": 15,
+    "CURRENT_SEASON_TIER_SETS": [
+        "Hollow Sentinel's Wake ",
+        "Charhound's Vicious Hunt",
+        "Ornaments of the Mother Eagle",
+        "Spellweaver's Immaculate Design",
+        "Midnight Herald's Pledge",
+        "Augur's Ephemeral Plumage ",
+        "Crash of Fallen Storms",
+        "Vows of the Lucent Battalion",
+        "Eulogy to a Dying Star ",
+        "Shroud of the Sudden Eclipse",
+        "Howls of Channeled Fury ",
+        "Inquisitor's Feast of Madness",
+        "Chains of the Living Weapon"
+    ],
     "INITIAL_FILTERS": {
         "rankFilter": "all",
         "activeTab": "all",

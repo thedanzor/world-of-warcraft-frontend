@@ -82,6 +82,8 @@ export default function SettingsPage() {
 
       const data = await response.json();
 
+      console.log('📥 Fetched settings:', data);
+
       if (!response.ok) {
         if (response.status === 401) {
           setError('Authentication failed. Please login again.');

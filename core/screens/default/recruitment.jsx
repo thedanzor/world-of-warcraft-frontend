@@ -3,25 +3,21 @@
 // React
 import { useState, useEffect } from 'react'
 
-// Next.js
-import Link from 'next/link'
-
 // Material-UI components
-import { Box, Paper, Grid, Divider, Typography, Chip, CircularProgress, Alert } from '@mui/material'
+import { Box, Paper, Grid, CircularProgress, Alert, Typography, Chip, Container } from '@mui/material'
 import { 
-    Group as GroupIcon,
+    Chat as ChatIcon, 
+    Email as EmailIcon,
+    CheckCircle as CheckCircleIcon,
+    EmojiEvents as TrophyIcon,
+    People as PeopleIcon,
     Schedule as ScheduleIcon,
-    Star as StarIcon,
-    School as SchoolIcon,
-    Work as WorkIcon,
-    ContactSupport as ContactIcon,
-    Chat as ChatIcon,
-    Email as EmailIcon
+    ContactMail as ContactMailIcon,
+    Gavel as RulesIcon
 } from '@mui/icons-material'
 
 // Internal components
 import ContentWrapper from '@/core/components/content'
-import { MultiColorHeadingH1, P, H3, H4 } from '@/core/components/typography'
 
 // Styles
 import '@/core/screens/default/scss/recruitment.scss'
@@ -29,7 +25,7 @@ import '@/core/screens/default/scss/recruitment.scss'
 /**
  * Recruitment - Guild recruitment and information page
  * Displays guild requirements, benefits, and application process
- * Now uses a block-based system for dynamic content
+ * Uses a section-based system for flexible content layout
  */
 const Recruitment = () => {
     const [joinText, setJoinText] = useState(null);
@@ -42,15 +38,32 @@ const Recruitment = () => {
                 setLoading(true);
                 setError('');
                 
-                const response = await fetch('/api/jointext');
+                const response = await fetch('/api/jointext', {
+                    cache: 'no-store',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                    }
+                });
                 const data = await response.json();
+
+                console.log('📥 Join page received data:', data);
+                console.log('📦 Sections count:', data.joinText?.sections?.length || 0);
 
                 if (!response.ok) {
                     setError(data.message || data.error || 'Failed to load join text');
                     return;
                 }
 
-                setJoinText(data.joinText);
+                // Ensure hero exists with defaults if not present
+                const fetchedData = data.joinText || {};
+                if (!fetchedData.hero) {
+                    fetchedData.hero = {
+                        title: 'Join Our Guild',
+                        subtitle: 'Embark on epic adventures with skilled players.',
+                        badges: []
+                    };
+                }
+                setJoinText(fetchedData);
             } catch (error) {
                 console.error('Error fetching join text:', error);
                 setError('Failed to load join text. Please try again.');
@@ -62,183 +75,223 @@ const Recruitment = () => {
         fetchJoinText();
     }, []);
 
-    const getIcon = (iconName) => {
-        const icons = {
-            work: WorkIcon,
-            school: SchoolIcon,
-            schedule: ScheduleIcon,
-            group: GroupIcon,
-            star: StarIcon,
-            contact: ContactIcon
+    const renderBlock = (block, sectionIndex) => {
+        const widthProps = block.layout === 'full' 
+            ? { xs: 12 } 
+            : { xs: 12, md: 6 };
+
+        // Determine card type for styling and icon
+        const getCardType = () => {
+            const title = block.title.toLowerCase();
+            if (title.includes('requirement') || title.includes('criteria')) return 'requirements';
+            if (title.includes('benefit') || title.includes('guild')) return 'benefits';
+            if (title.includes('process') || title.includes('application')) return 'process';
+            if (title.includes('need') || title.includes('recruiting')) return 'needs';
+            if (title.includes('schedule') || title.includes('raid')) return 'schedule';
+            if (title.includes('contact') || title.includes('join')) return 'contact';
+            return '';
         };
-        return icons[iconName] || WorkIcon;
-    };
 
-    const renderBlock = (block) => {
-        const { type, data } = block;
+        const getIcon = () => {
+            const cardType = getCardType();
+            const iconProps = { sx: { fontSize: '2rem', color: '#FFD700' } };
+            
+            switch(cardType) {
+                case 'requirements': return <RulesIcon {...iconProps} />;
+                case 'benefits': return <TrophyIcon {...iconProps} />;
+                case 'process': return <CheckCircleIcon {...iconProps} />;
+                case 'needs': return <PeopleIcon {...iconProps} />;
+                case 'schedule': return <ScheduleIcon {...iconProps} />;
+                case 'contact': return <ContactMailIcon {...iconProps} />;
+                default: return <CheckCircleIcon {...iconProps} />;
+            }
+        };
 
-        switch (type) {
-            case 'heading':
-                return (
-                    <Box sx={{ mb: 4 }}>
-                        <MultiColorHeadingH1
-                            floatingText={data.floatingText || ''}
-                            highlightText={data.highlightText || ''}
-                        >
-                            {data.mainText || ''}
-                        </MultiColorHeadingH1>
+        return (
+            <Grid item {...widthProps} key={block.id}>
+                <Paper 
+                    className={`recruitment-card ${getCardType()}`}
+                    elevation={0}
+                    sx={{ 
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        position: 'relative',
+                        overflow: 'visible'
+                    }}
+                >
+                    {/* Icon Badge */}
+                    <Box 
+                        className="card-icon-badge"
+                        sx={{
+                            position: 'absolute',
+                            top: -16,
+                            left: 24,
+                            background: 'linear-gradient(135deg, #1a2332 0%, #0f1621 100%)',
+                            border: '2px solid #FFD700',
+                            borderRadius: '12px',
+                            padding: '8px 12px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                            boxShadow: '0 4px 12px rgba(255, 215, 0, 0.3)',
+                            zIndex: 1
+                        }}
+                    >
+                        {getIcon()}
                     </Box>
-                );
 
-            case 'text':
-                return (
-                    <Typography variant="body1" sx={{ mb: 2 }}>
-                        {data.content || ''}
-                    </Typography>
-                );
-
-            case 'text-highlight':
-                return (
-                    <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#FFD700', mb: 2 }}>
-                        {data.content || ''}
-                    </Typography>
-                );
-
-            case 'list':
-                const ListIcon = getIcon(data.icon);
-                return (
-                    <div className="recruitment-section">
-                        <div className="section-header">
-                            <H3>
-                                <ListIcon className="section-icon" />
-                                {data.sectionTitle || ''}
-                            </H3>
-                        </div>
-                        <Paper className="recruitment-card">
-                            <H4>{data.title || ''}</H4>
-                            <Box component="ul">
-                                {(data.items || []).map((item, index) => (
-                                    <li key={index}>{item}</li>
-                                ))}
-                            </Box>
-                        </Paper>
-                    </div>
-                );
-
-            case 'two-column-list':
-                const TwoColIcon = getIcon(data.icon);
-                return (
-                    <div className="recruitment-section">
-                        <div className="section-header">
-                            <H3>
-                                <TwoColIcon className="section-icon" />
-                                {data.sectionTitle || ''}
-                            </H3>
-                        </div>
-                        <Grid container spacing={4}>
-                            <Grid item xs={12} md={6}>
-                                <Paper className="recruitment-card">
-                                    <H4>{data.leftColumn?.title || ''}</H4>
-                                    <Box component="ul">
-                                        {(data.leftColumn?.items || []).map((item, index) => (
-                                            <li key={index}>{item}</li>
-                                        ))}
-                                    </Box>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <Paper className="recruitment-card">
-                                    <H4>{data.rightColumn?.title || ''}</H4>
-                                    <Box component="ul">
-                                        {(data.rightColumn?.items || []).map((item, index) => (
-                                            <li key={index}>{item}</li>
-                                        ))}
-                                    </Box>
-                                </Paper>
-                            </Grid>
-                        </Grid>
-                    </div>
-                );
-
-            case 'schedule':
-                const ScheduleIconComp = getIcon(data.icon);
-                return (
-                    <div className="recruitment-section">
-                        <div className="section-header">
-                            <H3>
-                                <ScheduleIconComp className="section-icon" />
-                                {data.sectionTitle || ''}
-                            </H3>
-                        </div>
-                        <Paper className="recruitment-card schedule">
-                            <div className="schedule-grid">
-                                {(data.items || []).map((item, index) => (
-                                    <div key={index} className="schedule-item">
-                                        <div className="schedule-day">{item.day}</div>
-                                        <div className="schedule-time">{item.time}</div>
-                                        <div className="schedule-activity">{item.activity}</div>
-                                    </div>
-                                ))}
-                            </div>
-                        </Paper>
-                    </div>
-                );
-
-            case 'contact':
-                const ContactIconComp = getIcon(data.icon);
-                return (
-                    <div className="contact-section">
-                        <H3>
-                            <ContactIconComp className="section-icon" />
-                            {data.sectionTitle || ''}
-                        </H3>
-                        <Typography variant="body1" sx={{ mb: 3 }}>
-                            {data.description || ''}
+                    <Box sx={{ pt: 2.5 }}>
+                        <Typography 
+                            component="h3"
+                            sx={{ 
+                                color: '#FFD700',
+                                fontSize: '1.5rem',
+                                fontWeight: 600,
+                                mb: 3,
+                                mt: 1.5,
+                                letterSpacing: '-0.01em',
+                                textShadow: '0 2px 8px rgba(255, 215, 0, 0.2)'
+                            }}
+                        >
+                            {block.title}
                         </Typography>
-                        
-                        <Box sx={{ mb: 3 }}>
-                            {data.discord?.url && (
-                                <Chip 
-                                    icon={<ChatIcon />} 
-                                    label={data.discord.label || 'Join our Discord'} 
-                                    component="a" 
-                                    href={data.discord.url} 
-                                    target="_blank"
-                                    sx={{ 
-                                        m: 1, 
-                                        bgcolor: '#5865F2', 
-                                        color: 'white',
-                                        '&:hover': { bgcolor: '#4752C4' }
-                                    }}
-                                />
-                            )}
-                            {data.email?.url && (
-                                <Chip 
-                                    icon={<EmailIcon />} 
-                                    label={data.email.label || 'Contact Officers'} 
-                                    component="a" 
-                                    href={data.email.url}
-                                    sx={{ 
-                                        m: 1, 
-                                        bgcolor: '#FFD700', 
-                                        color: 'white',
-                                        '&:hover': { bgcolor: '#9A7A4A' }
-                                    }}
-                                />
-                            )}
-                        </Box>
-                        
-                        {data.footer && (
-                            <Typography variant="body2" color="text.secondary">
-                                {data.footer}
-                            </Typography>
-                        )}
-                    </div>
-                );
+                    </Box>
 
-            default:
-                return null;
-        }
+                    {block.type === 'text' && (
+                        <Typography 
+                            variant="body1" 
+                            sx={{ 
+                                whiteSpace: 'pre-line',
+                                color: '#B0C4DE',
+                                lineHeight: 1.8,
+                                fontSize: '1.0625rem',
+                                mt: 0.5
+                            }}
+                        >
+                            {block.content}
+                        </Typography>
+                    )}
+
+                    {block.type === 'list' && (
+                        <Box 
+                            component="ul" 
+                            sx={{ 
+                                pl: 0,
+                                m: 0,
+                                mt: 0.5,
+                                listStyle: 'none',
+                                '& li': {
+                                    position: 'relative',
+                                    pl: 3.5,
+                                    mb: 2,
+                                    display: 'flex',
+                                    alignItems: 'flex-start',
+                                    '&:before': {
+                                        content: '"▸"',
+                                        position: 'absolute',
+                                        left: 0,
+                                        top: '2px',
+                                        color: '#FFD700',
+                                        fontWeight: 'bold',
+                                        fontSize: '1.25rem',
+                                        lineHeight: 1
+                                    },
+                                    '&:last-child': {
+                                        mb: 0
+                                    }
+                                }
+                            }}
+                        >
+                            {block.items.map((item, index) => (
+                                <li key={index}>
+                                    <Typography 
+                                        variant="body1" 
+                                        component="span"
+                                        sx={{ 
+                                            color: '#B0C4DE',
+                                            lineHeight: 1.7,
+                                            fontSize: '1rem'
+                                        }}
+                                    >
+                                        {item}
+                                    </Typography>
+                                </li>
+                            ))}
+                        </Box>
+                    )}
+
+                    {block.type === 'contact' && (
+                        <Box sx={{ textAlign: 'center', mt: 2 }}>
+                            <Box sx={{ 
+                                display: 'flex', 
+                                flexDirection: { xs: 'column', sm: 'row' },
+                                gap: 2,
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }}>
+                                {block.discord?.url && (
+                                    <Chip 
+                                        icon={<ChatIcon />} 
+                                        label={block.discord.label} 
+                                        component="a" 
+                                        href={block.discord.url} 
+                                        target="_blank"
+                                        clickable
+                                        sx={{ 
+                                            bgcolor: '#5865F2', 
+                                            color: 'white',
+                                            fontSize: '1rem',
+                                            py: 2.5,
+                                            px: 3,
+                                            height: 'auto',
+                                            '& .MuiChip-icon': {
+                                                fontSize: '1.25rem',
+                                                color: 'white'
+                                            },
+                                            '&:hover': { 
+                                                bgcolor: '#4752C4',
+                                                transform: 'translateY(-2px)',
+                                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
+                                            },
+                                            transition: 'all 0.2s ease-in-out'
+                                        }}
+                                    />
+                                )}
+                                {block.email?.url && (
+                                    <Chip 
+                                        icon={<EmailIcon />} 
+                                        label={block.email.label} 
+                                        component="a" 
+                                        href={block.email.url}
+                                        clickable
+                                        sx={{ 
+                                            bgcolor: '#FFD700', 
+                                            color: '#0a1628',
+                                            fontSize: '1rem',
+                                            fontWeight: 600,
+                                            py: 2.5,
+                                            px: 3,
+                                            height: 'auto',
+                                            '& .MuiChip-icon': {
+                                                fontSize: '1.25rem',
+                                                color: '#0a1628'
+                                            },
+                                            '&:hover': { 
+                                                bgcolor: '#FFC700',
+                                                transform: 'translateY(-2px)',
+                                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
+                                            },
+                                            transition: 'all 0.2s ease-in-out'
+                                        }}
+                                    />
+                                )}
+                            </Box>
+                        </Box>
+                    )}
+                </Paper>
+            </Grid>
+        );
     };
 
     if (loading) {
@@ -253,7 +306,7 @@ const Recruitment = () => {
         );
     }
 
-    if (error || !joinText || !joinText.blocks) {
+    if (error || !joinText || !joinText.sections) {
         return (
             <section className="recruitment">
                 <ContentWrapper>
@@ -267,19 +320,131 @@ const Recruitment = () => {
         );
     }
 
-    // Sort blocks by order
-    const sortedBlocks = [...joinText.blocks].sort((a, b) => a.order - b.order);
+    // Sort sections by order
+    const sortedSections = [...joinText.sections].sort((a, b) => a.order - b.order);
+
+    // Hero badge color mapping
+    const getBadgeStyle = (color) => {
+        const styles = {
+            gold: {
+                bgcolor: 'rgba(255, 215, 0, 0.1)',
+                color: '#FFD700',
+                border: '1px solid rgba(255, 215, 0, 0.3)'
+            },
+            blue: {
+                bgcolor: 'rgba(176, 196, 222, 0.1)',
+                color: '#B0C4DE',
+                border: '1px solid rgba(176, 196, 222, 0.3)'
+            },
+            green: {
+                bgcolor: 'rgba(81, 207, 102, 0.1)',
+                color: '#51cf66',
+                border: '1px solid rgba(81, 207, 102, 0.3)'
+            }
+        };
+        return styles[color] || styles.blue;
+    };
 
     return (
         <section className="recruitment">
-            <ContentWrapper>
-                <Box sx={{ pt: 5, pb: 8 }}>
-                    {sortedBlocks.map((block, index) => (
-                        <Box key={block.id}>
-                            {renderBlock(block)}
-                            {index < sortedBlocks.length - 1 && <Divider sx={{ my: 4 }} />}
+            {/* Hero Section */}
+            {joinText.hero && (
+                <Box 
+                    className="recruitment-hero"
+                    sx={{
+                        background: 'none',
+                        borderBottom: '2px solid rgba(255, 215, 0, 0.3)',
+                        py: 8,
+                        position: 'relative',
+                        overflow: 'hidden',
+                        '&::before': {
+                            content: '""',
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: 'radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 70%)',
+                            pointerEvents: 'none'
+                        }
+                    }}
+                >
+                    <Container maxWidth="lg">
+                        <Box sx={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
+                            <Typography 
+                                variant="h1" 
+                                sx={{ 
+                                    fontSize: { xs: '2.5rem', md: '3.5rem' },
+                                    fontWeight: 700,
+                                    color: '#FFFFFF',
+                                    mb: 2,
+                                    textShadow: '0 4px 16px rgba(255, 215, 0, 0.3)',
+                                    letterSpacing: '-0.02em'
+                                }}
+                            >
+                                {joinText.hero.title}
+                            </Typography>
+                            <Typography 
+                                variant="h5" 
+                                sx={{ 
+                                    fontSize: { xs: '1.125rem', md: '1.375rem' },
+                                    color: '#B0C4DE',
+                                    maxWidth: '800px',
+                                    mx: 'auto',
+                                    lineHeight: 1.6,
+                                    opacity: 0.9
+                                }}
+                            >
+                                {joinText.hero.subtitle}
+                            </Typography>
+                            
+                            {/* Decorative Elements */}
+                            {joinText.hero.badges && joinText.hero.badges.length > 0 && (
+                                <Box sx={{ 
+                                    mt: 4, 
+                                    display: 'flex', 
+                                    justifyContent: 'center', 
+                                    gap: 2,
+                                    flexWrap: 'wrap'
+                                }}>
+                                    {joinText.hero.badges.map((badge, index) => (
+                                        <Chip 
+                                            key={index}
+                                            label={badge.label} 
+                                            sx={{ 
+                                                ...getBadgeStyle(badge.color),
+                                                fontWeight: 600
+                                            }} 
+                                        />
+                                    ))}
+                                </Box>
+                            )}
                         </Box>
-                    ))}
+                    </Container>
+                </Box>
+            )}
+
+            {/* Content Sections */}
+            <ContentWrapper>
+                <Box sx={{ pt: 10, pb: 12 }}>
+                    {sortedSections.map((section, sectionIndex) => {
+                        // Sort blocks by order
+                        const sortedBlocks = [...section.blocks].sort((a, b) => a.order - b.order);
+                        
+                        return (
+                            <Box 
+                                key={section.id} 
+                                className="recruitment-section"
+                                sx={{ 
+                                    mb: sectionIndex === sortedSections.length - 1 ? 0 : 12,
+                                }}
+                            >
+                                <Grid container spacing={4}>
+                                    {sortedBlocks.map(block => renderBlock(block, sectionIndex))}
+                                </Grid>
+                            </Box>
+                        );
+                    })}
                 </Box>
             </ContentWrapper>
         </section>

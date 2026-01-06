@@ -74,10 +74,10 @@ $link-hover: #FFED4E;
 // Main bar: Logo and group navigation
 .crm-logo-bar {
   width: 100%;
-  background: #1a0f24;
-  background-image: 
-    linear-gradient(rgba(26, 15, 36, 0.85), rgba(26, 15, 36, 0.85)),
-    url('/design/above-logo.png');
+  background: #07040a;
+  // background-image: 
+  //   linear-gradient(rgba(26, 15, 36, 0.85), rgba(26, 15, 36, 0.85)),
+  //   url('/design/above-logo.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -93,7 +93,7 @@ $link-hover: #FFED4E;
   max-width: 1600px;
   margin: 0 auto;
   padding: 20px 24px;
-  gap: 32px;
+  gap: 32px 0;
 }
 
 .crm-logo-link {
@@ -105,7 +105,8 @@ $link-hover: #FFED4E;
   font-family: "Telex", sans-serif;
   transition: all 0.2s ease-in-out;
   text-shadow: 0 0 8px rgba(200, 216, 232, 0.2);
-  text-transform: capitalize;
+  text-transform: uppercase;
+  padding-right: 20px;
   
   &:hover {
     color: #E0E0E0;

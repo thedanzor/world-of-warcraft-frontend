@@ -56,20 +56,30 @@
  * - Test content layouts with various text lengths
  */
 
-// Modern color variables - Dark Blue Theme
-$recruitment-bg: none;
-$card-bg: #101a29;
+// Modern color variables - Dark Blue Theme with WoW-inspired accents
+$recruitment-bg: linear-gradient(180deg, #0a0e15 0%, #0f1621 50%, #0a0e15 100%);
+$card-bg: rgba(16, 26, 41, 0.8);
+$card-bg-hover: rgba(22, 34, 52, 0.9);
 $card-border: rgba(176, 196, 222, 0.15);
 $text-primary: #FFFFFF;
 $text-secondary: #B0C4DE;
 $text-accent: #FFD700;
-$shadow-light: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-$shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+$shadow-light: 0 2px 8px 0 rgba(0, 0, 0, 0.4), 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+$shadow-medium: 0 8px 24px -2px rgba(0, 0, 0, 0.5), 0 4px 12px -1px rgba(0, 0, 0, 0.4);
+$shadow-glow: 0 0 20px rgba(255, 215, 0, 0.15);
+$shadow-glow-strong: 0 0 30px rgba(255, 215, 0, 0.3);
 
 .recruitment {
-  background: $recruitment-bg;
   min-height: 100vh;
   color: $text-primary;
+  position: relative;
+
+  
+  // Content wrapper
+  & > * {
+    position: relative;
+    z-index: 1;
+  }
   
   .recInto {
     padding: 40px 0 0 0;
@@ -116,15 +126,15 @@ $shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 
     }
   }
 
-  p {
-    max-width: 1200px;
-    margin: 0 auto;
-    text-align: center;
-    padding: 0 24px;
-    line-height: 1.6;
-    color: $text-secondary;
-    font-size: 1.125rem;
-  }
+  // p {
+  //   max-width: 1200px;
+  //   margin: 0 auto;
+  //   text-align: center;
+  //   padding: 0 24px;
+  //   line-height: 1.8;
+  //   color: $text-secondary;
+  //   font-size: 1.0625rem;
+  // }
 
   .ctaArea {
     padding: 80px 0;
@@ -137,13 +147,36 @@ $shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 
   // Enhanced Material-UI Paper styling
   .MuiPaper-root {
     background: $card-bg !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
     border: 1px solid $card-border !important;
     box-shadow: $shadow-light !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    
+    &:hover {
+      box-shadow: $shadow-medium, $shadow-glow !important;
+      transform: translateY(-6px) scale(1.01) !important;
+      border-color: rgba(255, 215, 0, 0.4) !important;
+    }
+  }
+  
+  // Grid spacing adjustments
+  .MuiGrid-container {
+    margin-bottom: 0 !important;
+  }
+  
+  .MuiGrid-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  // Enhanced chip styling
+  .MuiChip-root {
     transition: all 0.2s ease-in-out;
     
     &:hover {
-      box-shadow: $shadow-medium !important;
       transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
   }
 
@@ -162,22 +195,39 @@ $shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 
     }
   }
 
-  // Enhanced list styling - no automatic bullets/numbers since content is pre-formatted
+  // Enhanced list styling with hover effects
   ul, ol {
     list-style: none;
     padding: 0;
     margin: 0;
     
     li {
-      padding: 8px 0;
+      padding: 0;
       color: $text-secondary;
       font-size: 1rem;
-      line-height: 1.6;
+      line-height: 1.7;
       padding-left: 0;
+      position: relative;
+      transition: all 0.25s ease-in-out;
+      margin-bottom: 16px;
+      padding-left: 20px !important;
+      
+      &:hover {
+        transform: translateX(4px);
+        
+        &::before {
+          transform: scale(1.15);
+          color: lighten($text-accent, 10%);
+        }
+      }
       
       strong {
         color: $text-accent;
         font-weight: 600;
+      }
+      
+      &:last-child {
+        margin-bottom: 0;
       }
     }
   }
@@ -185,32 +235,47 @@ $shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 
   // Enhanced heading styling
   h3 {
     font-size: 1.5rem;
-    font-weight: 500;
-    padding: 24px 0 16px 0;
+    font-weight: 600;
+    padding: 0;
+    margin: 0 0 24px 0;
     color: $text-accent;
     text-align: left;
     letter-spacing: -0.01em;
     line-height: 1.3;
-    margin: 0;
   }
 
   h4 {
     font-size: 1.125rem;
     font-weight: 500;
-    padding: 0 0 12px 0;
+    padding: 0;
+    margin: 0 0 16px 0;
     color: $text-accent;
     text-align: left;
     letter-spacing: -0.01em;
     line-height: 1.4;
-    margin: 0;
   }
 
+  // Enhanced hero section
+  .recruitment-hero {
+    position: relative;
+    
+    .MuiContainer-root {
+      position: relative;
+      z-index: 2;
+    }
+  }
+  
   // Enhanced section styling
   .recruitment-section {
-    margin-bottom: 48px;
+    margin-bottom: 96px;
+    position: relative;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
     
     .section-header {
-      margin-bottom: 24px;
+      margin-bottom: 32px;
       
       .section-icon {
         display: inline-block;
@@ -220,51 +285,159 @@ $shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 
         vertical-align: middle;
         color: $text-accent;
       }
+      
+      .section-title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: $text-accent;
+        margin-bottom: 8px;
+        letter-spacing: -0.02em;
+      }
+      
+      .section-subtitle {
+        font-size: 1.125rem;
+        color: $text-secondary;
+        opacity: 0.8;
+      }
     }
   }
 
-  // Enhanced card styling
+  // Enhanced card styling with glassmorphism
   .recruitment-card {
     background: $card-bg;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid $card-border;
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 24px;
+    border-radius: 16px;
+    padding: 36px 32px 32px 32px;
+    margin-bottom: 0;
+    margin-top: 20px; // Space for the badge
     box-shadow: $shadow-light;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
     
-    h4 {
+    // Animated gradient background
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 215, 0, 0.02) 0%,
+        transparent 50%,
+        rgba(176, 196, 222, 0.02) 100%
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      pointer-events: none;
+    }
+    
+    // Top border glow effect
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 215, 0, 0.5) 50%, 
+        transparent 100%
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+    
+    h3, h4 {
       margin-bottom: 16px;
     }
     
     &:hover {
-      box-shadow: $shadow-medium;
-      transform: translateY(-2px);
+      background: $card-bg-hover;
+      box-shadow: $shadow-medium, $shadow-glow;
+      transform: translateY(-6px) scale(1.01);
+      border-color: rgba(255, 215, 0, 0.4);
+      
+      &::before {
+        opacity: 1;
+      }
+      
+      &::after {
+        opacity: 1;
+      }
+      
+      .card-icon-badge {
+        transform: scale(1.1) rotate(3deg);
+        box-shadow: 0 6px 16px rgba(255, 215, 0, 0.4);
+      }
     }
     
+    // Card type specific styling with gradient borders
     &.requirements {
-      border-left: 4px solid #f44336;
+      border-left: 3px solid #ff6b6b;
+      
+      &:hover {
+        border-left-color: #ff8787;
+        box-shadow: $shadow-medium, 0 0 20px rgba(255, 107, 107, 0.2);
+      }
     }
     
     &.benefits {
-      border-left: 4px solid #4caf50;
+      border-left: 3px solid #51cf66;
+      
+      &:hover {
+        border-left-color: #69db7c;
+        box-shadow: $shadow-medium, 0 0 20px rgba(81, 207, 102, 0.2);
+      }
     }
     
     &.process {
-      border-left: 4px solid #ff9800;
+      border-left: 3px solid #ffa94d;
+      
+      &:hover {
+        border-left-color: #ffb969;
+        box-shadow: $shadow-medium, 0 0 20px rgba(255, 169, 77, 0.2);
+      }
     }
     
     &.needs {
-      border-left: 4px solid #2196f3;
+      border-left: 3px solid #4dabf7;
+      
+      &:hover {
+        border-left-color: #66b7f7;
+        box-shadow: $shadow-medium, 0 0 20px rgba(77, 171, 247, 0.2);
+      }
     }
     
     &.schedule {
-      border-left: 4px solid #9c27b0;
+      border-left: 3px solid #b197fc;
+      
+      &:hover {
+        border-left-color: #c0a8fc;
+        box-shadow: $shadow-medium, 0 0 20px rgba(177, 151, 252, 0.2);
+      }
     }
     
     &.contact {
-      border-left: 4px solid #00bcd4;
+      border-left: 3px solid #22b8cf;
+      background: linear-gradient(135deg, $card-bg 0%, rgba(34, 184, 207, 0.05) 100%);
+      
+      &:hover {
+        border-left-color: #3bc9db;
+        box-shadow: $shadow-medium, 0 0 20px rgba(34, 184, 207, 0.2);
+      }
     }
+  }
+  
+  // Icon badge styling
+  .card-icon-badge {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
 
   // Enhanced contact section
@@ -352,16 +525,77 @@ $shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 
       padding: 390px 0 100px;
     }
     
+    .recruitment-hero {
+      py: 6;
+      
+      .MuiTypography-h1 {
+        font-size: 2rem !important;
+      }
+      
+      .MuiTypography-h5 {
+        font-size: 1rem !important;
+      }
+    }
+    
     .recruitment-card {
-      padding: 16px;
+      padding: 28px 20px 24px 20px;
+      margin-top: 20px;
+      margin-bottom: 16px;
+      border-radius: 12px;
+      
+      &:hover {
+        transform: translateY(-3px) scale(1.005);
+      }
+    }
+    
+    .card-icon-badge {
+      left: 16px !important;
+      top: -14px !important;
+      padding: 6px 10px !important;
+      
+      svg {
+        font-size: 1.5rem !important;
+      }
+    }
+    
+    .recruitment-section {
+      margin-bottom: 56px;
     }
     
     h3 {
       font-size: 1.25rem;
+      padding: 0 !important;
+      margin: 12px 0 20px 0 !important;
     }
     
     h4 {
       font-size: 1rem;
+      padding: 0 !important;
+      margin: 0 0 12px 0 !important;
+    }
+    
+    .MuiChip-root {
+      width: 100%;
+      justify-content: center;
+      margin: 0.5rem 0 !important;
+    }
+    
+    p {
+      font-size: 1rem;
+      padding: 0 16px;
+    }
+    
+    ul, ol {
+      li {
+        font-size: 0.9375rem;
+        padding: 0;
+        margin-bottom: 14px;
+        padding-left: 20px !important;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
     }
   }
 
@@ -385,6 +619,7 @@ $shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 
       li {
         padding: 8px 0;
         position: relative;
+        padding-left: 20px !important;
         
         &:before {
           content: "•";

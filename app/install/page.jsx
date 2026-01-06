@@ -1616,132 +1616,110 @@ export default function InstallPage() {
               sx={{
                 minHeight: '70vh',
                 display: 'flex',
-                flexDirection: { xs: 'column', lg: 'row' },
+                flexDirection: 'column',
                 gap: 4,
-                alignItems: 'flex-start',
               }}
             >
-              {/* Left Side - Progress */}
-              <Box
+              {/* Header */}
+              <Typography
+                variant="h3"
                 sx={{
-                  flex: 1,
-                  minWidth: { xs: '100%', lg: '400px' },
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 3,
+                  color: '#FFFFFF',
+                  fontWeight: 700,
+                  mb: 2,
+                  textShadow: '0 2px 8px rgba(0,0,0,0.5)',
                 }}
               >
-                <Typography
-                  variant="h3"
-                  sx={{
-                    color: '#FFFFFF',
-                    fontWeight: 700,
-                    mb: 2,
-                    textShadow: '0 2px 8px rgba(0,0,0,0.5)',
-                  }}
-                >
-                  Fetching Guild Data
-                </Typography>
-                
-                {error && activeStep === 1 && (
-                  <Alert 
-                    severity="error" 
-                    sx={{ mb: 2 }}
-                    action={
-                      <Button
-                        color="inherit"
-                        size="small"
-                        onClick={() => {
-                          setActiveStep(0);
-                          setError('');
-                          setErrorDetails(null);
-                        }}
-                      >
-                        Go Back to Fix
-                      </Button>
-                    }
-                  >
-                    <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
-                      {error}
-                    </Typography>
-                    {errorDetails && errorDetails.suggestion && (
-                      <Typography variant="body2" sx={{ mt: 1 }}>
-                        {errorDetails.suggestion}
-                      </Typography>
-                    )}
-                  </Alert>
-                )}
+                Fetching Guild Data
+              </Typography>
 
-                {!fetchingGuild && !fetchProgress && (
-                  <Box sx={{ mb: 2 }}>
-                    {hasGuildData && (
-                      <Alert severity="success" sx={{ mb: 2 }}>
-                        Guild data already exists in the database. You can skip this step or fetch fresh data.
-                      </Alert>
-                    )}
+              {/* Alerts and Errors */}
+              {error && activeStep === 1 && (
+                <Alert 
+                  severity="error" 
+                  sx={{ mb: 2 }}
+                  action={
                     <Button
-                      variant="contained"
-                      onClick={fetchGuildData}
-                      disabled={loading}
-                      sx={{ mb: 2 }}
+                      color="inherit"
+                      size="small"
+                      onClick={() => {
+                        setActiveStep(0);
+                        setError('');
+                        setErrorDetails(null);
+                      }}
                     >
-                      Start Guild Fetch
+                      Go Back to Fix
                     </Button>
-                    <Typography variant="body2" sx={{ color: '#888', mt: 1 }}>
-                      {hasGuildData 
-                        ? 'Guild data exists. Click to fetch fresh data, or skip to proceed to admin account creation.'
-                        : 'Click the button above to start fetching guild data, or skip this step to proceed to admin account creation.'}
+                  }
+                >
+                  <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
+                    {error}
+                  </Typography>
+                  {errorDetails && errorDetails.suggestion && (
+                    <Typography variant="body2" sx={{ mt: 1 }}>
+                      {errorDetails.suggestion}
                     </Typography>
-                  </Box>
-                )}
-              
-              <Box
-                sx={{
-                  background: 'rgba(0, 0, 0, 0.3)',
-                  backdropFilter: 'blur(10px)',
-                  borderRadius: 2,
-                  p: 3,
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                }}
-              >
-                <Typography
-                  variant="h6"
+                  )}
+                </Alert>
+              )}
+
+              {!fetchingGuild && !fetchProgress && (
+                <Box sx={{ mb: 2 }}>
+                  {hasGuildData && (
+                    <Alert severity="success" sx={{ mb: 2 }}>
+                      Guild data already exists in the database. You can skip this step or fetch fresh data.
+                    </Alert>
+                  )}
+                  <Button
+                    variant="contained"
+                    onClick={fetchGuildData}
+                    disabled={loading}
+                    sx={{ mb: 2 }}
+                  >
+                    Start Guild Fetch
+                  </Button>
+                  <Typography variant="body2" sx={{ color: '#888', mt: 1 }}>
+                    {hasGuildData 
+                      ? 'Guild data exists. Click to fetch fresh data, or skip to proceed to admin account creation.'
+                      : 'Click the button above to start fetching guild data, or skip this step to proceed to admin account creation.'}
+                  </Typography>
+                </Box>
+              )}
+
+              {/* Progress Indicator - Top */}
+              {(fetchingGuild || fetchProgress) && (
+                <Box
                   sx={{
-                    color: '#FFFFFF',
+                    width: '100%',
                     mb: 2,
-                    fontWeight: 600,
                   }}
                 >
-                  Progress
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: '#B0C4DE',
-                    mb: 3,
-                    fontSize: '1.1rem',
-                  }}
-                >
-                  {fetchProgress || 'Initializing...'}
-                </Typography>
-                
-                {totalMembers > 0 && (
-                  <Box sx={{ mt: 2 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Typography variant="body2" sx={{ color: '#888' }}>
-                        Members Processed
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: '#FFD700', fontWeight: 600 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        color: '#FFFFFF',
+                        fontWeight: 600,
+                      }}
+                    >
+                      {fetchProgress || 'Initializing...'}
+                    </Typography>
+                    {totalMembers > 0 && (
+                      <Typography variant="body1" sx={{ color: '#FFD700', fontWeight: 600, fontSize: '1.1rem' }}>
                         {totalProcessed} / {totalMembers}
                       </Typography>
-                    </Box>
+                    )}
+                  </Box>
+                  
+                  {totalMembers > 0 && (
                     <Box
                       sx={{
                         width: '100%',
-                        height: 8,
+                        height: 12,
                         background: 'rgba(255, 255, 255, 0.1)',
-                        borderRadius: 4,
+                        borderRadius: 6,
                         overflow: 'hidden',
+                        position: 'relative',
                       }}
                     >
                       <Box
@@ -1750,85 +1728,68 @@ export default function InstallPage() {
                           height: '100%',
                           background: 'linear-gradient(90deg, #00D4FF 0%, #FFD700 100%)',
                           transition: 'width 0.3s ease',
+                          boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
                         }}
                       />
                     </Box>
-                  </Box>
-                )}
-              </Box>
-            </Box>
+                  )}
+                </Box>
+              )}
 
-            {/* Right Side - Character Cards */}
-            <Box
-              sx={{
-                flex: 1,
-                minWidth: { xs: '100%', lg: '400px' },
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
-              }}
-            >
-              <Typography
-                variant="h6"
-                sx={{
-                  color: '#FFFFFF',
-                  fontWeight: 600,
-                  mb: 1,
-                }}
-              >
-                New Characters
-              </Typography>
-              
-              <Box
-                sx={{
-                  display: 'flex',
-                  gap: 2,
-                  overflowX: 'auto',
-                  overflowY: 'hidden',
-                  pb: 2,
-                  '&::-webkit-scrollbar': {
-                    height: 8,
-                  },
-                  '&::-webkit-scrollbar-track': {
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    borderRadius: 4,
-                  },
-                  '&::-webkit-scrollbar-thumb': {
-                    background: 'rgba(255, 255, 255, 0.3)',
-                    borderRadius: 4,
-                    '&:hover': {
-                      background: 'rgba(255, 255, 255, 0.5)',
-                    },
-                  },
-                }}
-              >
-                {newCharacters.length > 0 ? (
-                  newCharacters.map((character, index) => (
-                    <CharacterCard
-                      key={`${character.name}-${character.server}-${index}`}
-                      character={character}
-                      index={index}
-                      delay={index * 200}
-                    />
-                  ))
-                ) : (
-                  <Box
+              {/* Character Cards - Bottom */}
+              {(fetchingGuild || newCharacters.length > 0) && (
+                <Box
+                  sx={{
+                    width: '100%',
+                  }}
+                >
+                  <Typography
+                    variant="h6"
                     sx={{
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      minHeight: 360,
-                      color: '#666',
+                      color: '#FFFFFF',
+                      fontWeight: 600,
+                      mb: 3,
                     }}
                   >
-                    <Typography variant="body1">
-                      Characters will appear here as they are processed...
-                    </Typography>
+                    Recently Processed Characters
+                  </Typography>
+                  
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: 2,
+                      width: '100%',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {newCharacters.length > 0 ? (
+                      newCharacters.slice(-10).map((character, index) => (
+                        <CharacterCard
+                          key={`${character.name}-${character.server}-${index}`}
+                          character={character}
+                          index={index}
+                          total={newCharacters.slice(-10).length}
+                        />
+                      ))
+                    ) : (
+                      <Box
+                        sx={{
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          minHeight: 200,
+                          color: '#666',
+                        }}
+                      >
+                        <Typography variant="body1">
+                          Characters will appear here as they are processed...
+                        </Typography>
+                      </Box>
+                    )}
                   </Box>
-                )}
-              </Box>
-            </Box>
+                </Box>
+              )}
             </Box>
           </Box>
         )}

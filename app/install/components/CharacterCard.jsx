@@ -1,138 +1,214 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Box, Typography, Paper } from '@mui/material';
+import { Box, Typography, Chip } from '@mui/material';
 
-const CharacterCard = ({ character, index, delay = 0 }) => {
+const CharacterCard = ({ character, index, total = 10 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(true);
-    }, delay);
+    }, 50);
 
     return () => clearTimeout(timer);
-  }, [delay]);
+  }, []);
 
   const characterImage = character?.media?.assets?.[0]?.value || 
                         character?.media?.assets?.[1]?.value || 
                         '/images/logo-without-text.png';
 
+  const getClassColor = (className) => {
+    const classColors = {
+      'Death Knight': '#C41E3A',
+      'Demon Hunter': '#A330C9',
+      'Druid': '#FF7C0A',
+      'Evoker': '#33937F',
+      'Hunter': '#AAD372',
+      'Mage': '#3FC7EB',
+      'Monk': '#00FF98',
+      'Paladin': '#F48CBA',
+      'Priest': '#FFFFFF',
+      'Rogue': '#FFF468',
+      'Shaman': '#0070DD',
+      'Warlock': '#8788EE',
+      'Warrior': '#C69B6D',
+    };
+    return classColors[className] || '#FFFFFF';
+  };
+
+  const getRoleIcon = (spec) => {
+    const tankSpecs = ['Blood', 'Vengeance', 'Guardian', 'Brewmaster', 'Protection'];
+    const healerSpecs = ['Preservation', 'Mistweaver', 'Holy', 'Discipline', 'Restoration', 'Augmentation'];
+    
+    if (tankSpecs.includes(spec)) return '🛡️';
+    if (healerSpecs.includes(spec)) return '💚';
+    return '⚔️';
+  };
+
+  const classColor = getClassColor(character.metaData?.class || character.class);
+  const spec = character.metaData?.spec || character.spec || 'Unknown';
+  const roleIcon = getRoleIcon(spec);
+
   return (
-    <Paper
+    <Box
       sx={{
-        minWidth: 280,
-        maxWidth: 280,
-        height: 360,
-        background: 'linear-gradient(135deg, rgba(21, 48, 52, 0.95) 0%, rgba(26, 61, 66, 0.95) 100%)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        borderRadius: 3,
-        overflow: 'hidden',
+        width: `calc(${100 / total}% - ${(total - 1) * 16 / total}px)`,
+        minWidth: '120px',
+        height: '220px',
         position: 'relative',
-        transform: isVisible ? 'translateX(0)' : 'translateX(100px)',
+        overflow: 'hidden',
+        borderRadius: 2,
+        transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
         opacity: isVisible ? 1 : 0,
-        transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        border: `2px solid ${classColor}`,
+        boxShadow: `0 4px 16px rgba(0, 0, 0, 0.4), 0 0 0 1px ${classColor}33`,
+        flexShrink: 0,
         '&:hover': {
-          transform: 'translateX(0) translateY(-8px)',
-          boxShadow: '0 12px 48px rgba(0, 0, 0, 0.6)',
+          transform: 'translateY(-8px) scale(1.02)',
+          boxShadow: `0 8px 24px rgba(0, 0, 0, 0.6), 0 0 20px ${classColor}66`,
+          zIndex: 10,
         }
       }}
     >
-      {/* Character Image */}
+      {/* Character Image Background */}
       <Box
         sx={{
-          width: '100%',
-          height: 200,
-          position: 'relative',
-          overflow: 'hidden',
-          background: 'linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 100%)',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: `url(${characterImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center top',
+          filter: 'brightness(0.4) contrast(1.2)',
+          zIndex: 0,
+        }}
+      />
+      
+      {/* Gradient Overlay */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: `linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0.95) 100%)`,
+          zIndex: 1,
+        }}
+      />
+
+      {/* Role Icon Badge */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 8,
+          right: 8,
+          zIndex: 3,
+          fontSize: '1.5rem',
+          textShadow: '0 2px 4px rgba(0,0,0,0.8)',
         }}
       >
-        <img
-          src={characterImage}
-          alt={character.name}
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            filter: 'brightness(0.9) contrast(1.1)',
-          }}
-        />
-        {/* Gradient overlay */}
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: '60%',
-            background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%)',
-          }}
-        />
+        {roleIcon}
       </Box>
 
       {/* Character Info */}
-      <Box sx={{ p: 2, position: 'relative', zIndex: 1 }}>
+      <Box 
+        sx={{ 
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          p: 1.5, 
+          zIndex: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 0.5,
+        }}
+      >
         <Typography
-          variant="h6"
+          variant="subtitle1"
           sx={{
             color: '#FFFFFF',
             fontWeight: 700,
-            mb: 0.5,
-            textShadow: '0 2px 4px rgba(0,0,0,0.5)',
-            fontSize: '1.1rem',
+            textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+            fontSize: '0.9rem',
+            lineHeight: 1.2,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
           }}
         >
           {character.name}
         </Typography>
+        
         <Typography
-          variant="body2"
+          variant="caption"
           sx={{
-            color: '#B0C4DE',
-            mb: 1,
-            fontSize: '0.85rem',
+            color: classColor,
+            fontWeight: 600,
+            fontSize: '0.7rem',
+            textShadow: '0 1px 2px rgba(0,0,0,0.8)',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
           }}
         >
-          {character.metaData?.class || character.class || 'Unknown'} • {character.metaData?.spec || character.spec || 'Unknown'}
+          {character.metaData?.class || character.class || 'Unknown'}
+        </Typography>
+        
+        <Typography
+          variant="caption"
+          sx={{
+            color: '#B0C4DE',
+            fontSize: '0.65rem',
+            textShadow: '0 1px 2px rgba(0,0,0,0.8)',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {spec}
         </Typography>
         
         {/* Stats */}
-        <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <Box sx={{ mt: 0.5, display: 'flex', flexDirection: 'column', gap: 0.25 }}>
           {character.itemLevel && (
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="caption" sx={{ color: '#888' }}>
-                Item Level
+              <Typography variant="caption" sx={{ color: '#888', fontSize: '0.65rem' }}>
+                iLvl
               </Typography>
-              <Typography variant="body2" sx={{ color: '#FFD700', fontWeight: 600 }}>
+              <Typography variant="caption" sx={{ color: '#FFD700', fontWeight: 700, fontSize: '0.7rem' }}>
                 {character.itemLevel}
               </Typography>
             </Box>
           )}
           {character.mplus > 0 && (
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="caption" sx={{ color: '#888' }}>
-                Mythic+ Score
+              <Typography variant="caption" sx={{ color: '#888', fontSize: '0.65rem' }}>
+                M+
               </Typography>
-              <Typography variant="body2" sx={{ color: '#00D4FF', fontWeight: 600 }}>
+              <Typography variant="caption" sx={{ color: '#00D4FF', fontWeight: 700, fontSize: '0.7rem' }}>
                 {Math.round(character.mplus)}
               </Typography>
             </Box>
           )}
           {character.pvp > 0 && (
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="caption" sx={{ color: '#888' }}>
-                PvP Rating
+              <Typography variant="caption" sx={{ color: '#888', fontSize: '0.65rem' }}>
+                PvP
               </Typography>
-              <Typography variant="body2" sx={{ color: '#FF6B6B', fontWeight: 600 }}>
+              <Typography variant="caption" sx={{ color: '#FF6B6B', fontWeight: 700, fontSize: '0.7rem' }}>
                 {Math.round(character.pvp)}
               </Typography>
             </Box>
           )}
         </Box>
       </Box>
-    </Paper>
+    </Box>
   );
 };
 

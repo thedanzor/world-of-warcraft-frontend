@@ -5,17 +5,29 @@ A modern, responsive web application for managing and displaying World of Warcra
 ## Version 2.0 Changelog 🆕
 
 ### Major Features
+- **Dynamic Recruitment/Join Page System**: Fully customizable guild recruitment page with block-based content management
 - **Admin Settings Management**: New protected `/settings` route for comprehensive app configuration
 - **Admin Authentication System**: Secure authentication required for install and settings pages
 - **Database Reset Functionality**: Ability to reset database collections while preserving critical settings
 - **Enhanced Security**: Protected routes with admin-only access for sensitive operations
 
 ### New Pages & Routes
+- **`/join`** - Public guild recruitment page
+  - Dynamic hero section with customizable title, subtitle, and badges
+  - Flexible section-based layout with block components
+  - Responsive design with modern glassmorphism effects
+  - Real-time content updates from database
 - **`/settings`** - Admin settings management page (protected)
   - View and edit app configuration
   - Protected fields (Guild Name, Realm, API Key) - view only or hidden
   - Editable fields for all other settings
   - Database reset functionality
+- **`/settings/join`** - Join page content editor (protected)
+  - Edit hero section (title, subtitle, badges)
+  - Manage content sections with drag-and-drop ordering
+  - Add/edit/remove content blocks (text, list, contact)
+  - Real-time preview of changes
+  - Seed database with example content
 - **`/settings/errors`** - Error management (moved from `/errors`, now protected)
   - All error management features now require admin authentication
   - Same functionality as before, but secured behind admin login
@@ -29,6 +41,9 @@ A modern, responsive web application for managing and displaying World of Warcra
 - **Settings Management**: Post-installation configuration changes through protected settings page
 
 ### New API Routes
+- **GET `/api/jointext`** - Get join page content (public)
+- **PUT `/api/jointext`** - Update join page content (admin only)
+- **POST `/api/jointext/seed`** - Seed database with example join content (admin only)
 - **POST `/api/install/login`** - Admin authentication for protected routes
 - **GET `/api/settings`** - Get app settings (admin only, includes sensitive data)
 - **PUT `/api/settings`** - Update app settings (admin only, protected fields excluded)
@@ -46,6 +61,27 @@ A modern, responsive web application for managing and displaying World of Warcra
 - **Protected Fields**: Guild name, realm, and API credentials protected from modification
 - **Flexible Updates**: Most settings can be updated without full reinstallation
 - **Settings Validation**: Real-time validation of Battle.net API credentials
+
+### Dynamic Recruitment System
+- **Hero Section Customization**: Edit title, subtitle, and colored badges from admin panel
+- **Section-Based Layout**: Organize content into logical sections with flexible block positioning
+- **Block Types**: 
+  - **Text Blocks**: Rich text content with title
+  - **List Blocks**: Bullet-pointed lists for requirements, benefits, schedules
+  - **Contact Blocks**: Discord and email contact information with clickable links
+- **Layout Options**: Each block can be positioned as full-width, left-half, or right-half
+- **Visual Design**:
+  - Modern glassmorphism effects with backdrop blur
+  - Card-based layout with colored left borders (requirements=red, benefits=green, etc.)
+  - Icon badges for each card type
+  - Hover animations and glow effects
+  - Responsive design for mobile, tablet, and desktop
+- **Content Management**:
+  - Add/remove/reorder sections and blocks
+  - Real-time preview in admin panel
+  - Database seeding with example content
+  - No-cache fetching ensures fresh content
+- **Database Structure**: All content stored in MongoDB `jointext` collection with section/block hierarchy
 
 ## Version 1.5.0 Changelog
 
@@ -493,13 +529,22 @@ The backend is an Express.js API server that:
   - **Activity Tracking**: Season activity detection and performance metrics
 - **Data**: Complete character data with seasonal statistics and team play analysis
 
-#### `/join` - Recruitment
-- **Purpose**: Guild recruitment information
+#### `/join` - Guild Recruitment 🆕 **ENHANCED in v2.0**
+- **Purpose**: Dynamic, fully customizable guild recruitment page
 - **Features**:
-  - Guild information
-  - Requirements
-  - Application process
-- **Data**: Static recruitment content
+  - **Customizable Hero Section**: Editable title, subtitle, and colored badges (gold/blue/green)
+  - **Section-Based Layout**: Organize content into logical sections
+  - **Flexible Block System**: Three block types for different content needs
+    - **Text Blocks**: Rich text content with titles
+    - **List Blocks**: Bullet-pointed lists for requirements, benefits, schedules
+    - **Contact Blocks**: Discord and email links with clickable buttons
+  - **Layout Control**: Position each block as full-width, left-half, or right-half
+  - **Modern Design**: Glassmorphism effects, hover animations, colored borders by type
+  - **Responsive**: Fully responsive design for mobile, tablet, and desktop
+  - **Icon Badges**: Automatic icon assignment based on content type (requirements, benefits, etc.)
+- **Data**: Dynamic content from MongoDB `jointext` collection
+- **Admin Panel**: Content fully editable via `/settings/join` (admin only)
+- **Example Content**: Includes seeded example content on installation
 
 #### `/settings` - Admin Settings Management 🆕 **NEW v2.0**
 - **Purpose**: Comprehensive app configuration and management (admin only)
@@ -554,6 +599,11 @@ The backend is an Express.js API server that:
 - `PUT /api/errors/[id]/resolve` - Mark error as resolved
 - `DELETE /api/errors/[id]` - Delete specific error
 - `DELETE /api/errors` - Bulk delete errors (with filters)
+
+#### Join/Recruitment Content Endpoints 🆕 **NEW v2.0**
+- `GET /api/jointext` - Get join page content (public)
+- `PUT /api/jointext` - Update join page content (admin only)
+- `POST /api/jointext/seed` - Seed database with example join content (admin only)
 
 #### Admin & Settings Endpoints 🆕 **NEW v2.0**
 - `POST /api/install/login` - Admin authentication
@@ -1371,6 +1421,62 @@ To change Guild Name, Realm, or API credentials:
 2. Enter admin credentials to access
 3. Update settings and save (will overwrite existing configuration)
 4. Re-fetch guild data if needed
+
+#### Managing Join/Recruitment Page Content
+Customize your guild's recruitment page to attract new members:
+
+1. **Access the Join Page Editor**
+   - Navigate to `/settings/join` (requires admin login)
+   - View real-time preview of your changes
+
+2. **Edit Hero Section**
+   - Update the main title and subtitle
+   - Add/remove/edit badges with color selection (gold, blue, green)
+   - Perfect for highlighting guild focus (Mythic Raiding, PvP, M+)
+
+3. **Manage Content Sections**
+   - **Add Sections**: Click "Add Section" to create new content areas
+   - **Add Blocks**: Within each section, add different block types:
+     - **Text Blocks**: For welcome messages, guild descriptions, or detailed information
+     - **List Blocks**: For requirements, benefits, raid schedules, or application steps
+     - **Contact Blocks**: For Discord invites and email contact information
+   - **Layout Options**: Choose full-width, left-half, or right-half for each block
+   - **Reorder**: Use Move Up/Down buttons to organize sections and blocks
+
+4. **Seed Example Content**
+   - Click "Seed Join Data" to populate with example recruitment content
+   - Includes pre-formatted sections for requirements, benefits, schedule, and contact
+   - Great starting point for customization
+
+5. **Save Changes**
+   - Click "Save Join Text" to publish your changes
+   - Changes appear immediately on `/join` page
+   - No cache issues - content updates in real-time
+
+**Example Content Structure:**
+```
+Hero Section
+  ├─ Title: "Join Our Guild"
+  ├─ Subtitle: "Epic adventures await..."
+  └─ Badges: [Mythic Raiding, PvP, M+]
+
+Section 1: Welcome
+  └─ Text Block (Full Width): Guild introduction
+
+Section 2: Requirements & Benefits
+  ├─ List Block (Left): Mythic Raiding Requirements
+  └─ List Block (Right): Guild Benefits
+
+Section 3: Application & Current Needs
+  ├─ List Block (Left): Application Process
+  └─ List Block (Right): Current Needs
+
+Section 4: Raid Schedule
+  └─ List Block (Full Width): Raid times and dates
+
+Section 5: Contact
+  └─ Contact Block (Full Width): Discord + Email links
+```
 
 ### Production Build
 

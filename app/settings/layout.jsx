@@ -26,6 +26,7 @@ import {
   Refresh as RefreshIcon,
   PersonAdd as PersonAddIcon,
   HowToReg as HowToRegIcon,
+  Group as GroupIcon,
 } from '@mui/icons-material';
 import Link from 'next/link';
 
@@ -164,10 +165,11 @@ export default function SettingsLayout({ children }) {
     : pathname === '/settings/join' ? 1 
     : pathname?.startsWith('/settings/errors') ? 2 
     : pathname === '/settings/season-signups' ? 3 
+    : pathname === '/settings/roster-builder' ? 4 
     : 0;
 
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
+    <Container maxWidth="xxl" sx={{ py: 4 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4" component="h1">
           Settings
@@ -214,6 +216,14 @@ export default function SettingsLayout({ children }) {
             component={Link}
             href="/settings/season-signups"
             value={3}
+          />
+          <Tab
+            label="Roster Builder"
+            icon={<GroupIcon />}
+            iconPosition="start"
+            component={Link}
+            href="/settings/roster-builder"
+            value={4}
           />
         </Tabs>
       </Box>

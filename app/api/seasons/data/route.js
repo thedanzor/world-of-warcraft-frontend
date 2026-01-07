@@ -13,7 +13,8 @@ export async function GET() {
       if (response.status === 404) {
         return NextResponse.json([], {
           headers: {
-            'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=300'
+            'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+            'Pragma': 'no-cache',
           }
         });
       }
@@ -36,7 +37,8 @@ export async function GET() {
     // Return empty array for now until backend is ready
     return NextResponse.json([], {
       headers: {
-        'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=300'
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
       }
     });
   }

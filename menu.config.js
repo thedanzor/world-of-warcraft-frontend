@@ -37,19 +37,14 @@ const data = {
                     "label": "Sign Up",
                     "path": "/seasons",
                     "icon": "HowToRegIcon"
-                }
-            ]
-        },
-        "TOOLS": {
-            "label": "Tools",
-            "items": [
+                },
                 {
-                    "label": "Roster Builder",
+                    "label": "Roster Overview",
                     "path": "/roster",
                     "icon": "GroupAddIcon"
                 }
             ]
-        }
+        },
     }
 };
 

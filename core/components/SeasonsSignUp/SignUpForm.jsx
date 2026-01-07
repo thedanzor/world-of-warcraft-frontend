@@ -21,6 +21,16 @@ import CircularProgress from '@mui/material/CircularProgress'
 import AddIcon from '@mui/icons-material/Add'
 import { classSpecs, classColors, tankSpecs, healerSpecs } from '../SeasonsStats/constants'
 
+// Helper function to capitalize character names
+const capitalizeCharacterName = (name) => {
+    if (!name) return name
+    // Split by hyphen to handle "name-realm" format, capitalize each part
+    return name.split('-').map(part => {
+        if (!part) return part
+        return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+    }).join('-')
+}
+
 const SignUpForm = ({ open, onClose, onSubmit, loading, error, guildData }) => {
     const [formData, setFormData] = useState({
         discordName: '',
@@ -333,7 +343,7 @@ const SignUpForm = ({ open, onClose, onSubmit, loading, error, guildData }) => {
                     {character.media?.assets?.length ? (
                         <img
                             src={character.media.assets[1].value}
-                            alt={character.name}
+                            alt={capitalizeCharacterName(character.name)}
                             style={{ 
                                 width: 50, 
                                 height: 50, 
@@ -356,7 +366,7 @@ const SignUpForm = ({ open, onClose, onSubmit, loading, error, guildData }) => {
                             }}
                         >
                             <Typography variant="caption" color="text.secondary">
-                                {character.name.charAt(0).toUpperCase()}
+                                {capitalizeCharacterName(character.name).charAt(0)}
                             </Typography>
                         </Box>
                     )}
@@ -370,7 +380,7 @@ const SignUpForm = ({ open, onClose, onSubmit, loading, error, guildData }) => {
                                 fontWeight: 'bold'
                             }}
                         >
-                            {character.name}
+                            {capitalizeCharacterName(character.name)}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                             {character.class} • Level {character.level || '80'} • Item Level {character.itemLevel || '??'}

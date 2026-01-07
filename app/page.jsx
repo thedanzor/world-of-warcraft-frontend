@@ -7,8 +7,9 @@
 import { api } from '@/lib/api'
 import DynamicScreenLoader from '@/core/dynamicScreenLoader'
 
-// Refresh data every 10 minutes
-export const revalidate = 600
+// Disable caching - always fetch live data
+export const revalidate = 0
+export const dynamic = 'force-dynamic'
 
 /**
  * Gets all the guild data we need for the dashboard

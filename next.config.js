@@ -12,6 +12,10 @@ const nextConfig = {
         // Enable experimental features for better compatibility
         serverComponentsExternalPackages: [],
     },
+    // Disable caching globally
+    onDemandRevalidation: {
+        // Disable on-demand revalidation
+    },
     // Ensure proper module resolution
     webpack: (config, { isServer }) => {
         if (!isServer) {

@@ -19,6 +19,16 @@ import config from '@/app.config.js'
 
 const { RESULTS_PAGINATION } = config
 
+// Helper function to capitalize character names
+const capitalizeCharacterName = (name) => {
+    if (!name) return name
+    // Split by hyphen to handle "name-realm" format, capitalize each part
+    return name.split('-').map(part => {
+        if (!part) return part
+        return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+    }).join('-')
+}
+
 // Dungeon mapping for display names
 const DUNGEON_NAMES = {
     392: "Tazavesh: So'leah's Gambit",
@@ -269,7 +279,7 @@ const MythicPlusBlock = ({ data, name, hideControls }) => {
                                             {character?.media?.assets?.length ? (
                                                                                             <img
                                                 src={character?.media?.assets[0]?.value}
-                                                alt={character.name}
+                                                alt={capitalizeCharacterName(character.name)}
                                                 width={60}
                                                 height={60}
                                                 style={{
@@ -287,7 +297,7 @@ const MythicPlusBlock = ({ data, name, hideControls }) => {
                                                         boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
                                                     }}
                                                     src={'/images/logo-without-text.png'}
-                                                    alt={character.name}
+                                                    alt={capitalizeCharacterName(character.name)}
                                                     width={60}
                                                     height={60}
                                                 />
@@ -302,7 +312,7 @@ const MythicPlusBlock = ({ data, name, hideControls }) => {
                                                     fontWeight: '600',
                                                     '&:hover': { color: '#FFD700' }
                                                 }}>
-                                                    {character.name}
+                                                    {capitalizeCharacterName(character.name)}
                                                 </P>
                                             </div>
                                             <div className="classandspec">

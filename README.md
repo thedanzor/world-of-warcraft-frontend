@@ -2,6 +2,43 @@
 
 A modern, responsive web application for managing and displaying World of Warcraft guild information, raid progression, and player statistics. Built with Next.js 14, React 18, and Material-UI.
 
+## Version 2.2 Changelog 🆕
+
+### Roster Builder Admin System
+- **Admin-Based Roster Management**: Roster builder is now restricted to admin users only
+- **New Admin Roster Builder Page**: 
+  - Located at `/settings/roster-builder` (admin-only, requires authentication)
+  - 3-column layout with drag-and-drop functionality
+  - Search functionality to find characters
+  - Real-time roster buff calculations
+  - Character cards with role-based organization
+- **Public Roster Display**: 
+  - `/roster` page remains public (read-only)
+  - Displays saved roster configurations
+  - Shows character details and raid composition
+- **Enhanced Roster Features**:
+  - Drag and drop characters between roles (Tanks, Healers, DPS, Substitutes, Socials)
+  - Remove characters from roster
+  - Save roster configurations to database
+  - Buff summary calculations
+  - Character filtering and search
+- **Security Improvements**:
+  - Admin authentication required for roster modifications
+  - Protected routes for roster builder
+  - Secure API endpoints for saving/deleting roster data
+
+### New Pages & Routes
+- **`/settings/roster-builder`** - Admin roster builder page (admin only)
+  - Full drag-and-drop roster management
+  - Character search and filtering
+  - Buff calculations and summaries
+  - Save/load roster configurations
+
+### API Routes
+- **GET `/api/roster`** - Get current roster (public, read-only)
+- **POST `/api/roster`** - Save roster configuration (admin only, requires Basic Auth)
+- **DELETE `/api/roster/:characterId`** - Remove character from roster (admin only, requires Basic Auth)
+
 ## Version 2.1 Changelog 🆕
 
 ### Season Signup System Improvements
@@ -201,9 +238,14 @@ The Dashboard provides a comprehensive overview of your guild, including member 
 
 ### Roster Builder
 
-![Roster Builder](_screenshots/v1.3.2/roster.png)
+![Roster Builder](_screenshots/v2.2/roster1.png)
+![Roster Builder](_screenshots/v2.2/roster2.png)
+The admin roster builder interface with drag-and-drop functionality for organizing raid compositions.
 
-The Roster Builder is an interactive tool for planning raid compositions. Drag and drop characters into raid slots, filter by role or class, and optimize your team for upcoming encounters. This tool helps raid leaders organize and balance their groups efficiently.
+![Roster Builder](_screenshots/v2.2/roster3.png)
+The public roster display page showing the saved roster configuration in read-only mode.
+
+The Roster Builder is an interactive admin tool for planning raid compositions. Located at `/settings/roster-builder` (admin only), it allows raid leaders to drag and drop characters into raid slots, filter by role or class, and optimize their team for upcoming encounters. The public `/roster` page displays the saved roster configuration in read-only mode. This tool helps raid leaders organize and balance their groups efficiently.
 
 ### Audit
 
@@ -514,14 +556,28 @@ The backend is an Express.js API server that:
   - Recent activity feed
 - **Data**: Fetches comprehensive guild data with statistics
 
-#### `/roster` - Roster Builder
-- **Purpose**: Interactive raid roster planning
+#### `/roster` - Roster Display
+- **Purpose**: Public view of saved raid roster (read-only)
 - **Features**:
-  - Drag & drop character assignment
-  - Role-based filtering
+  - Display saved roster configurations
+  - View character assignments by role
+  - See raid composition and buff summaries
+  - Character details and statistics
+- **Data**: Saved roster from database with full guild member details
+- **Note**: Roster editing is now available at `/settings/roster-builder` (admin only)
+
+#### `/settings/roster-builder` - Roster Builder (Admin Only) 🆕 **NEW v2.2**
+- **Purpose**: Interactive raid roster planning and management
+- **Features**:
+  - Drag & drop character assignment between roles
+  - Role-based filtering (Tanks, Healers, DPS, Substitutes, Socials)
+  - Character search functionality
   - Raid composition optimization
-  - Save/load roster configurations
+  - Real-time buff calculations
+  - Save/load roster configurations to database
+  - Remove characters from roster
 - **Data**: Full guild member list with roles and specs
+- **Access**: Requires admin authentication
 
 #### `/audit` - Guild Audit
 - **Purpose**: Detailed guild member analysis
@@ -662,6 +718,11 @@ The backend is an Express.js API server that:
 - `PUT /api/settings` - Update app settings (admin only)
 - `POST /api/reset` - Reset database collections (admin only)
 - `GET /api/reset/info` - Get reset information
+
+#### Roster Management Endpoints 🆕 **NEW v2.2**
+- `GET /api/roster` - Get current roster (public, read-only)
+- `POST /api/roster` - Save roster configuration (admin only, requires Basic Auth)
+- `DELETE /api/roster/:characterId` - Remove character from roster (admin only, requires Basic Auth)
 
 #### Installation Endpoints 🆕 **NEW v2.0**
 - `GET /api/install` - Check installation status
@@ -1631,7 +1692,6 @@ I'm actively working on improving code quality and documentation.
 
 ### High Priority
 - **Rebuild the MRT tool** - The Method Raid Tools integration needs a complete overhaul
-- **Rebuild the roster builder** - The drag-and-drop roster planning interface requires modernization
 
 ### Medium Priority
 - Clean up inconsistent code patterns

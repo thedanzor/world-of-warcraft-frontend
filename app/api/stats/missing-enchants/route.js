@@ -14,10 +14,7 @@ export async function GET() {
       headers: {
         'Content-Type': 'application/json',
       },
-      next: { 
-        revalidate: 600, // Cache for 10 minutes
-        tags: ['guild-stats', 'missing-enchants']
-      }
+      cache: 'no-store', // Disable caching - always fetch live data
     });
 
     console.log('Response status:', response.status);
@@ -32,7 +29,8 @@ export async function GET() {
     return NextResponse.json(data, { 
       status: 200,
       headers: {
-        'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=300'
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
       }
     });
   } catch (error) {

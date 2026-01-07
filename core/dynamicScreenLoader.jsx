@@ -5,6 +5,7 @@ import { getConfig } from '@/lib/config';
 // Default theme imports
 import Dashboard from './screens/default/dashboard';
 import RosterBuilder from './screens/default/rosterBuilder';
+import RosterDisplay from './screens/default/rosterDisplay';
 import MythicPlus from './screens/default/mythicPlus';
 import MemberDetail from './screens/default/memberDetail';
 import Pvp from './screens/default/pvp';
@@ -19,6 +20,7 @@ const screenComponents = {
   default: {
     dashboard: Dashboard,
     rosterBuilder: RosterBuilder,
+    rosterDisplay: RosterDisplay,
     mythicPlus: MythicPlus,
     memberDetail: MemberDetail,
     pvp: Pvp,

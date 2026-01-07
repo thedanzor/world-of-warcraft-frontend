@@ -1,63 +1,57 @@
 import { api } from '@/lib/api'
 import DynamicScreenLoader from '@/core/dynamicScreenLoader'
 
-// Enable revalidation for this page
-export const revalidate = 600 // Revalidate every 10 minutes
+// Disable caching - always fetch live data
+export const revalidate = 0
+export const dynamic = 'force-dynamic'
 
 // Server-side data fetching
-async function getGuildData() {
+async function getRosterData() {
     try {
-        // Fetch main guild data
+        // Fetch roster data
+        const rosterResponse = await api.getRoster();
+
+        // Fetch guild data for character details
         const guildResponse = await api.getFilteredGuildData({
             filter: 'all',
             page: 1,
-            limit: 300 // Get a reasonable amount for dashboard
+            limit: 300,
         });
 
-        // Fetch missing enchants statistics
-        const missingEnchantsResponse = await api.getMissingEnchantsStats();
-
-        // Fetch top PvP players
-        const topPvpResponse = await api.getTopPvPPlayers();
-
-        // Fetch top PvE players
-        const topPveResponse = await api.getTopPvEPlayers();
-
-        // Fetch role counts
-        const roleCountsResponse = await api.getRoleCounts();
-
         return {
-            data: guildResponse.data,
-            pagination: guildResponse.pagination,
-            timestamp: guildResponse.timestamp,
-            missingEnchants: missingEnchantsResponse.data,
-            topPvp: topPvpResponse.data,
-            topPve: topPveResponse.data,
-            roleCounts: roleCountsResponse.data,
+            roster: rosterResponse.success ? rosterResponse.roster : {
+                tanks: [],
+                healers: [],
+                dps: [],
+                substitutes: [],
+                socials: []
+            },
+            guildData: guildResponse.data || [],
             error: null
         }
     } catch (error) {
-        console.error('Error fetching guild data:', error)
+        console.error('Error fetching roster data:', error)
         return {
-            data: null,
-            pagination: null,
-            timestamp: null,
-            missingEnchants: null,
-            topPvp: null,
-            topPve: null,
-            roleCounts: null,
+            roster: {
+                tanks: [],
+                healers: [],
+                dps: [],
+                substitutes: [],
+                socials: []
+            },
+            guildData: [],
             error: error.message
         }
     }
 }
 
 const RosterPage = async () => {
-  const guildData = await getGuildData();
+  const { roster, guildData, error } = await getRosterData();
 
   return (
     <DynamicScreenLoader 
-      screenName="rosterBuilder"
-      props={{ guildData }}
+      screenName="rosterDisplay"
+      props={{ roster, guildData, error }}
     />
   );
 };

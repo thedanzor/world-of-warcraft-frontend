@@ -11,8 +11,9 @@ const publicSans = Public_Sans({
     preload: false, // Disable preloading to avoid build issues
 })
 
-// Enable revalidation for this page
-export const revalidate = 600 // Revalidate every 10 minutes
+// Disable caching - always fetch live data
+export const revalidate = 0
+export const dynamic = 'force-dynamic'
 
 // Server-side data fetching for PvP characters only
 async function getPvpGuildData() {

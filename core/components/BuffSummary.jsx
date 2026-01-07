@@ -42,20 +42,40 @@ const BuffSummary = ({ buffs }) => {
                 Buffs and Utilities
             </Typography>
             <Typography variant="body2" color="text.secondary" gutterBottom>
-                Characters with buffs are highlighted in green.
+                Shows how many characters provide each buff. Missing buffs are highlighted in red.
             </Typography>
             <div className="buff-grid">
-                {Object.entries(buffs).map(([buffName, hasBuff]) => {
+                {Object.entries(buffs).map(([buffName, count]) => {
                     const Icon = buffIcons[buffName] || MageIcon
+                    const hasBuff = count > 0
                     return (
                         <div
                             key={buffName}
                             className={`buff-item ${hasBuff ? 'active' : ''}`}
+                            style={{ flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}
                         >
-                            <Icon className="icon" />
-                            <Typography className="name">
-                                {buffName.replace(/([A-Z])/g, ' $1').trim()}
-                            </Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                                <Icon className="icon" />
+                                <Typography className="name">
+                                    {buffName.replace(/([A-Z])/g, ' $1').trim()}
+                                </Typography>
+                            </Box>
+                            {hasBuff ? (
+                                <Typography variant="caption" sx={{ 
+                                    fontSize: '0.875rem', 
+                                    fontWeight: 'bold',
+                                    color: '#10B981',
+                                }}>
+                                    {count} {count === 1 ? 'character' : 'characters'}
+                                </Typography>
+                            ) : (
+                                <Typography variant="caption" sx={{ 
+                                    fontSize: '0.75rem', 
+                                    color: 'text.secondary',
+                                }}>
+                                    Missing
+                                </Typography>
+                            )}
                         </div>
                     )
                 })}

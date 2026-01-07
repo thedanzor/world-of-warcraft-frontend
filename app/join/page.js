@@ -1,8 +1,9 @@
 import { api } from '@/lib/api'
 import DynamicScreenLoader from '@/core/dynamicScreenLoader'
 
-// Enable revalidation for this page
-export const revalidate = 600 // Revalidate every 10 minutes
+// Disable caching - always fetch live data
+export const revalidate = 0
+export const dynamic = 'force-dynamic'
 
 // Server-side data fetching
 async function getGuildData() {

@@ -5,10 +5,7 @@ const BACKEND_URL =  process.env.NEXT_PUBLIC_BACKEND_URL;
 export async function GET() {
   try {
     const response = await fetch(`${BACKEND_URL}/api/data`, {
-      next: { 
-        revalidate: 600, // Cache for 10 minutes
-        tags: ['guild-data', 'guild-stats']
-      }
+      cache: 'no-store', // Disable caching - always fetch live data
     });
     
     if (!response.ok) {
@@ -18,7 +15,8 @@ export async function GET() {
     const data = await response.json();
     return NextResponse.json(data, {
       headers: {
-        'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=300'
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
       }
     });
   } catch (error) {

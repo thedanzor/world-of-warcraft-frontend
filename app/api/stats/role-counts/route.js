@@ -3,10 +3,7 @@ import { NextResponse } from 'next/server'
 export async function GET() {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/stats/role-counts`, {
-      next: { 
-        revalidate: 600, // Cache for 10 minutes
-        tags: ['guild-stats', 'role-counts']
-      }
+      cache: 'no-store', // Disable caching - always fetch live data
     })
 
     if (!response.ok) {
@@ -18,7 +15,8 @@ export async function GET() {
     return NextResponse.json(data, { 
       status: 200,
       headers: {
-        'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=300'
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
       }
     })
   } catch (error) {

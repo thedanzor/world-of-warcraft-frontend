@@ -3,6 +3,16 @@
 import { useEffect, useState } from 'react';
 import { Box, Typography, Chip } from '@mui/material';
 
+// Helper function to capitalize character names
+const capitalizeCharacterName = (name) => {
+  if (!name) return name
+  // Split by hyphen to handle "name-realm" format, capitalize each part
+  return name.split('-').map(part => {
+    if (!part) return part
+    return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+  }).join('-')
+}
+
 const CharacterCard = ({ character, index, total = 10 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -49,6 +59,7 @@ const CharacterCard = ({ character, index, total = 10 }) => {
   const classColor = getClassColor(character.metaData?.class || character.class);
   const spec = character.metaData?.spec || character.spec || 'Unknown';
   const roleIcon = getRoleIcon(spec);
+  const capitalizedName = capitalizeCharacterName(character.name);
 
   return (
     <Box
@@ -142,7 +153,7 @@ const CharacterCard = ({ character, index, total = 10 }) => {
             textOverflow: 'ellipsis',
           }}
         >
-          {character.name}
+          {capitalizedName}
         </Typography>
         
         <Typography

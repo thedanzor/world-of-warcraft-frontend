@@ -1,6 +1,6 @@
 export { default as ClassStatCard } from './ClassStatCard'
 export { default as RoleStatCard } from './RoleStatCard'
-export { default as Season3GoalsSection } from './Season3GoalsSection'
+export { default as SeasonsGoalsSection } from './SeasonsGoalsSection'
 export { default as MythicPlusSection } from './MythicPlusSection'
 export { default as RoleDistributionSection } from './RoleDistributionSection'
 export { default as ClassDistributionSection } from './ClassDistributionSection'

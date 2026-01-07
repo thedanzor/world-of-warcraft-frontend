@@ -2,7 +2,58 @@
 
 A modern, responsive web application for managing and displaying World of Warcraft guild information, raid progression, and player statistics. Built with Next.js 14, React 18, and Material-UI.
 
-## Version 2.0 Changelog 🆕
+## Version 2.1 Changelog 🆕
+
+### Season Signup System Improvements
+- **Renamed Routes**: Updated all routes from `/season3` to `/seasons` for better generic naming
+- **Dynamic Season Management**: 
+  - Season title now configurable in admin settings (`SEASON_TITLE`)
+  - All season-related text is editable from admin panel
+  - Season alert popup is fully configurable (toggle, title, message)
+- **Test/Demo Character Filtering**: Added validation to prevent test/demo characters from being submitted
+  - Form validation before submission
+  - API route validation
+  - Backend validation (three-layer protection)
+- **Component Renaming**: 
+  - `Season3Stats` → `SeasonsStats`
+  - `Season3SignUp` → `SeasonsSignUp`
+  - `Season3GoalsSection` → `SeasonsGoalsSection`
+  - `Season3RosterTable` → `SeasonsRosterTable`
+- **Field Name Updates**: Support for both old (`season3CharacterName`, `season3Goal`) and new (`seasonCharacterName`, `seasonGoal`) field names
+- **Data Flow Improvements**: 
+  - Removed caching to ensure live data display
+  - Auto-refresh after successful signup
+  - Improved data retrieval from backend
+
+### New Settings Options
+- **Season Page Settings**:
+  - `SEASON_PAGE_TITLE` - Main title on seasons page
+  - `SEASON_PAGE_DESCRIPTION` - Description text (with show/hide toggle)
+  - `SEASON_PAGE_DESCRIPTION_ENABLED` - Toggle to show/hide description
+  - `SEASON_SIGNUP_BUTTON_TEXT` - Text on signup button
+  - `SEASON_SIGNUP_SUCCESS_MESSAGE` - Success message after signup
+  - `SEASON_ROSTER_TABLE_TITLE` - Roster table title
+  - `SEASON_ROSTER_TABLE_DESCRIPTION` - Roster table description
+- **Season Alert Settings** (existing, enhanced):
+  - `SEASON_ALERT_ENABLED` - Toggle to show/hide alert
+  - `SEASON_ALERT_TITLE` - Alert popup title
+  - `SEASON_ALERT_MESSAGE` - Alert popup message
+
+### New Pages & Routes
+- **`/seasons`** - Season signup page (renamed from `/season3`)
+- **`/settings/season-signups`** - Admin panel for managing season signups
+  - View all signups in a table
+  - Search functionality
+  - Delete signups
+  - Displays both old and new field names
+
+### API Routes
+- **GET `/api/seasons/data`** - Fetch season signups (renamed from `/api/season3/data`)
+- **POST `/api/seasons/signup`** - Submit season signup (renamed from `/api/season3/signup`)
+- **GET `/api/season-signups`** - Get all signups for admin (existing)
+- **DELETE `/api/season-signups/:id`** - Delete a signup (existing)
+
+## Version 2.0 Changelog
 
 ### Major Features
 - **Dynamic Recruitment/Join Page System**: Fully customizable guild recruitment page with block-based content management

@@ -434,6 +434,133 @@ export default function SettingsPage() {
               onChange={(e) => handleSettingsChange('CURRENT_MPLUS_SEASON', parseInt(e.target.value) || 15)}
             />
           </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Season Title"
+              value={settings.SEASON_TITLE || 'Current Season'}
+              onChange={(e) => handleSettingsChange('SEASON_TITLE', e.target.value)}
+              helperText="Title displayed in navigation (e.g., 'Season 3', 'Season 4')"
+            />
+          </Grid>
+        </Grid>
+      </Paper>
+
+      <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          Seasons Page Settings
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          Control the content displayed on the seasons signup page.
+        </Typography>
+        
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Page Title"
+              value={settings.SEASON_PAGE_TITLE || settings.SEASON_TITLE || 'Current Season'}
+              onChange={(e) => handleSettingsChange('SEASON_PAGE_TITLE', e.target.value)}
+              helperText="Main title displayed at the top of the seasons page"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              label="Page Description"
+              value={settings.SEASON_PAGE_DESCRIPTION || 'Information about the upcoming season, based on the form the members have filled out.'}
+              onChange={(e) => handleSettingsChange('SEASON_PAGE_DESCRIPTION', e.target.value)}
+              helperText="Description text displayed below the page title"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Signup Button Text"
+              value={settings.SEASON_SIGNUP_BUTTON_TEXT || `Sign Up for ${settings.SEASON_TITLE || 'Current Season'}`}
+              onChange={(e) => handleSettingsChange('SEASON_SIGNUP_BUTTON_TEXT', e.target.value)}
+              helperText="Text displayed on the signup button"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Success Message"
+              value={settings.SEASON_SIGNUP_SUCCESS_MESSAGE || `Successfully signed up for ${settings.SEASON_TITLE || 'Current Season'}!`}
+              onChange={(e) => handleSettingsChange('SEASON_SIGNUP_SUCCESS_MESSAGE', e.target.value)}
+              helperText="Message shown after successful signup"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Roster Table Title"
+              value={settings.SEASON_ROSTER_TABLE_TITLE || 'Registered Applications'}
+              onChange={(e) => handleSettingsChange('SEASON_ROSTER_TABLE_TITLE', e.target.value)}
+              helperText="Title for the roster table section"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              label="Roster Table Description"
+              value={settings.SEASON_ROSTER_TABLE_DESCRIPTION || 'Registered Applications are players who are looking to continue raiding, this doesn\'t however *yet* mean that they have secured a spot.'}
+              onChange={(e) => handleSettingsChange('SEASON_ROSTER_TABLE_DESCRIPTION', e.target.value)}
+              helperText="Description text for the roster table"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Divider sx={{ my: 2 }} />
+            <Typography variant="subtitle2" gutterBottom>
+              Season Alert Settings
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth>
+              <InputLabel>Alert Enabled</InputLabel>
+              <Select
+                value={settings.SEASON_ALERT_ENABLED !== false ? 'true' : 'false'}
+                label="Alert Enabled"
+                onChange={(e) => handleSettingsChange('SEASON_ALERT_ENABLED', e.target.value === 'true')}
+              >
+                <MenuItem value="true">Enabled</MenuItem>
+                <MenuItem value="false">Disabled</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Alert Title"
+              value={settings.SEASON_ALERT_TITLE || settings.SEASON_TITLE || 'Current Season'}
+              onChange={(e) => handleSettingsChange('SEASON_ALERT_TITLE', e.target.value)}
+              helperText="Title shown in the season alert banner"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              label="Alert Message"
+              value={settings.SEASON_ALERT_MESSAGE || `${settings.SEASON_TITLE || 'Current Season'} applications are now open. With limited spots available for progression raiding, please submit your application soon to be considered.`}
+              onChange={(e) => handleSettingsChange('SEASON_ALERT_MESSAGE', e.target.value)}
+              helperText="Message shown in the season alert banner"
+            />
+          </Grid>
+        </Grid>
+      </Paper>
+
+      <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          Guild Requirements
+        </Typography>
+        
+        <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
               fullWidth

@@ -6,7 +6,7 @@ export default function sitemap() {
         '',
         '/join',
         '/audit',
-        '/season3',
+        '/seasons',
         '/mrt'
     ].map(route => ({
         url: `${baseUrl}${route}`,

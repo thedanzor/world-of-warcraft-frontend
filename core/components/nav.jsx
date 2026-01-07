@@ -63,10 +63,16 @@ export default function Nav() {
         ? config.GUILD_NAME.replace(/-/g, ' ')
         : process.env.NEXT_PUBLIC_GUILD_NAME?.replace(/-/g, ' ') || 'Guild'
     
+    // Get season title from config, fallback to menu config
+    const seasonTitle = config?.SEASON_TITLE || menuConfig?.NAVIGATION?.SEASONS?.label || 'Current Season'
+    
     // Convert config navigation to component format with icon components
     const navigationItems = menuConfig?.NAVIGATION ? Object.entries(menuConfig.NAVIGATION).reduce((acc, [key, section]) => {
+        // Override SEASONS label with dynamic title from config
+        const sectionLabel = key === 'SEASONS' ? seasonTitle : section.label
         acc[key] = {
             ...section,
+            label: sectionLabel,
             items: section.items.map(item => ({
                 ...item,
                 icon: iconMap[item.icon]

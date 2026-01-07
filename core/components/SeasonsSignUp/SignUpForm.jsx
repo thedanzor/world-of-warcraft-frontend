@@ -19,7 +19,7 @@ import Switch from '@mui/material/Switch'
 import Alert from '@mui/material/Alert'
 import CircularProgress from '@mui/material/CircularProgress'
 import AddIcon from '@mui/icons-material/Add'
-import { classSpecs, classColors, tankSpecs, healerSpecs } from '../Season3Stats/constants'
+import { classSpecs, classColors, tankSpecs, healerSpecs } from '../SeasonsStats/constants'
 
 const SignUpForm = ({ open, onClose, onSubmit, loading, error, guildData }) => {
     const [formData, setFormData] = useState({
@@ -223,6 +223,17 @@ const SignUpForm = ({ open, onClose, onSubmit, loading, error, guildData }) => {
         debouncedSeason3Search(value)
     }
 
+    // Check if character name is a test/demo character
+    const isTestOrDemoCharacter = (name) => {
+        if (!name) return false
+        const normalizedName = name.toLowerCase().trim()
+        const testPatterns = [
+            'test', 'demo', 'example', 'sample', 'tester', 'testing',
+            'dummy', 'fake', 'placeholder', 'temp', 'temporary'
+        ]
+        return testPatterns.some(pattern => normalizedName.includes(pattern))
+    }
+
     const validateForm = () => {
         const errors = {}
         
@@ -232,10 +243,14 @@ const SignUpForm = ({ open, onClose, onSubmit, loading, error, guildData }) => {
         
         if (!formData.currentCharacterName.trim()) {
             errors.currentCharacterName = 'Current character name is required'
+        } else if (isTestOrDemoCharacter(formData.currentCharacterName)) {
+            errors.currentCharacterName = 'Test or demo characters are not allowed'
         }
         
         if (!formData.season3CharacterName.trim()) {
-            errors.season3CharacterName = 'Season 3 character name is required'
+            errors.season3CharacterName = 'Season character name is required'
+        } else if (isTestOrDemoCharacter(formData.season3CharacterName)) {
+            errors.season3CharacterName = 'Test or demo characters are not allowed'
         }
         
         if (!formData.characterClass) {
@@ -247,7 +262,7 @@ const SignUpForm = ({ open, onClose, onSubmit, loading, error, guildData }) => {
         }
         
         if (!formData.season3Goal) {
-            errors.season3Goal = 'Season 3 goal is required'
+            errors.season3Goal = 'Season goal is required'
         }
         
         setValidationErrors(errors)
@@ -256,7 +271,16 @@ const SignUpForm = ({ open, onClose, onSubmit, loading, error, guildData }) => {
 
     const handleSubmit = () => {
         if (validateForm()) {
-            onSubmit(formData)
+            // Normalize form data to use new field names (support both old and new)
+            const normalizedFormData = {
+                ...formData,
+                seasonCharacterName: formData.seasonCharacterName || formData.season3CharacterName,
+                seasonGoal: formData.seasonGoal || formData.season3Goal,
+                // Keep old fields for backward compatibility with backend
+                season3CharacterName: formData.season3CharacterName || formData.seasonCharacterName,
+                season3Goal: formData.season3Goal || formData.seasonGoal,
+            }
+            onSubmit(normalizedFormData)
         }
     }
 
@@ -352,7 +376,7 @@ const SignUpForm = ({ open, onClose, onSubmit, loading, error, guildData }) => {
                             {character.class} • Level {character.level || '80'} • Item Level {character.itemLevel || '??'}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
-                            {isSeason3 ? 'Season 3 Character' : 'Current Character'}
+                            {isSeason3 ? 'Season Character' : 'Current Character'}
                         </Typography>
                     </Box>
                 </Box>
@@ -428,7 +452,7 @@ const SignUpForm = ({ open, onClose, onSubmit, loading, error, guildData }) => {
 
     return (
         <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
-            <DialogTitle>Sign Up for Season 3</DialogTitle>
+            <DialogTitle>Sign Up for Season</DialogTitle>
             <DialogContent>
                 <Grid container spacing={3} sx={{ mt: 1 }}>
                     {/* Discord Name */}
@@ -569,7 +593,7 @@ const SignUpForm = ({ open, onClose, onSubmit, loading, error, guildData }) => {
                             value={formData.season3CharacterName}
                             onChange={(e) => handleSeason3NameChange(e.target.value)}
                             error={!!validationErrors.season3CharacterName}
-                            helperText={validationErrors.season3CharacterName || "Start typing to search for your Season 3 character, then click on a character card to select"}
+                            helperText={validationErrors.season3CharacterName || "Start typing to search for your season character, then click on a character card to select"}
                             InputProps={{
                                 endAdornment: isSeason3Searching && (
                                     <CircularProgress size={20} />

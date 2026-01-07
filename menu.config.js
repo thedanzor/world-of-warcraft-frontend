@@ -20,7 +20,7 @@ const data = {
                 },
             ]
         },
-        "SEASON3": {
+        "SEASONS": {
             "label": "Current Season",
             "items": [
                 {
@@ -35,7 +35,7 @@ const data = {
                 },
                 {
                     "label": "Sign Up",
-                    "path": "/season3",
+                    "path": "/seasons",
                     "icon": "HowToRegIcon"
                 }
             ]

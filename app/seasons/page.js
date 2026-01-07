@@ -18,7 +18,7 @@ export const revalidate = 0
 // Server-side data fetching
 async function getGuildData() {
     let guildResponse = null;
-    let season3Response = null;
+    let seasonsResponse = null;
     let error = null;
 
     try {
@@ -34,19 +34,21 @@ async function getGuildData() {
     }
 
     try {
-        // Fetch Season 3 data (try to fetch even if guild data failed)
-        season3Response = await api.getSeason3Data();
-    } catch (season3Error) {
-        console.error('Error fetching Season 3 data:', season3Error);
+        // Fetch seasons data (try to fetch even if guild data failed)
+        seasonsResponse = await api.getSeasonsData();
+    } catch (seasonsError) {
+        console.error('Error fetching seasons data:', seasonsError);
         // Don't override guild error if it exists
         if (!error) {
-            error = season3Error.message;
+            error = seasonsError.message;
         }
     }
 
+    const seasonsData = seasonsResponse?.seasons || []
+
     return {
         data: guildResponse?.data || null,
-        season3: season3Response?.season3 || [],
+        seasons: seasonsData,
         error: error
     }
 }
@@ -58,9 +60,9 @@ export default async function Home() {
     return (
         <main className={`fullbody ${poppins.className}`}>
             <DynamicScreenLoader 
-                screenName="season3"
-                props={{ guildData, season3Data: guildData.season3 }}
-                loadingMessage="Loading Season 3..."
+                screenName="seasons"
+                props={{ guildData, seasonsData: guildData.seasons }}
+                loadingMessage="Loading Seasons..."
                 minHeight="50vh"
             />
         </main>

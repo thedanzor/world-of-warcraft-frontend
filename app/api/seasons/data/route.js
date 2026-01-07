@@ -4,15 +4,12 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export async function GET() {
   try {
-    const response = await fetch(`${BACKEND_URL}/api/season3/data`, {
-      next: { 
-        revalidate: 600, // Cache for 10 minutes
-        tags: ['season3-data']
-      }
+    const response = await fetch(`${BACKEND_URL}/api/seasons/data`, {
+      cache: 'no-store', // Always fetch fresh data
     });
     
     if (!response.ok) {
-      // If backend doesn't have season3 endpoint yet, return empty array
+      // If backend doesn't have seasons endpoint yet, return empty array
       if (response.status === 404) {
         return NextResponse.json([], {
           headers: {
@@ -24,13 +21,18 @@ export async function GET() {
     }
     
     const data = await response.json();
-    return NextResponse.json(data.season3 || [], {
+    // Backend returns { success: true, seasons: [...] }
+    const seasonsArray = data.seasons || data.season3 || [];
+    
+    return NextResponse.json(seasonsArray, {
       headers: {
-        'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=300'
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
       }
     });
   } catch (error) {
-    console.error('Error fetching season 3 data:', error);
+    console.error('Error fetching seasons data:', error);
     // Return empty array for now until backend is ready
     return NextResponse.json([], {
       headers: {

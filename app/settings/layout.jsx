@@ -25,6 +25,7 @@ import {
   BugReport as BugReportIcon,
   Refresh as RefreshIcon,
   PersonAdd as PersonAddIcon,
+  HowToReg as HowToRegIcon,
 } from '@mui/icons-material';
 import Link from 'next/link';
 
@@ -159,7 +160,11 @@ export default function SettingsLayout({ children }) {
   }
 
   // Show settings interface when authenticated
-  const currentTab = pathname === '/settings' ? 0 : pathname === '/settings/join' ? 1 : pathname?.startsWith('/settings/errors') ? 2 : 0;
+  const currentTab = pathname === '/settings' ? 0 
+    : pathname === '/settings/join' ? 1 
+    : pathname?.startsWith('/settings/errors') ? 2 
+    : pathname === '/settings/season-signups' ? 3 
+    : 0;
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -201,6 +206,14 @@ export default function SettingsLayout({ children }) {
             component={Link}
             href="/settings/errors"
             value={2}
+          />
+          <Tab
+            label="Season Signups"
+            icon={<HowToRegIcon />}
+            iconPosition="start"
+            component={Link}
+            href="/settings/season-signups"
+            value={3}
           />
         </Tabs>
       </Box>

@@ -6,16 +6,16 @@ import BalanceIcon from '@mui/icons-material/Balance'
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt'
 import RoleStatCard from './RoleStatCard'
 
-const Season3GoalsSection = ({ stats }) => (
+const SeasonsGoalsSection = ({ stats }) => (
     <>
         <Typography variant="h2" sx={{ fontSize: '1.5rem', my: 3 }}>
-            Season 3 Goals
+            Season Goals
         </Typography>
         <Grid container spacing={2} sx={{ mb: 4 }}>
             <Grid item xs={12} sm={4}>
                 <RoleStatCard
                     title="AOTC"
-                    count={stats.season3GoalCounts?.['AOTC'] || 0}
+                    count={stats.seasonGoalCounts?.['AOTC'] || stats.season3GoalCounts?.['AOTC'] || 0}
                     description="Ahead of the Curve"
                     icon={TimelapseIcon}
                 />
@@ -23,7 +23,7 @@ const Season3GoalsSection = ({ stats }) => (
             <Grid item xs={12} sm={4}>
                 <RoleStatCard
                     title="CE"
-                    count={stats.season3GoalCounts?.['CE'] || 0}
+                    count={stats.seasonGoalCounts?.['CE'] || stats.season3GoalCounts?.['CE'] || 0}
                     description="Cutting Edge"
                     icon={BalanceIcon}
                 />
@@ -31,7 +31,7 @@ const Season3GoalsSection = ({ stats }) => (
             <Grid item xs={12} sm={4}>
                 <RoleStatCard
                     title="Social"
-                    count={stats.season3GoalCounts?.['Social'] || 0}
+                    count={stats.seasonGoalCounts?.['Social'] || stats.season3GoalCounts?.['Social'] || 0}
                     description="Social Raiding"
                     icon={SentimentSatisfiedAltIcon}
                 />
@@ -40,4 +40,4 @@ const Season3GoalsSection = ({ stats }) => (
     </>
 )
 
-export default Season3GoalsSection 
+export default SeasonsGoalsSection 

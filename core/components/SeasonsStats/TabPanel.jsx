@@ -1,9 +1,9 @@
 import React from 'react'
-import Season3GoalsSection from './Season3GoalsSection'
+import SeasonsGoalsSection from './SeasonsGoalsSection'
 import MythicPlusSection from './MythicPlusSection'
 import RaidingEnvironmentSection from './RaidingEnvironmentSection'
 import RoleDistributionSection from './RoleDistributionSection'
-import Season3RosterTable from './Season3RosterTable'
+import SeasonsRosterTable from './SeasonsRosterTable'
 import ClassDistributionSection from './ClassDistributionSection'
 import RaidBuffsSection from './RaidBuffsSection'
 
@@ -18,13 +18,13 @@ const TabPanel = ({
     guildData
 }) => (
     <>
-        <Season3RosterTable
+        <SeasonsRosterTable
             signups={data}
             guildData={guildData}
             title={title}
             description={description}
         />
-        <Season3GoalsSection stats={stats} />
+        <SeasonsGoalsSection stats={stats} />
         <MythicPlusSection stats={stats} />
         {/* Only render RaidingEnvironmentSection if raidingEnvCounts exists */}
         {stats.raidingEnvCounts && <RaidingEnvironmentSection stats={stats} />}

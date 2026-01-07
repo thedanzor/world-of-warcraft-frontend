@@ -1,12 +1,12 @@
 /**
- * SEASON 3 RAID PLANNING SCREEN
+ * SEASONS RAID PLANNING SCREEN
  * 
- * This screen manages Season 3 raid planning, player signups, and roster analysis
+ * This screen manages season raid planning, player signups, and roster analysis
  * for the upcoming raid tier. It provides comprehensive tools for guild officers
- * to plan and organize their Season 3 raiding team.
+ * to plan and organize their raiding team.
  * 
  * WHAT THIS DOES:
- * - Manages Season 3 raid signups and player commitments
+ * - Manages season raid signups and player commitments
  * - Shows class distribution and role breakdown for the new season
  * - Displays raid requirements and buff coverage analysis
  * - Provides tabbed interface for different aspects of season planning
@@ -14,7 +14,7 @@
  * - Calculates raid buffs and team composition optimization
  * 
  * KEY FEATURES:
- * - Season 3 signup form for player commitments
+ * - Season signup form for player commitments
  * - Class distribution analysis and visualization
  * - Role-based roster planning (tanks, healers, DPS)
  * - Raid requirements display and compliance tracking
@@ -23,7 +23,7 @@
  * 
  * DATA INTEGRATION:
  * - guildData: Current guild roster and player information
- * - season3Data: Season 3 specific signup and commitment data
+ * - seasonsData: Season specific signup and commitment data
  * - Real-time data processing and analysis
  * - Integration with raid buff calculation utilities
  * 
@@ -36,13 +36,13 @@
  * - Raiding Environment: Raid-specific requirements and setup
  * 
  * SIGNUP SYSTEM:
- * - Player commitment tracking for Season 3
+ * - Player commitment tracking for seasons
  * - Character name validation and cleanup
  * - Return-to-raid status tracking
  * - Integration with guild roster data
  * 
  * USAGE:
- * Primary tool for Season 3 raid planning and player management.
+ * Primary tool for season raid planning and player management.
  * Essential for guild officers preparing for new content.
  * 
  * MODIFICATION NOTES:
@@ -62,34 +62,49 @@ import Snackbar from '@mui/material/Snackbar'
 import AddIcon from '@mui/icons-material/Add'
 
 import RaidRequirements from '@/core/components/RaidRequirements'
-import TabPanel from '@/core/components/Season3Stats/TabPanel'
-import SignUpForm from '@/core/components/Season3SignUp/SignUpForm'
-import { classIcons, classColors } from '@/core/components/Season3Stats/constants'
+import TabPanel from '@/core/components/SeasonsStats/TabPanel'
+import SignUpForm from '@/core/components/SeasonsSignUp/SignUpForm'
+import { classIcons, classColors } from '@/core/components/SeasonsStats/constants'
 import { calculateRaidBuffs } from '@/core/utils/raidBuffs'
 import { clientApi } from '@/lib/clientApi'
+import { useConfig } from '@/core/hooks/useConfig'
 
-// Main Season 3 Component
-const Season3Section = ({ guildData, season3Data }) => {
+// Main Seasons Component
+const SeasonsSection = ({ guildData, seasonsData }) => {
+    const { config } = useConfig()
     const [tabValue, setTabValue] = useState(0)
     const [signUpOpen, setSignUpOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [successMessage, setSuccessMessage] = useState('')
 
+    // Get configurable content from settings
+    const seasonTitle = config?.SEASON_TITLE || 'Current Season'
+    const seasonPageTitle = config?.SEASON_PAGE_TITLE || seasonTitle
+    const seasonPageDescription = config?.SEASON_PAGE_DESCRIPTION || 'Information about the upcoming season, based on the form the members have filled out.'
+    const seasonSignupButtonText = config?.SEASON_SIGNUP_BUTTON_TEXT || `Sign Up for ${seasonTitle}`
+    const seasonSignupSuccessMessage = config?.SEASON_SIGNUP_SUCCESS_MESSAGE || `Successfully signed up for ${seasonTitle}!`
+    const seasonRosterTableTitle = config?.SEASON_ROSTER_TABLE_TITLE || 'Registered Applications'
+    const seasonRosterTableDescription = config?.SEASON_ROSTER_TABLE_DESCRIPTION || 'Registered Applications are players who are looking to continue raiding, this doesn\'t however *yet* mean that they have secured a spot.'
+
     // Handle case where guildData might be null
     const safeGuildData = guildData?.data || []
-    const safeSeason3Data = season3Data || []
+    const safeSeasonsData = seasonsData || []
 
     const handleSignUpSubmit = async (formData) => {
         setLoading(true)
         setError('')
         
         try {
-            const result = await clientApi.submitSeason3Signup(formData)
+            const result = await clientApi.submitSeasonsSignup(formData)
 
             if(result.success) {
-                setSuccessMessage('Successfully signed up for Season 3!')
+                setSuccessMessage(seasonSignupSuccessMessage)
                 setSignUpOpen(false)
+                // Force a page refresh to show the new signup
+                setTimeout(() => {
+                    window.location.reload()
+                }, 1500)
             } else {
                 setError(result.message)
             }
@@ -114,7 +129,7 @@ const Season3Section = ({ guildData, season3Data }) => {
         return 'DPS'
     }
 
-    // Update headCells for Season 3 data
+    // Update headCells for seasons data
     const headCells = [
         { id: 'ilvl', label: 'ILVL' },
         { id: 'name', label: 'Name' },
@@ -125,14 +140,14 @@ const Season3Section = ({ guildData, season3Data }) => {
         { id: 'guildRank', label: 'Guild Rank' },
         { id: 'mplus', label: 'M+ Score' },
         { id: 'pvp', label: 'PVP Rating' },
-        { id: 'season3Goal', label: 'Season 3 Goal' },
+        { id: 'seasonGoal', label: `${seasonTitle} Goal` },
         { id: 'wantToPushKeys', label: 'Push Keys' },
     ];
 
     // Calculate statistics for active dataset
     const getActiveData = (tabValue) => {
-        // Use Season 3 signup data directly instead of processed guild data
-        const activeData = safeSeason3Data
+        // Use seasons signup data directly instead of processed guild data
+        const activeData = safeSeasonsData
 
         // Role counts calculation
         const roleCounts = activeData.reduce(
@@ -179,9 +194,9 @@ const Season3Section = ({ guildData, season3Data }) => {
             }))
         )
 
-        // Season 3 goal counts
-        const season3GoalCounts = activeData.reduce((acc, player) => {
-            const goal = player.season3Goal
+        // Season goal counts (support both old and new field names)
+        const seasonGoalCounts = activeData.reduce((acc, player) => {
+            const goal = player.seasonGoal || player.season3Goal
             if (goal) {
                 acc[goal] = (acc[goal] || 0) + 1
             }
@@ -197,7 +212,8 @@ const Season3Section = ({ guildData, season3Data }) => {
             backupRoleCounts,
             classCounts,
             raidBuffs,
-            season3GoalCounts,
+            seasonGoalCounts,
+            season3GoalCounts: seasonGoalCounts, // Legacy support
             wantToPushKeysCount,
             notWantToPushKeysCount,
         }
@@ -222,7 +238,7 @@ const Season3Section = ({ guildData, season3Data }) => {
                                 fontSize: { xs: '1.75rem', sm: '2rem' },
                             }}
                         >
-                            Season 3
+                            {seasonPageTitle}
                         </Typography>
                         <Typography
                             variant="p"
@@ -230,8 +246,7 @@ const Season3Section = ({ guildData, season3Data }) => {
                             color="text.secondary"
                             sx={{ mb: 2, textAlign: 'left' }}
                         >
-                            Information about the upcoming season, based on the
-                            form the members have filled out.
+                            {seasonPageDescription}
                         </Typography>
                         
                         {/* Sign Up Button */}
@@ -257,7 +272,7 @@ const Season3Section = ({ guildData, season3Data }) => {
                                 transition: 'all 0.3s ease'
                             }}
                         >
-                            Sign Up for Season 3
+                            {seasonSignupButtonText}
                         </Button>
                     </div>
 
@@ -268,12 +283,12 @@ const Season3Section = ({ guildData, season3Data }) => {
                         <div role="tabpanel" hidden={tabValue !== 0}>
                             {tabValue === 0 && (
                                 <TabPanel
-                                    data={safeSeason3Data}
+                                    data={safeSeasonsData}
                                     stats={activeStats}
                                     totalClassCounts={activeStats.classCounts}
                                     headCells={headCells}
-                                    title="Registered Applications"
-                                    description="Registered Applications are players who are looking to continue raiding in season 3, this doesn't however *yet* mean that they have secured a spot."
+                                    title={seasonRosterTableTitle}
+                                    description={seasonRosterTableDescription}
                                     classIcons={classIcons}
                                     guildData={safeGuildData}
                                 />
@@ -314,4 +329,4 @@ const Season3Section = ({ guildData, season3Data }) => {
     )
 }
 
-export default Season3Section
+export default SeasonsSection

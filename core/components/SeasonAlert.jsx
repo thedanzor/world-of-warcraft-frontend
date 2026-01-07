@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Alert, AlertTitle, Snackbar } from '@mui/material'
 import Typography from '@mui/material/Typography'
+import { useConfig } from '@/core/hooks/useConfig'
 
 /**
  * Season Alert Component
@@ -11,20 +12,38 @@ import Typography from '@mui/material/Typography'
  * This allows the parent layout to remain a server component
  */
 export default function SeasonAlert() {
+    const { config } = useConfig()
     const [showSeasonAlert, setShowSeasonAlert] = useState(false)
 
+    // Get configurable content from settings
+    const seasonTitle = config?.SEASON_TITLE || 'Current Season'
+    const seasonAlertTitle = config?.SEASON_ALERT_TITLE || seasonTitle
+    const seasonAlertMessage = config?.SEASON_ALERT_MESSAGE || `${seasonTitle} applications are now open. With limited spots available for progression raiding, please submit your application soon to be considered.`
+    const seasonAlertEnabled = config?.SEASON_ALERT_ENABLED !== false // Default to true if not set
+
     useEffect(() => {
+        if (!seasonAlertEnabled) {
+            setShowSeasonAlert(false)
+            return
+        }
+        
         // Check if user has seen the alert using localStorage instead of cookies
-        const hasSeenAlert = localStorage.getItem('season2_alert_seen')
+        const alertKey = `season_alert_seen_${seasonTitle.replace(/\s+/g, '_')}`
+        const hasSeenAlert = localStorage.getItem(alertKey)
         if (!hasSeenAlert) {
             setShowSeasonAlert(true)
         }
-    }, [])
+    }, [seasonAlertEnabled, seasonTitle])
 
     const handleCloseAlert = () => {
         setShowSeasonAlert(false)
         // Store in localStorage instead of setting a cookie
-        localStorage.setItem('season2_alert_seen', 'true')
+        const alertKey = `season_alert_seen_${seasonTitle.replace(/\s+/g, '_')}`
+        localStorage.setItem(alertKey, 'true')
+    }
+
+    if (!seasonAlertEnabled) {
+        return null
     }
 
     return (
@@ -39,11 +58,10 @@ export default function SeasonAlert() {
                 className="season-alert"
             >
                 <AlertTitle className="season-alert-title">
-                    Season 3
+                    {seasonAlertTitle}
                 </AlertTitle>
                 <Typography variant="body2">
-                    Season 3 applications are now open. With limited spots available 
-                    for progression raiding, please submit your application soon to be considered.
+                    {seasonAlertMessage}
                 </Typography>
             </Alert>
         </Snackbar>

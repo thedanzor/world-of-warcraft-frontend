@@ -74,13 +74,13 @@ const headCells = [
   { id: 'guildRank', label: 'Guild Rank' },
   { id: 'mplus', label: 'M+ Score' },
   { id: 'pvp', label: 'PvP Rating' },
-  { id: 'season3Goal', label: 'Season 3 Goal' },
+  { id: 'seasonGoal', label: 'Season Goal' },
   { id: 'wantToPushKeys', label: 'Push Keys' },
   { id: 'hasWaist', label: 'Waist' },
   { id: 'hasCloak', label: 'Cloak' },
 ];
 
-const Season3RosterTable = ({ signups, guildData, title, description }) => {
+const SeasonsRosterTable = ({ signups, guildData, title, description }) => {
   // Merge signup with guildData
   const rows = useMemo(() => {
     if (!signups) return [];
@@ -101,7 +101,7 @@ const Season3RosterTable = ({ signups, guildData, title, description }) => {
                 textTransform: 'capitalize',
               }}
             >
-              {entry.season3CharacterName || entry.currentCharacterName}
+              {(entry.seasonCharacterName || entry.season3CharacterName) || entry.currentCharacterName}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {entry.mainSpec} {entry.characterClass}
@@ -115,7 +115,7 @@ const Season3RosterTable = ({ signups, guildData, title, description }) => {
         guildRank: guildChar?.guildRank || '-',
         mplus: guildChar?.mplus || '-',
         pvp: guildChar?.pvp || '-',
-        season3Goal: entry.season3Goal || '-',
+        seasonGoal: entry.seasonGoal || entry.season3Goal || '-',
         wantToPushKeys: entry.wantToPushKeys ? 'Yes' : 'No',
         hasWaist: processHasWaist(guildChar?.missingWaist),
         hasCloak: processHasCloak(guildChar?.missingCloak),
@@ -166,7 +166,7 @@ const Season3RosterTable = ({ signups, guildData, title, description }) => {
                   <TableCell>{row.guildRank}</TableCell>
                   <TableCell>{row.mplus}</TableCell>
                   <TableCell>{row.pvp}</TableCell>
-                  <TableCell>{row.season3Goal}</TableCell>
+                  <TableCell>{row.seasonGoal}</TableCell>
                   <TableCell>{row.wantToPushKeys}</TableCell>
                   <TableCell>{row.hasWaist}</TableCell>
                   <TableCell>{row.hasCloak}</TableCell>
@@ -189,4 +189,4 @@ const Season3RosterTable = ({ signups, guildData, title, description }) => {
   );
 };
 
-export default Season3RosterTable; 
+export default SeasonsRosterTable; 

@@ -10,7 +10,7 @@ import MemberDetail from './screens/default/memberDetail';
 import Pvp from './screens/default/pvp';
 import Audit from './screens/default/audit';
 import Recruitment from './screens/default/recruitment';
-import Season3 from './screens/default/season3';
+import Seasons from './screens/default/seasons';
 import Error from './screens/default/error';
 import NotFound from './screens/default/not-found';
 
@@ -24,7 +24,8 @@ const screenComponents = {
     pvp: Pvp,
     audit: Audit,
     recruitment: Recruitment,
-    season3: Season3,
+    seasons: Seasons,
+    season3: Seasons, // Legacy support
     error: Error,
     notFound: NotFound,
   },

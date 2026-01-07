@@ -238,11 +238,11 @@ The Dashboard provides a comprehensive overview of your guild, including member 
 
 ### Roster Builder
 
-![Roster Builder](_screenshots/v2.2/roster1.png)
-![Roster Builder](_screenshots/v2.2/roster2.png)
+![Roster Builder](_screenshots/2.2/roster1.png)
+![Roster Builder](_screenshots/2.2/roster2.png)
 The admin roster builder interface with drag-and-drop functionality for organizing raid compositions.
 
-![Roster Builder](_screenshots/v2.2/roster3.png)
+![Roster Builder](_screenshots/2.2/roster3.png)
 The public roster display page showing the saved roster configuration in read-only mode.
 
 The Roster Builder is an interactive admin tool for planning raid compositions. Located at `/settings/roster-builder` (admin only), it allows raid leaders to drag and drop characters into raid slots, filter by role or class, and optimize their team for upcoming encounters. The public `/roster` page displays the saved roster configuration in read-only mode. This tool helps raid leaders organize and balance their groups efficiently.

@@ -1,9 +1,4 @@
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import config from '@/app.config.js'
 import Link from 'next/link'
 import getRatingColor from '@/core/utils/getRatingColor'
@@ -40,7 +35,7 @@ const YearOverviewTable = ({ data, type }) => {
     }
 
     return (
-        <TableContainer>
+        <div className="overflow-x-auto">
             <Table>
                 <TableBody>
                     {data.map((player, index) => (
@@ -49,9 +44,9 @@ const YearOverviewTable = ({ data, type }) => {
                             onClick={() => {
                                 window.location.href = `/2024/${player.name}`
                             }}
-                            style={{ cursor: 'pointer' }}
+                            className="cursor-pointer hover:bg-muted/50 transition-colors"
                         >
-                            <TableCell sx={{ width: 60 }}>
+                            <TableCell style={{ width: 60 }}>
                                 <div className="mediaWrapper">
                                     {player?.media?.assets?.length ? (
                                         <img
@@ -61,6 +56,7 @@ const YearOverviewTable = ({ data, type }) => {
                                             alt={player.name}
                                             width={40}
                                             height={40}
+                                            className="rounded-md"
                                         />
                                     ) : (
                                         <img
@@ -69,21 +65,23 @@ const YearOverviewTable = ({ data, type }) => {
                                             alt={player.name}
                                             width={40}
                                             height={40}
+                                            className="rounded-md"
                                         />
                                     )}
                                 </div>
                             </TableCell>
-                            <TableCell sx={{ width: 240 }}>
+                            <TableCell style={{ width: 240 }}>
                                 <div
                                     className={`name ${player.class}`}
                                 >
                                     <span
                                         style={{ textTransform: 'capitalize' }}
+                                        className="font-medium"
                                     >
                                         {player.name}
                                     </span>
                                 </div>
-                                <div className="classandspec">
+                                <div className="classandspec text-sm text-muted-foreground">
                                     {player.spec}{' '}
                                     {player.class}
                                 </div>
@@ -93,6 +91,7 @@ const YearOverviewTable = ({ data, type }) => {
                             </TableCell>
                             <TableCell>
                                 <span
+                                    className="font-bold"
                                     style={{
                                         color: getColorForParse(
                                             getValue(player)
@@ -103,11 +102,10 @@ const YearOverviewTable = ({ data, type }) => {
                                 </span>
                             </TableCell>
                         </TableRow>
-                        // </Link>
                     ))}
                 </TableBody>
             </Table>
-        </TableContainer>
+        </div>
     )
 }
 

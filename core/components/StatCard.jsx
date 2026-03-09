@@ -1,23 +1,24 @@
 import React from 'react'
-import Paper from '@mui/material/Paper'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
 
 const StatCard = ({ title, value, description, icon: Icon }) => (
-    <Paper className="stat-card">
-        <Box className="stat-card-header">
-            <Icon style={{ marginRight: 8, color: '#FFD700' }} />
-            <Typography variant="h6" className="stat-card-title">
+    <div className="stat-card relative overflow-hidden bg-card text-card-foreground rounded-xl border border-border/50 shadow-sm p-6 flex flex-col justify-between bg-gradient-subtle card-gradient-border group">
+        <div className="stat-card-header flex items-center justify-between mb-4 relative z-10">
+            <h3 className="stat-card-title text-sm font-medium tracking-tight text-muted-foreground">
                 {title}
-            </Typography>
-        </Box>
-        <Typography variant="h4" className="stat-card-value">
-            {value}
-        </Typography>
-        <Typography variant="body2" className="stat-card-description">
-            {description}
-        </Typography>
-    </Paper>
+            </h3>
+            <div className="p-2 rounded-md bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
+                <Icon className="w-4 h-4" />
+            </div>
+        </div>
+        <div className="relative z-10">
+            <p className="stat-card-value text-3xl font-bold tracking-tight">
+                {value}
+            </p>
+            <p className="stat-card-description text-xs text-muted-foreground mt-1">
+                {description}
+            </p>
+        </div>
+    </div>
 )
 
-export default StatCard 
+export default StatCard

@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Alert, AlertTitle, Snackbar } from '@mui/material'
-import Typography from '@mui/material/Typography'
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
 import { useConfig } from '@/core/hooks/useConfig'
+import { InfoIcon, X } from 'lucide-react'
 
 /**
  * Season Alert Component
@@ -42,28 +43,31 @@ export default function SeasonAlert() {
         localStorage.setItem(alertKey, 'true')
     }
 
-    if (!seasonAlertEnabled) {
+    if (!seasonAlertEnabled || !showSeasonAlert) {
         return null
     }
 
     return (
-        <Snackbar
-            open={showSeasonAlert}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            className="season-alert-snackbar"
-        >
-            <Alert 
-                onClose={handleCloseAlert}
-                severity="info"
-                className="season-alert"
-            >
-                <AlertTitle className="season-alert-title">
-                    {seasonAlertTitle}
-                </AlertTitle>
-                <Typography variant="body2">
-                    {seasonAlertMessage}
-                </Typography>
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4 sm:px-0">
+            <Alert className="bg-background shadow-lg border-primary/20 flex items-start">
+                <InfoIcon className="h-4 w-4 mt-1 mr-3 text-primary" />
+                <div className="flex-1">
+                    <AlertTitle className="font-semibold">
+                        {seasonAlertTitle}
+                    </AlertTitle>
+                    <AlertDescription className="text-sm text-muted-foreground mt-1">
+                        {seasonAlertMessage}
+                    </AlertDescription>
+                </div>
+                <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-6 w-6 ml-2 shrink-0 rounded-full" 
+                    onClick={handleCloseAlert}
+                >
+                    <X className="h-4 w-4" />
+                </Button>
             </Alert>
-        </Snackbar>
+        </div>
     )
 }

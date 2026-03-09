@@ -7,33 +7,17 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
-import {
-  Box,
-  Container,
-  Typography,
-  TextField,
-  Button,
-  Paper,
-  Stepper,
-  Step,
-  StepLabel,
-  Alert,
-  CircularProgress,
-  Grid,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  FormHelperText,
-  Chip,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-} from '@mui/material';
-import { CheckCircle, Error as ErrorIcon, Warning } from '@mui/icons-material';
 import CharacterCard from './components/CharacterCard';
+import { CheckCircle2, AlertCircle, AlertTriangle } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Spinner } from '@/components/ui/spinner';
 
 const steps = ['App Settings', 'Fetching Guild Data', 'Admin Account'];
 
@@ -832,735 +816,619 @@ export default function InstallPage() {
 
   if (checkingStatus) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
-        <CircularProgress />
-      </Box>
+      <div className="flex justify-center items-center min-h-screen">
+        <Spinner className="w-8 h-8" />
+      </div>
     );
   }
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        position: 'relative',
-       
-        overflow: 'hidden',
-      }}
-    >
-      <Container maxWidth="lg" sx={{ py: 4, position: 'relative', zIndex: 1 }}>
-        <Paper 
-          elevation={activeStep === 1 ? 0 : 3} 
-          sx={{ 
-            p: 4,
-            borderRadius: 3,
-            background: activeStep === 1 ? 'transparent' : undefined,
-            boxShadow: activeStep === 1 ? 'none' : undefined,
-          }}
-        >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h4" component="h1" gutterBottom>
+    <div className="min-h-screen relative overflow-hidden bg-background text-foreground">
+      <div className="container max-w-5xl mx-auto py-8 relative z-10">
+        <div className={`p-8 rounded-xl ${activeStep === 1 ? 'bg-transparent shadow-none' : 'bg-card text-card-foreground shadow-lg border border-border'}`}>
+        
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold tracking-tight">
             {hasAdmin && !isAuthenticated ? 'Admin Login' : 'Application Installation'}
-          </Typography>
+          </h1>
           {hasAdmin && isAuthenticated && (
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button
-                variant="outlined"
-                color="inherit"
-                onClick={handleLogout}
-                size="small"
-              >
+            <div className="flex gap-4">
+              <Button variant="outline" size="sm" onClick={handleLogout}>
                 Logout
               </Button>
-              <Button
-                variant="outlined"
-                color="error"
-                onClick={handleOpenResetDialog}
-                size="small"
-              >
+              <Button variant="destructive" size="sm" onClick={handleOpenResetDialog}>
                 Reset Database
               </Button>
-            </Box>
+            </div>
           )}
-        </Box>
-        <Typography variant="body1" color="text.secondary" align="center" sx={{ mb: 4 }}>
+        </div>
+        
+        <p className="text-muted-foreground text-center mb-8">
           {hasAdmin && !isAuthenticated 
             ? 'Please login with your admin credentials to access the installation page'
             : 'Configure your World of Warcraft guild audit application'}
-        </Typography>
+        </p>
 
-        {/* Only show stepper and alerts when authenticated or no admin exists */}
         {(!hasAdmin || isAuthenticated) && (
-          <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
+          <div className="flex items-center justify-center gap-2 sm:gap-4 mb-10 overflow-x-auto py-2">
+            {steps.map((label, index) => (
+              <div key={label} className="flex items-center shrink-0">
+                <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 text-sm font-bold ${activeStep === index ? 'border-primary bg-primary text-primary-foreground' : activeStep > index ? 'border-primary bg-primary text-primary-foreground' : 'border-muted text-muted-foreground'}`}>
+                  {activeStep > index ? <CheckCircle2 className="w-5 h-5" /> : index + 1}
+                </div>
+                <span className={`ml-2 text-sm font-medium ${activeStep >= index ? 'text-foreground' : 'text-muted-foreground'}`}>{label}</span>
+                {index < steps.length - 1 && (
+                  <div className={`w-8 sm:w-12 h-px mx-2 sm:mx-4 ${activeStep > index ? 'bg-primary' : 'bg-muted'}`} />
+                )}
+              </div>
             ))}
-          </Stepper>
+          </div>
         )}
 
         {(!hasAdmin || isAuthenticated) && isInstalled && activeStep === 0 && !hasAdmin && (
-          <Alert 
-            severity="warning" 
-            sx={{ mb: 2 }}
-          >
-            <Typography variant="body1" sx={{ fontWeight: 600, mb: 0.5 }}>
-              ⚠️ Installation Incomplete - You Can Update Settings
-            </Typography>
-            <Typography variant="body2" sx={{ mb: 1 }}>
-              Settings exist but the admin account was not created. This means installation was interrupted.
-            </Typography>
-            <Typography variant="body2" sx={{ fontWeight: 600, color: 'success.main' }}>
-              ✓ You can update your settings below without any confirmation. Just click "Save Settings & Validate" to continue.
-            </Typography>
+          <Alert className="mb-6 border-yellow-500/50 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400">
+            <AlertTriangle className="h-4 w-4 stroke-current" />
+            <AlertTitle>⚠️ Installation Incomplete - You Can Update Settings</AlertTitle>
+            <AlertDescription>
+              <p className="mb-2">Settings exist but the admin account was not created. This means installation was interrupted.</p>
+              <p className="font-semibold text-green-600 dark:text-green-400">✓ You can update your settings below without any confirmation. Just click "Save Settings & Validate" to continue.</p>
+            </AlertDescription>
           </Alert>
         )}
 
         {(!hasAdmin || isAuthenticated) && isInstalled && activeStep === 0 && hasAdmin && (
-          <Alert 
-            severity="warning" 
-            sx={{ mb: 2 }}
-            icon={<Warning />}
-            action={
-              <Button
-                color="error"
-                size="small"
-                variant="outlined"
-                onClick={handleOpenResetDialog}
-                sx={{ whiteSpace: 'nowrap' }}
-              >
-                Reset Database
-              </Button>
-            }
-          >
-            <Typography variant="body1" sx={{ fontWeight: 600, mb: 0.5 }}>
-              Application Already Installed
-            </Typography>
-            <Typography variant="body2" sx={{ mb: 1 }}>
-              Settings already exist in the database. You can overwrite them with new values below.
-              This will replace all existing configuration including API keys.
-            </Typography>
-            <Typography variant="body2" sx={{ fontWeight: 600, color: 'error.main' }}>
-              Need a fresh start? Click "Reset Database" to wipe all data collections and admin account while preserving your app settings.
-            </Typography>
+          <Alert className="mb-6 border-yellow-500/50 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex gap-3">
+              <AlertTriangle className="h-5 w-5 stroke-current mt-0.5 shrink-0" />
+              <div>
+                <AlertTitle className="text-base font-semibold">Application Already Installed</AlertTitle>
+                <AlertDescription>
+                  <p className="mb-2">Settings already exist in the database. You can overwrite them with new values below. This will replace all existing configuration including API keys.</p>
+                  <p className="font-semibold text-destructive">Need a fresh start? Click "Reset Database" to wipe all data collections and admin account while preserving your app settings.</p>
+                </AlertDescription>
+              </div>
+            </div>
+            <Button variant="destructive" size="sm" onClick={handleOpenResetDialog} className="shrink-0">
+              Reset Database
+            </Button>
           </Alert>
         )}
 
         {(!hasAdmin || isAuthenticated) && error && (
-          <Alert 
-            severity="error" 
-            sx={{ mb: 2 }} 
-            onClose={() => {
-              setError('');
-              setErrorDetails(null);
-            }}
-            icon={<ErrorIcon />}
-          >
-            <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>
-              {error}
-            </Typography>
+          <Alert variant="destructive" className="mb-6 relative">
+            <AlertCircle className="h-4 w-4" />
+            <Button 
+              variant="ghost" 
+              size="icon"
+              className="absolute top-2 right-2 h-6 w-6 rounded-md hover:bg-destructive/20 text-destructive-foreground/80 hover:text-destructive-foreground"
+              onClick={() => {
+                setError('');
+                setErrorDetails(null);
+              }}
+            >
+              <span className="sr-only">Close</span>
+              &times;
+            </Button>
+            <AlertTitle className="font-semibold">{error}</AlertTitle>
             {errorDetails && (
-              <Box sx={{ mt: 1 }}>
+              <AlertDescription className="mt-2 space-y-3">
                 {errorDetails.details && errorDetails.details !== error && (
-                  <Typography variant="body2" sx={{ mb: 1, color: 'rgba(255, 255, 255, 0.9)' }}>
-                    {errorDetails.details}
-                  </Typography>
+                  <p className="opacity-90">{errorDetails.details}</p>
                 )}
                 {errorDetails.suggestion && (
-                  <Box 
-                    sx={{ 
-                      mt: 1.5, 
-                      p: 1.5, 
-                      bgcolor: 'rgba(255, 255, 255, 0.1)', 
-                      borderRadius: 1,
-                      borderLeft: '3px solid #ffd700'
-                    }}
-                  >
-                    <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5, color: '#ffd700' }}>
-                      💡 Suggestion:
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.9)' }}>
-                      {errorDetails.suggestion}
-                    </Typography>
-                  </Box>
+                  <div className="p-3 bg-yellow-500/10 border-l-4 border-yellow-500 rounded-md">
+                    <p className="font-semibold text-yellow-600 dark:text-yellow-400 mb-1">💡 Suggestion:</p>
+                    <p className="opacity-90">{errorDetails.suggestion}</p>
+                  </div>
                 )}
                 {errorDetails.error === 'GUILD_NOT_FOUND' && (
-                  <Box sx={{ mt: 1.5 }}>
-                    <Typography variant="body2" sx={{ mb: 1, fontWeight: 600 }}>
-                      Common issues:
-                    </Typography>
-                    <Typography variant="body2" component="div" sx={{ pl: 2 }}>
-                      <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                        <li>Guild name and realm name are case-sensitive</li>
-                        <li>Use the guild name slug (lowercase, spaces replaced with hyphens)</li>
-                        <li>Use the realm slug (lowercase, spaces replaced with hyphens)</li>
-                        <li>Verify the guild exists on the specified realm and region</li>
-                      </ul>
-                    </Typography>
-                  </Box>
+                  <div>
+                    <p className="font-semibold mb-1">Common issues:</p>
+                    <ul className="list-disc pl-5 space-y-1">
+                      <li>Guild name and realm name are case-sensitive</li>
+                      <li>Use the guild name slug (lowercase, spaces replaced with hyphens)</li>
+                      <li>Use the realm slug (lowercase, spaces replaced with hyphens)</li>
+                      <li>Verify the guild exists on the specified realm and region</li>
+                    </ul>
+                  </div>
                 )}
                 {errorDetails.error === 'AUTH_ERROR' && (
-                  <Box sx={{ mt: 1.5 }}>
-                    <Typography variant="body2" sx={{ mb: 1, fontWeight: 600 }}>
-                      How to fix:
-                    </Typography>
-                    <Typography variant="body2" component="div" sx={{ pl: 2 }}>
-                      <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                        <li>Verify your Battle.net API Client ID is correct</li>
-                        <li>Verify your Battle.net API Client Secret is correct</li>
-                        <li>Check that your API key hasn't expired or been revoked</li>
-                        <li>Ensure you copied the full Client ID and Secret without extra spaces</li>
-                      </ul>
-                    </Typography>
-                  </Box>
+                  <div>
+                    <p className="font-semibold mb-1">How to fix:</p>
+                    <ul className="list-disc pl-5 space-y-1">
+                      <li>Verify your Battle.net API Client ID is correct</li>
+                      <li>Verify your Battle.net API Client Secret is correct</li>
+                      <li>Check that your API key hasn't expired or been revoked</li>
+                      <li>Ensure you copied the full Client ID and Secret without extra spaces</li>
+                    </ul>
+                  </div>
                 )}
-              </Box>
+              </AlertDescription>
             )}
           </Alert>
         )}
 
         {(!hasAdmin || isAuthenticated) && success && (
-          <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess('')}>
-            {success}
+          <Alert className="mb-6 border-green-500/50 bg-green-500/10 text-green-700 dark:text-green-400 relative">
+            <CheckCircle2 className="h-4 w-4 stroke-current" />
+            <Button 
+              variant="ghost" 
+              size="icon"
+              className="absolute top-2 right-2 h-6 w-6 rounded-md hover:bg-green-500/20 text-green-700/80 hover:text-green-700 dark:text-green-400/80 dark:hover:text-green-400"
+              onClick={() => setSuccess('')}
+            >
+              <span className="sr-only">Close</span>
+              &times;
+            </Button>
+            <AlertTitle className="font-semibold">{success}</AlertTitle>
           </Alert>
         )}
 
         {/* Overwrite Confirmation Dialog */}
-          <Dialog
-          open={showOverwriteDialog}
-          onClose={() => {
-            setShowOverwriteDialog(false);
-          }}
-          aria-labelledby="overwrite-dialog-title"
-          aria-describedby="overwrite-dialog-description"
-        >
-          <DialogTitle id="overwrite-dialog-title" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Warning color="warning" />
-            Overwrite Existing Settings?
-          </DialogTitle>
+        <Dialog open={showOverwriteDialog} onOpenChange={setShowOverwriteDialog}>
           <DialogContent>
-            <DialogContentText id="overwrite-dialog-description">
-              <Typography variant="body1" sx={{ mb: 2 }}>
-                The application has already been installed with existing settings. Overwriting will:
-              </Typography>
-              <ul style={{ marginLeft: '20px', marginBottom: '16px' }}>
-                <li>Replace all current configuration settings</li>
-                <li>Update Battle.net API credentials</li>
-                <li>Update guild information and requirements</li>
-                <li>Clear the configuration cache</li>
-              </ul>
-              <Typography variant="body2" sx={{ color: 'warning.main', fontWeight: 600 }}>
-                This action cannot be undone. Are you sure you want to continue?
-              </Typography>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button 
-              onClick={() => {
-                setShowOverwriteDialog(false);
-              }}
-              color="inherit"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={async () => {
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <AlertTriangle className="text-yellow-500 h-5 w-5" />
+                Overwrite Existing Settings?
+              </DialogTitle>
+              <DialogDescription className="pt-4 space-y-4">
+                <p>The application has already been installed with existing settings. Overwriting will:</p>
+                <ul className="list-disc pl-5 space-y-1 text-left">
+                  <li>Replace all current configuration settings</li>
+                  <li>Update Battle.net API credentials</li>
+                  <li>Update guild information and requirements</li>
+                  <li>Clear the configuration cache</li>
+                </ul>
+                <p className="font-semibold text-yellow-600 dark:text-yellow-500">This action cannot be undone. Are you sure you want to continue?</p>
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowOverwriteDialog(false)}>Cancel</Button>
+              <Button variant="destructive" className="bg-yellow-600 hover:bg-yellow-700 text-white" onClick={async () => {
                 setShowOverwriteDialog(false);
                 await submitAppSettings(true);
-              }}
-              color="warning"
-              variant="contained"
-              autoFocus
-            >
-              Overwrite Settings
-            </Button>
-          </DialogActions>
+              }}>
+                Overwrite Settings
+              </Button>
+            </DialogFooter>
+          </DialogContent>
         </Dialog>
 
         {/* Reset Database Dialog */}
-        <Dialog
-          open={showResetDialog}
-          onClose={() => {
-            if (!resetLoading) {
-              setShowResetDialog(false);
-              setResetError('');
-              setResetSuccess('');
-              setResetCredentials({ username: '', password: '' });
-            }
-          }}
-          maxWidth="sm"
-          fullWidth
-        >
-          <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Warning color="error" />
-            Reset Database
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText sx={{ mb: 3 }}>
-              <Typography variant="body1" sx={{ fontWeight: 600, mb: 2, color: 'error.main' }}>
-                ⚠️ DANGER: This action will permanently delete all data!
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 2 }}>
-                This will wipe all guild data, member information, season stats, and error logs from the database.
-              </Typography>
-              {resetInfo && (
-                <Box sx={{ mb: 2, p: 2, bgcolor: 'rgba(255, 0, 0, 0.1)', borderRadius: 1 }}>
-                  <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
-                    Collections to be deleted:
-                  </Typography>
-                  <ul style={{ margin: '8px 0', paddingLeft: '20px' }}>
-                    {resetInfo.collectionsToReset.map((collection) => (
-                      <li key={collection}>
-                        <Typography variant="body2" component="span">
-                          {collection} ({resetInfo.counts[collection] || 0} documents)
-                        </Typography>
-                      </li>
-                    ))}
-                  </ul>
-                  <Typography variant="body2" sx={{ mt: 1, fontWeight: 600, color: 'success.main' }}>
-                    ✓ Preserved: {resetInfo.collectionsToPreserve.join(', ')}
-                  </Typography>
-                </Box>
-              )}
-              <Typography variant="body2" sx={{ fontWeight: 600, mb: 2, color: 'success.main' }}>
-                ✓ Preserved: App Settings & Configuration
-              </Typography>
-              <Typography variant="body2" sx={{ fontWeight: 600, mb: 1, color: 'error.main' }}>
-                ✗ Admin account will also be deleted
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
-                After reset, you will need to recreate your admin account and can then re-run the installation process to fetch fresh guild data.
-              </Typography>
-            </DialogContentText>
+        <Dialog open={showResetDialog} onOpenChange={(open) => {
+          if (!open && !resetLoading) {
+            setShowResetDialog(false);
+            setResetError('');
+            setResetSuccess('');
+            setResetCredentials({ username: '', password: '' });
+          }
+        }}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-destructive">
+                <AlertTriangle className="h-5 w-5" />
+                Reset Database
+              </DialogTitle>
+              <DialogDescription asChild>
+                <div className="pt-4 space-y-4 text-left">
+                  <p className="font-semibold text-destructive">⚠️ DANGER: This action will permanently delete all data!</p>
+                  <p>This will wipe all guild data, member information, season stats, and error logs from the database.</p>
+                  
+                  {resetInfo && (
+                    <div className="p-4 bg-destructive/10 rounded-md border border-destructive/20">
+                      <p className="font-semibold mb-2 text-foreground">Collections to be deleted:</p>
+                      <ul className="list-disc pl-5 space-y-1 mb-4">
+                        {resetInfo.collectionsToReset.map((collection) => (
+                          <li key={collection}>
+                            <span>{collection} ({resetInfo.counts[collection] || 0} documents)</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="font-semibold text-green-600 dark:text-green-500">✓ Preserved: {resetInfo.collectionsToPreserve.join(', ')}</p>
+                    </div>
+                  )}
+                  
+                  <p className="font-semibold text-green-600 dark:text-green-500">✓ Preserved: App Settings & Configuration</p>
+                  <p className="font-semibold text-destructive">✗ Admin account will also be deleted</p>
+                  <p className="text-muted-foreground">After reset, you will need to recreate your admin account and can then re-run the installation process to fetch fresh guild data.</p>
+                </div>
+              </DialogDescription>
+            </DialogHeader>
 
             {resetError && (
-              <Alert severity="error" sx={{ mb: 2 }} onClose={() => setResetError('')}>
-                {resetError}
+              <Alert variant="destructive" className="mt-4">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>{resetError}</AlertTitle>
               </Alert>
             )}
 
             {resetSuccess && (
-              <Alert severity="success" sx={{ mb: 2 }}>
-                {resetSuccess}
+              <Alert className="mt-4 border-green-500 text-green-600">
+                <CheckCircle2 className="h-4 w-4" />
+                <AlertTitle>{resetSuccess}</AlertTitle>
               </Alert>
             )}
 
             {!resetSuccess && (
-              <form onSubmit={handleResetDatabase}>
-                <Typography variant="body2" sx={{ fontWeight: 600, mb: 2, color: 'error.main' }}>
-                  Enter admin credentials to confirm:
-                </Typography>
-                <TextField
-                  fullWidth
-                  label="Admin Username"
-                  value={resetCredentials.username}
-                  onChange={(e) => setResetCredentials(prev => ({ ...prev, username: e.target.value }))}
-                  required
-                  disabled={resetLoading}
-                  sx={{ mb: 2 }}
-                />
-                <TextField
-                  fullWidth
-                  label="Admin Password"
-                  type="password"
-                  value={resetCredentials.password}
-                  onChange={(e) => setResetCredentials(prev => ({ ...prev, password: e.target.value }))}
-                  required
-                  disabled={resetLoading}
-                />
-              </form>
-            )}
-          </DialogContent>
-          <DialogActions>
-            {!resetSuccess && (
-              <>
-                <Button 
-                  onClick={() => {
+              <form onSubmit={handleResetDatabase} className="space-y-4 mt-4">
+                <p className="font-semibold text-destructive">Enter admin credentials to confirm:</p>
+                <div className="space-y-2">
+                  <Label>Admin Username <span className="text-destructive">*</span></Label>
+                  <Input
+                    value={resetCredentials.username}
+                    onChange={(e) => setResetCredentials(prev => ({ ...prev, username: e.target.value }))}
+                    required
+                    disabled={resetLoading}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Admin Password <span className="text-destructive">*</span></Label>
+                  <Input
+                    type="password"
+                    value={resetCredentials.password}
+                    onChange={(e) => setResetCredentials(prev => ({ ...prev, password: e.target.value }))}
+                    required
+                    disabled={resetLoading}
+                  />
+                </div>
+                <DialogFooter className="pt-4">
+                  <Button type="button" variant="outline" onClick={() => {
                     setShowResetDialog(false);
                     setResetError('');
                     setResetCredentials({ username: '', password: '' });
-                  }}
-                  disabled={resetLoading}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleResetDatabase}
-                  color="error"
-                  variant="contained"
-                  disabled={resetLoading || !resetCredentials.username || !resetCredentials.password}
-                  startIcon={resetLoading ? <CircularProgress size={20} /> : null}
-                >
-                  {resetLoading ? 'Resetting...' : 'Reset Database'}
-                </Button>
-              </>
+                  }} disabled={resetLoading}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" variant="destructive" disabled={resetLoading || !resetCredentials.username || !resetCredentials.password}>
+                    {resetLoading && <Spinner className="mr-2" />}
+                    {resetLoading ? 'Resetting...' : 'Reset Database'}
+                  </Button>
+                </DialogFooter>
+              </form>
             )}
-          </DialogActions>
+          </DialogContent>
         </Dialog>
 
         {/* Login Form - Show when admin exists but user is not authenticated */}
         {hasAdmin && !isAuthenticated && (
-          <Paper elevation={3} sx={{ p: 4, maxWidth: 500, mx: 'auto' }}>
-            <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
-              Admin Login Required
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              This page is protected. Please enter your admin credentials to continue.
-            </Typography>
-
+          <div className="max-w-md mx-auto p-6 bg-card text-card-foreground rounded-lg shadow border border-border">
+            <h2 className="text-xl font-semibold mb-2">Admin Login Required</h2>
+            <p className="text-muted-foreground mb-6">This page is protected. Please enter your admin credentials to continue.</p>
+            
             {loginError && (
-              <Alert severity="error" sx={{ mb: 2 }} onClose={() => setLoginError('')}>
-                {loginError}
+              <Alert variant="destructive" className="mb-6">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>{loginError}</AlertTitle>
               </Alert>
             )}
-
-            <form onSubmit={handleLogin}>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Username"
-                    value={loginCredentials.username}
-                    onChange={(e) => setLoginCredentials(prev => ({ ...prev, username: e.target.value }))}
-                    required
-                    disabled={loginLoading}
-                    autoFocus
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Password"
-                    type="password"
-                    value={loginCredentials.password}
-                    onChange={(e) => setLoginCredentials(prev => ({ ...prev, password: e.target.value }))}
-                    required
-                    disabled={loginLoading}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    fullWidth
-                    disabled={loginLoading || !loginCredentials.username || !loginCredentials.password}
-                    startIcon={loginLoading ? <CircularProgress size={20} /> : null}
-                  >
-                    {loginLoading ? 'Logging in...' : 'Login'}
-                  </Button>
-                </Grid>
-              </Grid>
+            
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label>Username <span className="text-destructive">*</span></Label>
+                <Input
+                  value={loginCredentials.username}
+                  onChange={(e) => setLoginCredentials(prev => ({ ...prev, username: e.target.value }))}
+                  required
+                  disabled={loginLoading}
+                  autoFocus
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Password <span className="text-destructive">*</span></Label>
+                <Input
+                  type="password"
+                  value={loginCredentials.password}
+                  onChange={(e) => setLoginCredentials(prev => ({ ...prev, password: e.target.value }))}
+                  required
+                  disabled={loginLoading}
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={loginLoading || !loginCredentials.username || !loginCredentials.password}>
+                {loginLoading && <Spinner className="mr-2" />}
+                {loginLoading ? 'Logging in...' : 'Login'}
+              </Button>
             </form>
-          </Paper>
+          </div>
         )}
 
         {/* Installation Interface - Show only when no admin exists OR user is authenticated */}
         {(!hasAdmin || isAuthenticated) && activeStep === 0 && (
           <form onSubmit={handleAppSettingsSubmit}>
-            <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-              Battle.net API Configuration
-            </Typography>
-            <Grid container spacing={2} sx={{ mb: 3 }}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Battle.net API Key"
+            <h2 className="text-xl font-semibold mt-4 mb-4">Battle.net API Configuration</h2>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+              <div className="col-span-1 sm:col-span-2 space-y-2">
+                <Label>Battle.net API Key <span className="text-destructive">*</span></Label>
+                <Input
                   type="password"
                   value={appSettings.API_BATTLENET_KEY}
                   onChange={(e) => handleAppSettingsChange('API_BATTLENET_KEY', e.target.value)}
                   required
-                  helperText="Your Battle.net API Client ID"
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Battle.net API Secret"
+                <p className="text-xs text-muted-foreground">Your Battle.net API Client ID</p>
+              </div>
+              
+              <div className="col-span-1 sm:col-span-2 space-y-2">
+                <Label>Battle.net API Secret <span className="text-destructive">*</span></Label>
+                <Input
                   type="password"
                   value={appSettings.API_BATTLENET_SECRET}
                   onChange={(e) => handleAppSettingsChange('API_BATTLENET_SECRET', e.target.value)}
                   required
-                  helperText="Your Battle.net API Client Secret"
                 />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Guild Name"
+                <p className="text-xs text-muted-foreground">Your Battle.net API Client Secret</p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Guild Name <span className="text-destructive">*</span></Label>
+                <Input
                   value={appSettings.GUILD_NAME}
                   onChange={(e) => handleAppSettingsChange('GUILD_NAME', e.target.value)}
                   required
-                  helperText="Guild name slug (e.g., time-and-tide)"
                 />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Guild Realm"
+                <p className="text-xs text-muted-foreground">Guild name slug (e.g., time-and-tide)</p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Guild Realm <span className="text-destructive">*</span></Label>
+                <Input
                   value={appSettings.GUILD_REALM}
                   onChange={(e) => handleAppSettingsChange('GUILD_REALM', e.target.value)}
                   required
-                  helperText="Realm slug (e.g., ravencrest)"
                 />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Region</InputLabel>
-                  <Select
-                    value={appSettings.REGION}
-                    label="Region"
-                    onChange={(e) => handleAppSettingsChange('REGION', e.target.value)}
-                    required
-                  >
-                    <MenuItem value="eu">Europe (EU)</MenuItem>
-                    <MenuItem value="us">United States (US)</MenuItem>
-                    <MenuItem value="kr">Korea (KR)</MenuItem>
-                    <MenuItem value="tw">Taiwan (TW)</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="API Parameters"
+                <p className="text-xs text-muted-foreground">Realm slug (e.g., ravencrest)</p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Region <span className="text-destructive">*</span></Label>
+                <Select
+                  value={appSettings.REGION}
+                  onValueChange={(value) => handleAppSettingsChange('REGION', value)}
+                  required
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Region" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="eu">Europe (EU)</SelectItem>
+                    <SelectItem value="us">United States (US)</SelectItem>
+                    <SelectItem value="kr">Korea (KR)</SelectItem>
+                    <SelectItem value="tw">Taiwan (TW)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>API Parameters <span className="text-destructive">*</span></Label>
+                <Input
                   value={appSettings.API_PARAM_REQUIREMENTGS}
                   onChange={(e) => handleAppSettingsChange('API_PARAM_REQUIREMENTGS', e.target.value)}
                   required
-                  helperText="e.g., namespace=profile-eu&locale=en_US"
                 />
-              </Grid>
-            </Grid>
+                <p className="text-xs text-muted-foreground">e.g., namespace=profile-eu&locale=en_US</p>
+              </div>
+            </div>
 
-            <Typography variant="h6" gutterBottom>
-              Guild Configuration
-            </Typography>
-            <Grid container spacing={2} sx={{ mb: 3 }}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
+            <h2 className="text-xl font-semibold mb-4">Guild Configuration</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+              <div className="space-y-2">
+                <Label>Level Requirement <span className="text-destructive">*</span></Label>
+                <Input
                   type="number"
-                  label="Level Requirement"
                   value={appSettings.LEVEL_REQUIREMENT}
-                  onChange={(e) => handleAppSettingsChange('LEVEL_REQUIREMENT', parseInt(e.target.value))}
+                  onChange={(e) => handleAppSettingsChange('LEVEL_REQUIREMENT', parseInt(e.target.value) || 0)}
                   required
                 />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Item Level Requirement <span className="text-destructive">*</span></Label>
+                <Input
                   type="number"
-                  label="Item Level Requirement"
                   value={appSettings.ITEM_LEVEL_REQUIREMENT}
-                  onChange={(e) => handleAppSettingsChange('ITEM_LEVEL_REQUIREMENT', parseInt(e.target.value))}
+                  onChange={(e) => handleAppSettingsChange('ITEM_LEVEL_REQUIREMENT', parseInt(e.target.value) || 0)}
                   required
                 />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Min Check Cap <span className="text-destructive">*</span></Label>
+                <Input
                   type="number"
-                  label="Min Check Cap"
                   value={appSettings.MIN_CHECK_CAP}
-                  onChange={(e) => handleAppSettingsChange('MIN_CHECK_CAP', parseInt(e.target.value))}
+                  onChange={(e) => handleAppSettingsChange('MIN_CHECK_CAP', parseInt(e.target.value) || 0)}
                   required
                 />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Max Check Cap <span className="text-destructive">*</span></Label>
+                <Input
                   type="number"
-                  label="Max Check Cap"
                   value={appSettings.MAX_CHECK_CAP}
-                  onChange={(e) => handleAppSettingsChange('MAX_CHECK_CAP', parseInt(e.target.value))}
+                  onChange={(e) => handleAppSettingsChange('MAX_CHECK_CAP', parseInt(e.target.value) || 0)}
                   required
                 />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Min Tier Item Level <span className="text-destructive">*</span></Label>
+                <Input
                   type="number"
-                  label="Min Tier Item Level"
                   value={appSettings.MIN_TIER_ITEMLEVEL}
-                  onChange={(e) => handleAppSettingsChange('MIN_TIER_ITEMLEVEL', parseInt(e.target.value))}
+                  onChange={(e) => handleAppSettingsChange('MIN_TIER_ITEMLEVEL', parseInt(e.target.value) || 0)}
                   required
                 />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Season Start Date"
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Season Start Date <span className="text-destructive">*</span></Label>
+                <Input
                   type="date"
                   value={appSettings.SEASON_START_DATE}
                   onChange={(e) => handleAppSettingsChange('SEASON_START_DATE', e.target.value)}
-                  InputLabelProps={{ shrink: true }}
                   required
                 />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Current Raid"
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Current Raid <span className="text-destructive">*</span></Label>
+                <Input
                   value={appSettings.CURRENT_RAID}
                   onChange={(e) => handleAppSettingsChange('CURRENT_RAID', e.target.value)}
                   required
                 />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Current M+ Season <span className="text-destructive">*</span></Label>
+                <Input
                   type="number"
-                  label="Current M+ Season"
                   value={appSettings.CURRENT_MPLUS_SEASON}
-                  onChange={(e) => handleAppSettingsChange('CURRENT_MPLUS_SEASON', parseInt(e.target.value))}
+                  onChange={(e) => handleAppSettingsChange('CURRENT_MPLUS_SEASON', parseInt(e.target.value) || 0)}
                   required
                 />
-              </Grid>
-            </Grid>
+              </div>
+            </div>
 
-            <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
-              Advanced Configuration
-            </Typography>
-            <Grid container spacing={2} sx={{ mb: 3 }}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Guild Rank Requirement"
+            <h2 className="text-xl font-semibold mb-4">Advanced Configuration</h2>
+            <div className="grid grid-cols-1 gap-4 mb-8">
+              <div className="space-y-2">
+                <Label>Guild Rank Requirement <span className="text-destructive">*</span></Label>
+                <Input
                   value={Array.isArray(appSettings.GUILD_RANK_REQUIREMENT) ? appSettings.GUILD_RANK_REQUIREMENT.join(',') : ''}
                   onChange={(e) => {
                     const values = e.target.value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
                     handleAppSettingsChange('GUILD_RANK_REQUIREMENT', values);
                   }}
-                  helperText="Comma-separated guild rank IDs (e.g., 0,1,2,3,4,5,6,7,8,9,10)"
                   required
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Main Ranks"
+                <p className="text-xs text-muted-foreground">Comma-separated guild rank IDs (e.g., 0,1,2,3,4,5,6,7,8,9,10)</p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Main Ranks <span className="text-destructive">*</span></Label>
+                <Input
                   value={Array.isArray(appSettings.MAIN_RANKS) ? appSettings.MAIN_RANKS.join(',') : ''}
                   onChange={(e) => {
                     const values = e.target.value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
                     handleAppSettingsChange('MAIN_RANKS', values);
                   }}
-                  helperText="Comma-separated rank IDs considered as mains (e.g., 0,1,2,3,4,5,6,7)"
                   required
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Alt Ranks"
+                <p className="text-xs text-muted-foreground">Comma-separated rank IDs considered as mains (e.g., 0,1,2,3,4,5,6,7)</p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Alt Ranks <span className="text-destructive">*</span></Label>
+                <Input
                   value={Array.isArray(appSettings.ALT_RANKS) ? appSettings.ALT_RANKS.join(',') : ''}
                   onChange={(e) => {
                     const values = e.target.value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
                     handleAppSettingsChange('ALT_RANKS', values);
                   }}
-                  helperText="Comma-separated rank IDs considered as alts (e.g., 8,9,10)"
                   required
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Tank Specializations"
+                <p className="text-xs text-muted-foreground">Comma-separated rank IDs considered as alts (e.g., 8,9,10)</p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Tank Specializations <span className="text-destructive">*</span></Label>
+                <Input
                   value={Array.isArray(appSettings.TANKS) ? appSettings.TANKS.join(', ') : ''}
                   onChange={(e) => {
                     const values = e.target.value.split(',').map(v => v.trim()).filter(v => v);
                     handleAppSettingsChange('TANKS', values);
                   }}
-                  helperText="Comma-separated tank spec names (e.g., Blood, Vengeance, Guardian, Brewmaster, Protection)"
                   required
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Healer Specializations"
+                <p className="text-xs text-muted-foreground">Comma-separated tank spec names (e.g., Blood, Vengeance, Guardian, Brewmaster, Protection)</p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Healer Specializations <span className="text-destructive">*</span></Label>
+                <Input
                   value={Array.isArray(appSettings.HEALERS) ? appSettings.HEALERS.join(', ') : ''}
                   onChange={(e) => {
                     const values = e.target.value.split(',').map(v => v.trim()).filter(v => v);
                     handleAppSettingsChange('HEALERS', values);
                   }}
-                  helperText="Comma-separated healer spec names (e.g., Preservation, Mistweaver, Holy, Discipline, Restoration)"
                   required
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Enchantable Pieces"
+                <p className="text-xs text-muted-foreground">Comma-separated healer spec names (e.g., Preservation, Mistweaver, Holy, Discipline, Restoration)</p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Enchantable Pieces <span className="text-destructive">*</span></Label>
+                <Input
                   value={Array.isArray(appSettings.ENCHANTABLE_PIECES) ? appSettings.ENCHANTABLE_PIECES.join(', ') : ''}
                   onChange={(e) => {
                     const values = e.target.value.split(',').map(v => v.trim()).filter(v => v);
                     handleAppSettingsChange('ENCHANTABLE_PIECES', values);
                   }}
-                  helperText="Comma-separated slot names (e.g., WRIST, LEGS, FEET, CHEST, MAIN_HAND, FINGER_1, FINGER_2)"
                   required
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Difficulty Modes"
+                <p className="text-xs text-muted-foreground">Comma-separated slot names (e.g., WRIST, LEGS, FEET, CHEST, MAIN_HAND, FINGER_1, FINGER_2)</p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Difficulty Modes <span className="text-destructive">*</span></Label>
+                <Input
                   value={Array.isArray(appSettings.DIFFICULTY) ? appSettings.DIFFICULTY.join(', ') : ''}
                   onChange={(e) => {
                     const values = e.target.value.split(',').map(v => v.trim()).filter(v => v);
                     handleAppSettingsChange('DIFFICULTY', values);
                   }}
-                  helperText="Comma-separated difficulty names (e.g., Mythic, Heroic, Normal)"
                   required
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  multiline
+                <p className="text-xs text-muted-foreground">Comma-separated difficulty names (e.g., Mythic, Heroic, Normal)</p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Guild Rank Names <span className="text-destructive">*</span></Label>
+                <Textarea
                   rows={4}
-                  label="Guild Rank Names"
                   value={Array.isArray(appSettings.GUILLD_RANKS) ? appSettings.GUILLD_RANKS.join(',\n') : ''}
                   onChange={(e) => {
                     const values = e.target.value.split(/[,\n]/).map(v => v.trim()).filter(v => v);
                     handleAppSettingsChange('GUILLD_RANKS', values);
                   }}
-                  helperText="One rank name per line or comma-separated (e.g., Guild Lead, Officer, Member, Alt)"
                   required
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  multiline
+                <p className="text-xs text-muted-foreground">One rank name per line or comma-separated (e.g., Guild Lead, Officer, Member, Alt)</p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Current Season Tier Sets <span className="text-destructive">*</span></Label>
+                <Textarea
                   rows={6}
-                  label="Current Season Tier Sets"
                   value={Array.isArray(appSettings.CURRENT_SEASON_TIER_SETS) ? appSettings.CURRENT_SEASON_TIER_SETS.join(',\n') : ''}
                   onChange={(e) => {
                     const values = e.target.value.split(/[,\n]/).map(v => v.trim()).filter(v => v);
                     handleAppSettingsChange('CURRENT_SEASON_TIER_SETS', values);
                   }}
-                  helperText="One tier set name per line or comma-separated"
                   required
                 />
-              </Grid>
-            </Grid>
+                <p className="text-xs text-muted-foreground">One tier set name per line or comma-separated</p>
+              </div>
+            </div>
 
             {validationResult && validationResult.isValid && (
-              <Alert severity="success" sx={{ mb: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <CheckCircle />
-                  <Typography>
-                    API credentials validated successfully! Found {validationResult.guildMembers} guild members.
-                  </Typography>
-                </Box>
+              <Alert className="mb-6 border-green-500/50 bg-green-500/10 text-green-700 dark:text-green-400">
+                <CheckCircle2 className="h-4 w-4 stroke-current" />
+                <AlertTitle className="mb-0 flex items-center">
+                  API credentials validated successfully! Found {validationResult.guildMembers} guild members.
+                </AlertTitle>
               </Alert>
             )}
 
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
+            <div className="flex justify-end gap-4 mt-6">
               {isInstalled && (
                 <Button
-                  variant="outlined"
+                  type="button"
+                  variant="outline"
                   onClick={() => {
-                    // Skip to next step - check what the next step should be
                     const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
                     fetch(`${API_BASE_URL}/api/install`)
                       .then(res => res.json())
@@ -1568,16 +1436,15 @@ export default function InstallPage() {
                         if (data.suggestedStep !== undefined) {
                           setActiveStep(data.suggestedStep);
                         } else if (data.hasGuildData && !data.hasAdmin) {
-                          setActiveStep(2); // Skip to admin
+                          setActiveStep(2);
                         } else if (!data.hasGuildData) {
-                          setActiveStep(1); // Go to guild fetch
+                          setActiveStep(1);
                         } else {
-                          setActiveStep(2); // Default to admin
+                          setActiveStep(2);
                         }
                       })
                       .catch(err => {
                         console.error('Error checking status:', err);
-                        // Default to step 1 if check fails
                         setActiveStep(1);
                       });
                   }}
@@ -1585,63 +1452,40 @@ export default function InstallPage() {
                   Skip to Next Step
                 </Button>
               )}
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={loading}
-                startIcon={loading ? <CircularProgress size={20} /> : null}
-              >
+              <Button type="submit" disabled={loading}>
+                {loading && <Spinner className="mr-2" />}
                 {loading ? 'Validating & Saving...' : isInstalled ? 'Update Settings & Validate' : 'Save Settings & Validate'}
               </Button>
-            </Box>
+            </div>
           </form>
         )}
 
         {activeStep === 1 && (
-          <Box>
-            {/* Skip button at top */}
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+          <div>
+            <div className="flex justify-end mb-4">
               <Button
-                variant="outlined"
-                onClick={() => {
-                  setActiveStep(2);
-                }}
-                sx={{ color: '#FFFFFF', borderColor: 'rgba(255, 255, 255, 0.3)' }}
+                variant="outline"
+                className="border-white/30 text-white hover:bg-white/10"
+                onClick={() => setActiveStep(2)}
               >
                 Skip Guild Fetch
               </Button>
-            </Box>
+            </div>
             
-            <Box
-              sx={{
-                minHeight: '70vh',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 4,
-              }}
-            >
-              {/* Header */}
-              <Typography
-                variant="h3"
-                sx={{
-                  color: '#FFFFFF',
-                  fontWeight: 700,
-                  mb: 2,
-                  textShadow: '0 2px 8px rgba(0,0,0,0.5)',
-                }}
-              >
+            <div className="flex flex-col gap-8 min-h-[70vh]">
+              <h2 className="text-3xl font-bold text-white drop-shadow-md mb-2">
                 Fetching Guild Data
-              </Typography>
+              </h2>
 
-              {/* Alerts and Errors */}
               {error && activeStep === 1 && (
-                <Alert 
-                  severity="error" 
-                  sx={{ mb: 2 }}
-                  action={
+                <Alert variant="destructive" className="mb-4">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle className="font-semibold flex items-center justify-between">
+                    <span>{error}</span>
                     <Button
-                      color="inherit"
-                      size="small"
+                      variant="ghost"
+                      size="sm"
+                      className="h-8"
                       onClick={() => {
                         setActiveStep(0);
                         setError('');
@@ -1650,118 +1494,65 @@ export default function InstallPage() {
                     >
                       Go Back to Fix
                     </Button>
-                  }
-                >
-                  <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
-                    {error}
-                  </Typography>
+                  </AlertTitle>
                   {errorDetails && errorDetails.suggestion && (
-                    <Typography variant="body2" sx={{ mt: 1 }}>
+                    <AlertDescription className="mt-2">
                       {errorDetails.suggestion}
-                    </Typography>
+                    </AlertDescription>
                   )}
                 </Alert>
               )}
 
               {!fetchingGuild && !fetchProgress && (
-                <Box sx={{ mb: 2 }}>
+                <div className="mb-4">
                   {hasGuildData && (
-                    <Alert severity="success" sx={{ mb: 2 }}>
-                      Guild data already exists in the database. You can skip this step or fetch fresh data.
+                    <Alert className="mb-4 border-green-500/50 bg-green-500/10 text-green-700 dark:text-green-400">
+                      <CheckCircle2 className="h-4 w-4" />
+                      <AlertTitle>Guild data already exists in the database. You can skip this step or fetch fresh data.</AlertTitle>
                     </Alert>
                   )}
-                  <Button
-                    variant="contained"
-                    onClick={fetchGuildData}
-                    disabled={loading}
-                    sx={{ mb: 2 }}
-                  >
+                  <Button onClick={fetchGuildData} disabled={loading} className="mb-4">
                     Start Guild Fetch
                   </Button>
-                  <Typography variant="body2" sx={{ color: '#888', mt: 1 }}>
+                  <p className="text-sm text-muted-foreground">
                     {hasGuildData 
                       ? 'Guild data exists. Click to fetch fresh data, or skip to proceed to admin account creation.'
                       : 'Click the button above to start fetching guild data, or skip this step to proceed to admin account creation.'}
-                  </Typography>
-                </Box>
+                  </p>
+                </div>
               )}
 
-              {/* Progress Indicator - Top */}
               {(fetchingGuild || fetchProgress) && (
-                <Box
-                  sx={{
-                    width: '100%',
-                    mb: 2,
-                  }}
-                >
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        color: '#FFFFFF',
-                        fontWeight: 600,
-                      }}
-                    >
+                <div className="w-full mb-4">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-semibold text-white">
                       {fetchProgress || 'Initializing...'}
-                    </Typography>
+                    </h3>
                     {totalMembers > 0 && (
-                      <Typography variant="body1" sx={{ color: '#FFD700', fontWeight: 600, fontSize: '1.1rem' }}>
+                      <span className="text-md font-semibold text-yellow-400">
                         {totalProcessed} / {totalMembers}
-                      </Typography>
+                      </span>
                     )}
-                  </Box>
+                  </div>
                   
                   {totalMembers > 0 && (
-                    <Box
-                      sx={{
-                        width: '100%',
-                        height: 12,
-                        background: 'rgba(255, 255, 255, 0.1)',
-                        borderRadius: 6,
-                        overflow: 'hidden',
-                        position: 'relative',
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          width: `${(totalProcessed / totalMembers) * 100}%`,
-                          height: '100%',
-                          background: 'linear-gradient(90deg, #00D4FF 0%, #FFD700 100%)',
-                          transition: 'width 0.3s ease',
-                          boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
-                        }}
+                    <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden relative">
+                      <div
+                        className="h-full bg-gradient-to-r from-cyan-400 to-yellow-400 transition-all duration-300 ease-in-out shadow-[0_0_20px_rgba(255,215,0,0.5)]"
+                        style={{ width: `${(totalProcessed / totalMembers) * 100}%` }}
                       />
-                    </Box>
+                    </div>
                   )}
-                </Box>
+                </div>
               )}
 
-              {/* Character Cards - Bottom */}
               {(fetchingGuild || newCharacters.length > 0) && (
-                <Box
-                  sx={{
-                    width: '100%',
-                  }}
-                >
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      color: '#FFFFFF',
-                      fontWeight: 600,
-                      mb: 3,
-                    }}
-                  >
+                <div className="w-full mt-4">
+                  <h3 className="text-xl font-semibold text-white mb-6">
                     Recently Processed Characters
-                  </Typography>
+                  </h3>
                   
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: 2,
-                      width: '100%',
-                      overflow: 'hidden',
-                    }}
-                  >
+                  <div className="flex gap-4 w-full overflow-hidden">
                     {newCharacters.length > 0 ? (
                       newCharacters.slice(-10).map((character, index) => (
                         <CharacterCard
@@ -1772,109 +1563,91 @@ export default function InstallPage() {
                         />
                       ))
                     ) : (
-                      <Box
-                        sx={{
-                          width: '100%',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          minHeight: 200,
-                          color: '#666',
-                        }}
-                      >
-                        <Typography variant="body1">
-                          Characters will appear here as they are processed...
-                        </Typography>
-                      </Box>
+                      <div className="w-full flex items-center justify-center min-h-[200px] text-muted-foreground">
+                        <p>Characters will appear here as they are processed...</p>
+                      </div>
                     )}
-                  </Box>
-                </Box>
+                  </div>
+                </div>
               )}
-            </Box>
-          </Box>
+            </div>
+          </div>
         )}
 
         {(!hasAdmin || isAuthenticated) && activeStep === 2 && (
           <form onSubmit={handleAdminSubmit}>
-            <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-              Create Admin Account
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            <h2 className="text-xl font-semibold mt-4 mb-2">Create Admin Account</h2>
+            <p className="text-sm text-muted-foreground mb-6">
               Create an admin account to manage the application. Password must be at least 12 characters with uppercase, lowercase, numbers, and special characters.
-            </Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Username"
+            </p>
+            
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Username <span className="text-destructive">*</span></Label>
+                <Input
                   value={adminSettings.username}
                   onChange={(e) => handleAdminSettingsChange('username', e.target.value)}
                   required
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Password"
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Password <span className="text-destructive">*</span></Label>
+                <Input
                   type="password"
                   value={adminSettings.password}
                   onChange={(e) => handleAdminSettingsChange('password', e.target.value)}
                   required
-                  error={passwordErrors.length > 0}
-                  helperText={passwordErrors.length > 0 ? passwordErrors[0] : 'Minimum 12 characters with uppercase, lowercase, numbers, and special characters'}
+                  className={passwordErrors.length > 0 ? 'border-destructive' : ''}
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Confirm Password"
+                <p className="text-xs text-muted-foreground">
+                  {passwordErrors.length > 0 ? <span className="text-destructive">{passwordErrors[0]}</span> : 'Minimum 12 characters with uppercase, lowercase, numbers, and special characters'}
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Confirm Password <span className="text-destructive">*</span></Label>
+                <Input
                   type="password"
                   value={adminSettings.confirmPassword}
                   onChange={(e) => handleAdminSettingsChange('confirmPassword', e.target.value)}
                   required
-                  error={adminSettings.password !== adminSettings.confirmPassword && adminSettings.confirmPassword.length > 0}
-                  helperText={adminSettings.password !== adminSettings.confirmPassword && adminSettings.confirmPassword.length > 0 ? 'Passwords do not match' : ''}
+                  className={adminSettings.password !== adminSettings.confirmPassword && adminSettings.confirmPassword.length > 0 ? 'border-destructive' : ''}
                 />
-              </Grid>
+                {adminSettings.password !== adminSettings.confirmPassword && adminSettings.confirmPassword.length > 0 && (
+                  <p className="text-xs text-destructive">Passwords do not match</p>
+                )}
+              </div>
+
               {passwordErrors.length > 0 && (
-                <Grid item xs={12}>
-                  <Alert severity="error">
-                    <Typography variant="body2" component="div">
-                      Password requirements not met:
-                      <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
-                        {passwordErrors.map((err, idx) => (
-                          <li key={idx}>{err}</li>
-                        ))}
-                      </ul>
-                    </Typography>
-                  </Alert>
-                </Grid>
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Password requirements not met:</AlertTitle>
+                  <AlertDescription>
+                    <ul className="list-disc pl-5 mt-2 space-y-1">
+                      {passwordErrors.map((err, idx) => (
+                        <li key={idx}>{err}</li>
+                      ))}
+                    </ul>
+                  </AlertDescription>
+                </Alert>
               )}
-              <Grid item xs={12}>
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                  <Button
-                    variant="outlined"
-                    onClick={() => setActiveStep(0)}
-                    sx={{ mr: 2 }}
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    disabled={loading}
-                    startIcon={loading ? <CircularProgress size={20} /> : null}
-                  >
-                    {loading ? 'Creating...' : 'Create Admin Account'}
-                  </Button>
-                </Box>
-              </Grid>
-            </Grid>
+              
+              <div className="flex justify-end gap-4 mt-6">
+                <Button type="button" variant="outline" onClick={() => setActiveStep(0)}>
+                  Back
+                </Button>
+                <Button type="submit" disabled={loading}>
+                  {loading && <Spinner className="mr-2" />}
+                  {loading ? 'Creating...' : 'Create Admin Account'}
+                </Button>
+              </div>
+            </div>
           </form>
         )}
-        </Paper>
-      </Container>
-    </Box>
+        
+        </div>
+      </div>
+    </div>
   );
 }
-

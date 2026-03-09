@@ -1,16 +1,22 @@
 import React, { useMemo, useState } from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TablePagination from '@mui/material/TablePagination';
-import Paper from '@mui/material/Paper';
-import Tooltip from '@mui/material/Tooltip';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { classIcons, classColors } from './constants';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import { Badge } from '@/components/ui/badge';
+import { classColors } from './constants';
 
 function normalizeName(name) {
   return name?.toLowerCase().normalize('NFKD').replace(/\u0300-\u036f/g, '') || '';
@@ -24,64 +30,32 @@ function getRoleFromSpec(spec) {
   return 'DPS';
 }
 
-function processHasWaist(missingWaist) {
-  return (
-    <Tooltip
-      title={
-        !missingWaist
-          ? 'Has "Durable Information Securing Container"'
-          : 'Missing "Durable Information Securing Container"'
-      }
-      placement="top"
-    >
-      <span>
-        {!missingWaist ? (
-          <span style={{ color: 'green' }}>⬤</span>
-        ) : (
-          <span style={{ color: 'red' }}>✕</span>
-        )}
-      </span>
-    </Tooltip>
-  );
+const ROLE_BADGE = {
+  Tank: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
+  Healer: 'bg-blue-500/15 text-blue-400 border-blue-500/20',
+  DPS: 'bg-red-500/15 text-red-400 border-red-500/20',
 }
 
-function processHasCloak(missingCloak) {
-  return (
-    <Tooltip
-      title={
-        !missingCloak ? 'Has "Reshii Wraps"' : 'Missing "Reshii Wraps"'
-      }
-      placement="top"
-    >
-      <span>
-        {!missingCloak ? (
-          <span style={{ color: 'green' }}>⬤</span>
-        ) : (
-          <span style={{ color: 'red' }}>✕</span>
-        )}
-      </span>
-    </Tooltip>
-  );
+const GOAL_BADGE = {
+  CE: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/20',
+  AOTC: 'bg-purple-500/15 text-purple-400 border-purple-500/20',
+  Social: 'bg-muted text-muted-foreground border-border',
 }
 
 const headCells = [
-  { id: 'avatar', label: '', width: 60 },
-  { id: 'name', label: 'Name & Spec', width: 240 },
-  { id: 'nextSeasonClass', label: 'Next Season Class' },
-  { id: 'primaryRole', label: 'Primary Role' },
-  { id: 'secondaryRole', label: 'Secondary Role' },
-  { id: 'itemLevel', label: 'ILvL' },
-  { id: 'guildRank', label: 'Guild Rank' },
+  { id: 'avatar', label: '', width: 56 },
+  { id: 'name', label: 'Character', width: 200 },
+  { id: 'primaryRole', label: 'Role' },
+  { id: 'secondaryRole', label: 'Off-Role' },
+  { id: 'itemLevel', label: 'iLvL' },
+  { id: 'guildRank', label: 'Rank' },
   { id: 'mplus', label: 'M+ Score' },
-  { id: 'pvp', label: 'PvP Rating' },
-  { id: 'seasonGoal', label: 'Season Goal' },
-  { id: 'wantToPushKeys', label: 'Push Keys' },
-  { id: 'hasWaist', label: 'Waist' },
-  { id: 'hasCloak', label: 'Cloak' },
+  { id: 'pvp', label: 'PvP' },
+  { id: 'seasonGoal', label: 'Goal' },
+  { id: 'wantToPushKeys', label: 'Keys' },
 ];
 
 const SeasonsRosterTable = ({ signups, guildData, title, description }) => {
-  // Merge signup with guildData
   const rows = useMemo(() => {
     if (!signups) return [];
     return signups.map((entry) => {
@@ -89,104 +63,159 @@ const SeasonsRosterTable = ({ signups, guildData, title, description }) => {
       const guildChar = guildData?.find(
         (c) => normalizeName(c.name) === normalized
       );
+      const charName = entry.seasonCharacterName || entry.season3CharacterName || entry.currentCharacterName || '';
+      const capitalizedName = charName.charAt(0).toUpperCase() + charName.slice(1).toLowerCase();
+      const primaryRole = getRoleFromSpec(entry.mainSpec);
+      const secondaryRole = entry.offSpec ? getRoleFromSpec(entry.offSpec) : null;
+      const goal = entry.seasonGoal || entry.season3Goal;
+
       return {
         avatar: guildChar?.media?.assets?.[0]?.value || null,
-        name: (
-          <Box>
-            <Typography
-              variant="body1"
-              sx={{
-                color: classColors[entry.characterClass] || '#fff',
-                fontWeight: 600,
-                textTransform: 'capitalize',
-              }}
-            >
-              {(entry.seasonCharacterName || entry.season3CharacterName) || entry.currentCharacterName}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {entry.mainSpec} {entry.characterClass}
-            </Typography>
-          </Box>
-        ),
-        nextSeasonClass: entry.characterClass,
-        primaryRole: getRoleFromSpec(entry.mainSpec),
-        secondaryRole: entry.offSpec ? getRoleFromSpec(entry.offSpec) : '-',
-        itemLevel: guildChar?.itemLevel || '-',
-        guildRank: guildChar?.guildRank || '-',
-        mplus: guildChar?.mplus || '-',
-        pvp: guildChar?.pvp || '-',
-        seasonGoal: entry.seasonGoal || entry.season3Goal || '-',
-        wantToPushKeys: entry.wantToPushKeys ? 'Yes' : 'No',
-        hasWaist: processHasWaist(guildChar?.missingWaist),
-        hasCloak: processHasCloak(guildChar?.missingCloak),
+        charName: capitalizedName,
+        characterClass: entry.characterClass,
+        mainSpec: entry.mainSpec,
+        primaryRole,
+        secondaryRole,
+        itemLevel: guildChar?.itemLevel || null,
+        guildRank: guildChar?.guildRank ?? null,
+        mplus: guildChar?.mplus || null,
+        pvp: guildChar?.pvp || null,
+        seasonGoal: goal || null,
+        wantToPushKeys: entry.wantToPushKeys,
       };
     });
   }, [signups, guildData]);
 
-  // Pagination
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(20);
-  const handleChangePage = (event, newPage) => setPage(newPage);
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  const rowsPerPage = 20;
+  const totalPages = Math.ceil(rows.length / rowsPerPage);
 
   return (
-    <Box>
-      <Typography variant="h2" sx={{ fontSize: '1.5rem', my: 2 }}>{title}</Typography>
-      <Typography variant="p" sx={{ mb: 1, pb: 1, display: 'block' }}>{description}</Typography>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <TableContainer>
-          <Table sx={{ minWidth: 750 }}>
-            <TableHead>
-              <TableRow>
+    <div className="space-y-4">
+      {title && (
+        <div>
+          <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
+          {description && <p className="text-sm text-muted-foreground mt-1">{description}</p>}
+        </div>
+      )}
+
+      <div className="rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="border-b border-border hover:bg-transparent">
                 {headCells.map((cell) => (
-                  <TableCell key={cell.id} sx={{ width: cell.width }}>{cell.label}</TableCell>
+                  <TableHead
+                    key={cell.id}
+                    style={{ width: cell.width }}
+                    className="text-muted-foreground font-medium text-xs uppercase tracking-wider py-3"
+                  >
+                    {cell.label}
+                  </TableHead>
                 ))}
               </TableRow>
-            </TableHead>
+            </TableHeader>
             <TableBody>
               {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, idx) => (
-                <TableRow key={idx}>
-                  <TableCell>
+                <TableRow key={idx} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+                  <TableCell className="py-3">
                     {row.avatar ? (
-                      <img src={row.avatar} alt="avatar" width={48} height={48} style={{ borderRadius: 8 }} />
+                      <img src={row.avatar} alt={row.charName} width={40} height={40} className="rounded-full object-cover border border-border/50" />
                     ) : (
-                      <Box sx={{ width: 48, height: 48, borderRadius: 8, bgcolor: '#222', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Typography variant="caption" color="text.secondary">?</Typography>
-                      </Box>
+                      <div className="w-10 h-10 rounded-full bg-muted border border-border/50 flex items-center justify-center">
+                        <span className="text-xs text-muted-foreground font-medium">{row.charName.charAt(0)}</span>
+                      </div>
                     )}
                   </TableCell>
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell>{row.nextSeasonClass}</TableCell>
-                  <TableCell>{row.primaryRole}</TableCell>
-                  <TableCell>{row.secondaryRole}</TableCell>
-                  <TableCell>{row.itemLevel}</TableCell>
-                  <TableCell>{row.guildRank}</TableCell>
-                  <TableCell>{row.mplus}</TableCell>
-                  <TableCell>{row.pvp}</TableCell>
-                  <TableCell>{row.seasonGoal}</TableCell>
-                  <TableCell>{row.wantToPushKeys}</TableCell>
-                  <TableCell>{row.hasWaist}</TableCell>
-                  <TableCell>{row.hasCloak}</TableCell>
+                  <TableCell className="py-3">
+                    <div
+                      className="font-bold text-sm"
+                      style={{ color: classColors[row.characterClass] || 'currentColor' }}
+                    >
+                      {row.charName}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-0.5">
+                      {row.mainSpec} {row.characterClass}
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-3">
+                    <Badge variant="outline" className={`text-xs border ${ROLE_BADGE[row.primaryRole] || ''}`}>
+                      {row.primaryRole}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="py-3">
+                    {row.secondaryRole ? (
+                      <Badge variant="outline" className={`text-xs border ${ROLE_BADGE[row.secondaryRole] || ''}`}>
+                        {row.secondaryRole}
+                      </Badge>
+                    ) : <span className="text-muted-foreground text-xs">—</span>}
+                  </TableCell>
+                  <TableCell className="py-3 text-sm font-medium text-muted-foreground">
+                    {row.itemLevel || '—'}
+                  </TableCell>
+                  <TableCell className="py-3 text-sm text-muted-foreground">
+                    {row.guildRank !== null ? row.guildRank : '—'}
+                  </TableCell>
+                  <TableCell className="py-3 text-sm font-semibold text-muted-foreground">
+                    {row.mplus || '—'}
+                  </TableCell>
+                  <TableCell className="py-3 text-sm font-semibold text-muted-foreground">
+                    {row.pvp || '—'}
+                  </TableCell>
+                  <TableCell className="py-3">
+                    {row.seasonGoal ? (
+                      <Badge variant="outline" className={`text-xs border ${GOAL_BADGE[row.seasonGoal] || ''}`}>
+                        {row.seasonGoal}
+                      </Badge>
+                    ) : <span className="text-muted-foreground text-xs">—</span>}
+                  </TableCell>
+                  <TableCell className="py-3">
+                    <span className={`text-xs font-medium ${row.wantToPushKeys ? 'text-emerald-400' : 'text-muted-foreground'}`}>
+                      {row.wantToPushKeys ? 'Yes' : 'No'}
+                    </span>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 20, 50]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </Box>
+        </div>
+
+        {totalPages > 1 && (
+          <div className="border-t border-border/50 py-3 px-4">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => setPage(p => Math.max(0, p - 1))}
+                    disabled={page === 0}
+                    className={page === 0 ? 'pointer-events-none opacity-40' : 'cursor-pointer'}
+                  />
+                </PaginationItem>
+                {[...Array(Math.min(totalPages, 7))].map((_, i) => (
+                  <PaginationItem key={i}>
+                    <PaginationLink
+                      onClick={() => setPage(i)}
+                      isActive={page === i}
+                      className="cursor-pointer"
+                    >
+                      {i + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+                    disabled={page === totalPages - 1}
+                    className={page === totalPages - 1 ? 'pointer-events-none opacity-40' : 'cursor-pointer'}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
-export default SeasonsRosterTable; 
+export default SeasonsRosterTable;

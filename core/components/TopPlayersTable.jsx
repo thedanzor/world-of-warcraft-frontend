@@ -1,11 +1,5 @@
 import React from 'react'
-import Paper from '@mui/material/Paper'
-import Typography from '@mui/material/Typography'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableRow from '@mui/material/TableRow'
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import config from '@/app.config.js'
 import getRatingColor from '@/core/utils/getRatingColor'
 import Link from 'next/link'
@@ -35,23 +29,30 @@ const TopPlayersTable = ({ data, title, scoreKey }) => {
     }
 
     return (
-        <Paper className="top-players-table">
-            <Typography variant="h6" className="top-players-table-title">
-                {title}
-            </Typography>
-            <TableContainer>
+        <div className="top-players-table bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+            <div className="px-5 py-4 border-b border-border bg-muted/20">
+                <h6 className="top-players-table-title text-sm font-semibold tracking-tight">
+                    {title}
+                </h6>
+            </div>
+            <div className="overflow-x-auto">
                 <Table>
                     <TableBody>
-                        {data.slice(0, 5).map((player, index) => (
-                            <TableRow key={index} className="top-players-table-row">
-                                <TableCell sx={{ width: 60 }}>
-                                    <div className="mediaWrapper">
+                        {data.slice(0, 5).map((player, index) => {
+                            const sanitizedClass = player.class ? player.class.toLowerCase().replace(/\s+/g, '') : ''
+                            const capitalizedName = player.name ? player.name.charAt(0).toUpperCase() + player.name.slice(1).toLowerCase() : ''
+                            
+                            return (
+                            <TableRow key={index} className="hover:bg-muted/30 border-border transition-colors">
+                                <TableCell style={{ width: 60 }} className="p-3">
+                                    <div className="mediaWrapper flex justify-center items-center">
                                         {player?.media?.assets?.length ? (
                                             <img
                                                 src={player?.media?.assets[0]?.value}
                                                 alt={player.name}
                                                 width={40}
                                                 height={40}
+                                                className="rounded-full border border-border object-cover"
                                             />
                                         ) : (
                                             <img
@@ -60,37 +61,33 @@ const TopPlayersTable = ({ data, title, scoreKey }) => {
                                                 alt={player.name}
                                                 width={40}
                                                 height={40}
+                                                className="rounded-full border border-border object-cover"
                                             />
                                         )}
                                     </div>
                                 </TableCell>
-                                <TableCell sx={{ width: 240 }}>
-                                    <Link href={`/member/${player.server}/${player.name}`} style={{ textDecoration: 'none' }}>
+                                <TableCell style={{ width: 240 }} className="p-3">
+                                    <Link href={`/member/${player.server}/${player.name}`} className="block group no-underline">
                                         <div
-                                            className={`name ${player.class}`}
-                                            style={{ cursor: 'pointer' }}
+                                            className="cursor-pointer"
                                         >
                                             <span
-                                                style={{
-                                                    textTransform: 'capitalize',
-                                                    color: '#FFFFFF',
-                                                    fontWeight: '600',
-                                                    '&:hover': { color: '#FFD700' }
-                                                }}
+                                                className={`font-bold transition-opacity group-hover:opacity-80 text-${sanitizedClass}`}
                                             >
-                                                {player.name}
+                                                {capitalizedName}
                                             </span>
                                         </div>
-                                        <div className="classandspec">
+                                        <div className="classandspec text-xs font-medium text-muted-foreground mt-0.5">
                                             {player.spec} {player.class}
                                         </div>
                                     </Link>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell className="text-muted-foreground p-3">
                                     {config.GUILLD_RANKS[player.guildRank] || player.guildRank || '-'}
                                 </TableCell>
-                                <TableCell>
+                                <TableCell className="p-3">
                                     <span
+                                        className="font-bold text-md"
                                         style={{
                                             color: getRatingColor(
                                                 getValue(player),
@@ -102,12 +99,12 @@ const TopPlayersTable = ({ data, title, scoreKey }) => {
                                     </span>
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        )})}
                     </TableBody>
                 </Table>
-            </TableContainer>
-        </Paper>
+            </div>
+        </div>
     )
 }
 
-export default TopPlayersTable 
+export default TopPlayersTable

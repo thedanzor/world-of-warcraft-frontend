@@ -1,14 +1,13 @@
 'use client'
 
 import React from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import FirstPageIcon from '@mui/icons-material/FirstPage';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import LastPageIcon from '@mui/icons-material/LastPage';
+import { Button } from '@/components/ui/button';
+import {
+  ChevronsLeft as FirstPageIcon,
+  ChevronLeft as KeyboardArrowLeftIcon,
+  ChevronRight as KeyboardArrowRightIcon,
+  ChevronsRight as LastPageIcon
+} from 'lucide-react';
 
 const Pagination = ({ 
   currentPage, 
@@ -31,39 +30,31 @@ const Pagination = ({
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        p: 2,
-        borderTop: 1,
-        borderColor: 'divider',
-        bgcolor: 'background.paper'
-      }}
-    >
-      <Typography variant="body2" color="text.secondary">
+    <div className="flex items-center justify-between p-4 border-t bg-background">
+      <div className="text-sm text-muted-foreground">
         Showing {startItem} to {endItem} of {totalItems} results
-      </Typography>
+      </div>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <IconButton
+      <div className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onFirstPage}
           disabled={!hasPreviousPage}
-          size="small"
         >
-          <FirstPageIcon />
-        </IconButton>
+          <FirstPageIcon className="h-4 w-4" />
+        </Button>
         
-        <IconButton
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onPreviousPage}
           disabled={!hasPreviousPage}
-          size="small"
         >
-          <KeyboardArrowLeftIcon />
-        </IconButton>
+          <KeyboardArrowLeftIcon className="h-4 w-4" />
+        </Button>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+        <div className="flex items-center gap-1">
           {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
             let pageNum;
             
@@ -80,35 +71,37 @@ const Pagination = ({
             return (
               <Button
                 key={pageNum}
-                variant={currentPage === pageNum ? 'contained' : 'outlined'}
-                size="small"
+                variant={currentPage === pageNum ? 'default' : 'outline'}
+                size="sm"
                 onClick={() => onPageChange(pageNum)}
-                sx={{ minWidth: 40 }}
+                className="min-w-[40px]"
               >
                 {pageNum}
               </Button>
             );
           })}
-        </Box>
+        </div>
 
-        <IconButton
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onNextPage}
           disabled={!hasNextPage}
-          size="small"
         >
-          <KeyboardArrowRightIcon />
-        </IconButton>
+          <KeyboardArrowRightIcon className="h-4 w-4" />
+        </Button>
         
-        <IconButton
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onLastPage}
           disabled={!hasNextPage}
-          size="small"
         >
-          <LastPageIcon />
-        </IconButton>
-      </Box>
-    </Box>
+          <LastPageIcon className="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
   );
 };
 
-export default Pagination; 
+export default Pagination;

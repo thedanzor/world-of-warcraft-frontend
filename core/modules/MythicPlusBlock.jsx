@@ -1,18 +1,7 @@
 import { useState, useEffect } from 'react'
 import { P } from '@/core/components/typography'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import TableSortLabel from '@mui/material/TableSortLabel'
-import TablePagination from '@mui/material/TablePagination'
-import Paper from '@mui/material/Paper'
-import Box from '@mui/material/Box'
-import { visuallyHidden } from '@mui/utils'
-import Badge from '@mui/material/Badge'
-import Tooltip from '@mui/material/Tooltip'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import Link from 'next/link'
 
 import config from '@/app.config.js'
@@ -180,208 +169,183 @@ const MythicPlusBlock = ({ data, name, hideControls }) => {
         .sort(getComparator(order, orderBy))
 
     return (
-        <Paper sx={{ 
-            width: '100%', 
-            mb: 2,
-            backgroundColor: 'rgba(17, 17, 17, 0.8)',
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
-        }}>
-            <TableContainer sx={{ 
-                '& .MuiTable-root': {
-                    backgroundColor: '#101a29',
-                    '& .MuiTableHead-root .MuiTableRow-root .MuiTableCell-root': {
-                        backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                        color: '#FFFFFF',
-                        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-                        fontWeight: '600',
-                        fontSize: '0.875rem',
-                        letterSpacing: '-0.025em'
-                    },
-                    '& .MuiTableBody-root .MuiTableRow-root': {
-                        '&:hover': {
-                            backgroundColor: 'rgba(255, 255, 255, 0.02)'
-                        },
-                        '& .MuiTableCell-root': {
-                            color: '#B0C4DE',
-                            borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
-                        }
-                    }
-                }
-            }}>
-                <Table sx={{ 
-                    minWidth: 750,
-                    '& .MuiTableCell-root': {
-                        padding: { xs: 1, sm: 2 },
-                        fontSize: { xs: '0.75rem', sm: '0.875rem' }
-                    }
-                }} aria-labelledby="tableTitle">
-                    <TableHead>
-                        <TableRow>
-                            {headCells.map((headCell) => (
-                                <TableCell
-                                    key={headCell.id}
-                                    sortDirection={
-                                        orderBy === headCell.id ? order : false
-                                    }
-                                    sx={{ width: headCell.width }}
-                                >
-                                    {headCell.sortable ? (
-                                        <TableSortLabel
-                                            active={orderBy === headCell.id}
-                                            direction={
-                                                orderBy === headCell.id ? order : 'asc'
-                                            }
-                                            onClick={(event) => handleRequestSort(event, headCell.id)}
-                                        >
-                                            {headCell.label}
-                                            {orderBy === headCell.id ? (
-                                                <Box
-                                                    component="span"
-                                                    sx={visuallyHidden}
-                                                >
-                                                    {order === 'desc'
-                                                        ? 'sorted descending'
-                                                        : 'sorted ascending'}
-                                                </Box>
-                                            ) : null}
-                                        </TableSortLabel>
-                                    ) : (
-                                        <Tooltip title={headCell.label} placement="top">
-                                            <span style={{ fontSize: '0.8rem' }}>
-                                                {headCell.label.length > 15 
-                                                    ? headCell.label.substring(0, 15) + '...'
-                                                    : headCell.label
-                                                }
+        <div className="w-full mb-4 bg-card border border-border shadow-sm rounded-xl overflow-hidden">
+            <TooltipProvider>
+                <div className="overflow-x-auto bg-card/50">
+                    <Table className="min-w-[750px]">
+                        <TableHeader>
+                            <TableRow className="border-b border-border hover:bg-transparent">
+                                {headCells.map((headCell) => (
+                                    <TableHead
+                                        key={headCell.id}
+                                        style={{ width: headCell.width }}
+                                        className="text-muted-foreground font-medium text-sm py-3 px-2 sm:px-4"
+                                    >
+                                        {headCell.sortable ? (
+                                            <div
+                                                className="flex items-center cursor-pointer select-none"
+                                                onClick={(event) => handleRequestSort(event, headCell.id)}
+                                            >
+                                                {headCell.label}
+                                                {orderBy === headCell.id ? (
+                                                    <span className="ml-1 text-xs">
+                                                        {order === 'desc' ? '▼' : '▲'}
+                                                    </span>
+                                                ) : null}
+                                            </div>
+                                        ) : (
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <span className="text-xs cursor-help">
+                                                        {headCell.label.length > 15 
+                                                            ? headCell.label.substring(0, 15) + '...'
+                                                            : headCell.label
+                                                        }
+                                                    </span>
+                                                </TooltipTrigger>
+                                                <TooltipContent side="top">
+                                                    <p>{headCell.label}</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        )}
+                                    </TableHead>
+                                ))}
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {sortedData
+                                .slice(
+                                    page * rowsPerPage,
+                                    page * rowsPerPage + rowsPerPage
+                                )
+                                .map((character, index) => (
+                                    <TableRow key={index} className="hover:bg-muted/30 border-b border-border transition-colors">
+                                        <TableCell style={{ width: 120 }} className="p-2 sm:p-4 text-muted-foreground">
+                                            <div className="mediaWrapper flex justify-center items-center">
+                                                {character?.media?.assets?.length ? (
+                                                    <img
+                                                        src={character?.media?.assets[0]?.value}
+                                                        alt={capitalizeCharacterName(character.name)}
+                                                        width={48}
+                                                        height={48}
+                                                        className="rounded-full border border-border shadow-sm object-cover"
+                                                    />
+                                                ) : (
+                                                    <img
+                                                        className="opacity-40 rounded-full border border-border shadow-sm object-cover"
+                                                        src={'/images/logo-without-text.png'}
+                                                        alt={capitalizeCharacterName(character.name)}
+                                                        width={48}
+                                                        height={48}
+                                                    />
+                                                )}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell style={{ width: 200 }} className="p-2 sm:p-4 text-muted-foreground">
+                                            <Link href={`/member/${character.server}/${character.name}`} className="no-underline block group">
+                                                <div className="cursor-pointer">
+                                                    <P className={`font-bold transition-opacity group-hover:opacity-80 text-${character.class?.toLowerCase().replace(/\s+/g, '')}`}>
+                                                        {capitalizeCharacterName(character.name)}
+                                                    </P>
+                                                </div>
+                                                <div className="classandspec mt-0.5">
+                                                    <P className="spec text-xs text-muted-foreground font-medium">
+                                                        {character.metaData?.spec || character.spec} {character.class}
+                                                    </P>
+                                                </div>
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell style={{ width: 120 }} className="p-2 sm:p-4 text-muted-foreground">
+                                            <span style={{ 
+                                                color: getScoreColor(getTotalScore(character), character.raw_mplus?.current_mythic_rating?.color),
+                                                fontWeight: '700',
+                                                fontSize: '1.125rem'
+                                            }}>
+                                                {Math.round(getTotalScore(character))}
                                             </span>
-                                        </Tooltip>
-                                    )}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {sortedData
-                            .slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage
-                            )
-                            .map((character, index) => (
-                                <TableRow key={index}>
-                                    <TableCell sx={{ width: 120 }}>
-                                        <div className="mediaWrapper" style={{ 
-                                            display: 'flex', 
-                                            justifyContent: 'center',
-                                            alignItems: 'center'
-                                        }}>
-                                            {character?.media?.assets?.length ? (
-                                                                                            <img
-                                                src={character?.media?.assets[0]?.value}
-                                                alt={capitalizeCharacterName(character.name)}
-                                                width={60}
-                                                height={60}
-                                                style={{
-                                                    borderRadius: '8px',
-                                                    border: '1px solid rgba(255, 255, 255, 0.08)',
-                                                    boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
-                                                }}
-                                            />
-                                            ) : (
-                                                <img
-                                                    style={{ 
-                                                        opacity: '0.4',
-                                                        borderRadius: '8px',
-                                                        border: '1px solid rgba(255, 255, 255, 0.08)',
-                                                        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
-                                                    }}
-                                                    src={'/images/logo-without-text.png'}
-                                                    alt={capitalizeCharacterName(character.name)}
-                                                    width={60}
-                                                    height={60}
-                                                />
-                                            )}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell sx={{ width: 200 }}>
-                                        <Link href={`/member/${character.server}/${character.name}`} style={{ textDecoration: 'none' }}>
-                                            <div className={`name ${character.class}`} style={{ cursor: 'pointer' }}>
-                                                <P sx={{ 
-                                                    color: '#FFFFFF', 
-                                                    fontWeight: '600',
-                                                    '&:hover': { color: '#FFD700' }
-                                                }}>
-                                                    {capitalizeCharacterName(character.name)}
-                                                </P>
-                                            </div>
-                                            <div className="classandspec">
-                                                <P className="spec" sx={{ color: '#B0C4DE' }}>
-                                                    {character.metaData?.spec || character.spec} {character.class}
-                                                </P>
-                                            </div>
-                                        </Link>
-                                    </TableCell>
-                                                                         <TableCell sx={{ width: 120 }}>
-                                         <span style={{ 
-                                             color: getScoreColor(getTotalScore(character), character.raw_mplus?.current_mythic_rating?.color),
-                                             fontWeight: '700',
-                                             fontSize: '1.125rem'
-                                         }}>
-                                             {Math.round(getTotalScore(character))}
-                                         </span>
-                                     </TableCell>
-                                    {dungeonIds.map(dungeonId => (
-                                        <TableCell key={dungeonId} sx={{ width: 120 }}>
-                                            {(() => {
-                                                const dungeonScoreData = getDungeonScore(character, dungeonId)
-                                                if (!dungeonScoreData) {
+                                        </TableCell>
+                                        {dungeonIds.map(dungeonId => (
+                                            <TableCell key={dungeonId} style={{ width: 120 }} className="p-2 sm:p-4 text-muted-foreground">
+                                                {(() => {
+                                                    const dungeonScoreData = getDungeonScore(character, dungeonId)
+                                                    if (!dungeonScoreData) {
+                                                        return (
+                                                            <Tooltip>
+                                                                <TooltipTrigger asChild>
+                                                                    <span className="text-muted-foreground/50 cursor-help">-</span>
+                                                                </TooltipTrigger>
+                                                                <TooltipContent side="top">
+                                                                    <p>No data available</p>
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        )
+                                                    }
                                                     return (
-                                                        <Tooltip title="No data available" placement="top">
-                                                            <span style={{ color: '#B0C4DE' }}>-</span>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <span className="font-bold cursor-help" style={{ 
+                                                                    color: getScoreColor(dungeonScoreData.rating, dungeonScoreData.color)
+                                                                }}>
+                                                                    {Math.round(dungeonScoreData.rating)}
+                                                                </span>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent side="top">
+                                                                <div className="whitespace-pre-line">
+                                                                    {`${getDungeonDisplayName(dungeonId, dungeonData[dungeonId])}\n`}
+                                                                    {`Rating: ${Math.round(dungeonScoreData.rating)}\n`}
+                                                                    {`Level: ${dungeonScoreData.keystoneLevel}\n`}
+                                                                    {`Timed: ${dungeonScoreData.isCompletedWithinTime ? 'Yes' : 'No'}`}
+                                                                </div>
+                                                            </TooltipContent>
                                                         </Tooltip>
                                                     )
-                                                }
-                                                return (
-                                                    <Tooltip 
-                                                        title={
-                                                            <div style={{ whiteSpace: 'pre-line' }}>
-                                                                {`${getDungeonDisplayName(dungeonId, dungeonData[dungeonId])}\n`}
-                                                                {`Rating: ${Math.round(dungeonScoreData.rating)}\n`}
-                                                                {`Level: ${dungeonScoreData.keystoneLevel}\n`}
-                                                                {`Timed: ${dungeonScoreData.isCompletedWithinTime ? 'Yes' : 'No'}`}
-                                                            </div>
-                                                        } 
-                                                        placement="top"
-                                                    >
-                                                        <span style={{ 
-                                                            color: getScoreColor(dungeonScoreData.rating, dungeonScoreData.color),
-                                                            fontWeight: '700'
-                                                        }}>
-                                                            {Math.round(dungeonScoreData.rating)}
-                                                        </span>
-                                                    </Tooltip>
-                                                )
-                                            })()}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                                                })()}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))}
+                        </TableBody>
+                    </Table>
+                </div>
+            </TooltipProvider>
             {!hideControls && (
-                <TablePagination
-                    rowsPerPageOptions={[20, 50, 80, 100]}
-                    component="div"
-                    count={sortedData.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
+                <div className="flex items-center justify-end px-4 py-3 border-t border-border bg-card/50">
+                    <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-2">
+                            <span className="text-sm text-muted-foreground">Rows per page:</span>
+                            <select 
+                                className="h-8 w-[70px] rounded-md border border-input bg-background px-2 py-1 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                                value={rowsPerPage} 
+                                onChange={handleChangeRowsPerPage}
+                            >
+                                {[20, 50, 80, 100].map(size => (
+                                    <option key={size} value={size}>{size}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                            <span>{sortedData.length === 0 ? 0 : page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, sortedData.length)} of {sortedData.length}</span>
+                            <div className="flex space-x-1">
+                                <button 
+                                    onClick={(e) => handleChangePage(e, page - 1)} 
+                                    disabled={page === 0}
+                                    className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                >
+                                    Prev
+                                </button>
+                                <button 
+                                    onClick={(e) => handleChangePage(e, page + 1)} 
+                                    disabled={page >= Math.ceil(sortedData.length / rowsPerPage) - 1 || sortedData.length === 0}
+                                    className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             )}
-        </Paper>
+        </div>
     )
 }
 

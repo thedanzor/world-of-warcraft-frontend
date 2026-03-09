@@ -1,16 +1,15 @@
 import React from 'react'
-import Typography from '@mui/material/Typography'
 import AuditBlock from '@/core/modules/rosterBlock'
 
 const RosterTable = ({ data, title, description, headCells }) => (
     <>
-        <Typography variant="h2" sx={{ fontSize: '1.5rem', my: 2 }}>
+        <h2 className="text-2xl font-semibold my-4">
             {title}
-        </Typography>
+        </h2>
         <div>
-            <Typography variant="p" sx={{ mb: 1, pb: 1, display: 'block' }}>
+            <p className="mb-2 pb-2 block">
                 {description}
-            </Typography>
+            </p>
         </div>
         <AuditBlock
             data={{ all: data }}
@@ -20,4 +19,4 @@ const RosterTable = ({ data, title, description, headCells }) => (
     </>
 )
 
-export default RosterTable 
+export default RosterTable

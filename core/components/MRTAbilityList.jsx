@@ -1,44 +1,37 @@
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import AutoComplete from './MRTAutoComplete';
+import { useState } from 'react';
+import { AutoComplete } from './MRTAutoComplete';
 
 const MRTAbilityList = ({ bossTimerData, setbossTimerData, hoveredIndex, setHoveredIndex, finalOptions }) => {
   return (
-    <Box className="mrt-ability-list" sx={{ width: '100%' }}>
-      <Box className="mrt-ability-list-header" sx={{ display: 'flex', width: '100%', fontWeight: 700, mb: 1 }}>
-        <Box sx={{ width: 100, flexShrink: 0, p: 1 }}>Time</Box>
-        <Box sx={{ flex: 1, p: 1 }}>Ability</Box>
-        <Box sx={{ flex: 2, p: 1 }}>Assigned Players</Box>
-      </Box>
+    <div className="mrt-ability-list w-full">
+      <div className="mrt-ability-list-header flex w-full font-bold mb-2">
+        <div className="w-[100px] shrink-0 p-2">Time</div>
+        <div className="flex-1 p-2">Ability</div>
+        <div className="flex-[2] p-2">Assigned Players</div>
+      </div>
       {Array.isArray(bossTimerData) ? bossTimerData.map((item, index) => {
         if (item.isBreak) {
-          return <Divider key={index} sx={{ my: 1 }} />;
+          return <div key={index} className="h-px bg-border my-2" />;
         }
         if (!item.ability) return null;
         return (
-          <Box
+          <div
             key={index}
-            className={`mrt-ability-list-row${item.isEnrage ? ' mrt-is-enrage' : ''}${item.needsCD ? ' mrt-needs-cd' : ''}`}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              width: '100%',
-              background: hoveredIndex === index ? 'rgba(255,255,255,0.04)' : undefined,
-              transition: 'background 0.2s',
-              py: 1,
-              borderBottom: '1px solid #23243a',
-            }}
+            className={`mrt-ability-list-row flex items-center w-full py-2 border-b border-[#23243a] transition-colors ${
+              hoveredIndex === index ? 'bg-white/5' : ''
+            } ${item.isEnrage ? 'mrt-is-enrage' : ''} ${item.needsCD ? 'mrt-needs-cd' : ''}`}
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}
           >
-            <Box sx={{ width: 100, flexShrink: 0, p: 1, fontWeight: 500 }}>{item.time || ''}</Box>
-            <Box sx={{ flex: 1, p: 1, fontWeight: item.isEnrage ? 700 : 400, color: item.isEnrage ? '#f44336' : undefined }}>{item.ability}</Box>
-            <Box sx={{ flex: 2, p: 1 }}>
+            <div className="w-[100px] shrink-0 p-2 font-medium">{item.time || ''}</div>
+            <div className={`flex-1 p-2 ${item.isEnrage ? 'font-bold text-red-500' : 'font-normal'}`}>
+              {item.ability}
+            </div>
+            <div className="flex-[2] p-2">
               <AutoComplete
                 placeholder="Assign players"
                 value={item.primary || []}
-                onChange={(e, value) => {
+                onChange={(value) => {
                   setbossTimerData((oldState) => {
                     const newState = [...oldState];
                     newState[index].primary = value;
@@ -47,13 +40,13 @@ const MRTAbilityList = ({ bossTimerData, setbossTimerData, hoveredIndex, setHove
                 }}
                 finalOptions={finalOptions}
               />
-            </Box>
-          </Box>
+            </div>
+          </div>
         );
       }) : (
-        <Typography>No timer data available</Typography>
+        <p>No timer data available</p>
       )}
-    </Box>
+    </div>
   );
 };
 

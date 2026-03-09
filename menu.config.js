@@ -9,11 +9,6 @@ const data = {
                     "icon": "DashboardIcon"
                 },
                 {
-                    "label": "Recruitment",
-                    "path": "/join",
-                    "icon": "HowToRegIcon"
-                },
-                {
                     "label": "Audit",
                     "path": "/audit",
                     "icon": "AssessmentIcon"

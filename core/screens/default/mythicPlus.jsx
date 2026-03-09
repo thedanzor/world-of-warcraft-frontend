@@ -52,8 +52,10 @@
 // React
 import React, { useState, useEffect } from 'react'
 
-// Material-UI components
-import { Typography, Box, Alert, CircularProgress, Tabs, Tab, Paper } from '@mui/material'
+// Shadcn components
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Spinner } from '@/components/ui/spinner'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 
 // Internal components
 import MythicPlusBlock from '@/core/modules/MythicPlusBlock'
@@ -61,8 +63,6 @@ import SeasonalLeaderboard from '@/core/modules/SeasonalLeaderboard'
 import SeasonalStatistics from '@/core/modules/SeasonalStatistics'
 
 // Styles
-import '@/core/screens/default/scss/mplus.scss'
-import '@/core/screens/default/scss/guildAudit.scss'
 
 /**
  * MPlus - Mythic+ dungeon leaderboard and statistics display
@@ -72,27 +72,27 @@ import '@/core/screens/default/scss/guildAudit.scss'
 const MPlus = ({ auditable, guildData, seasonalData }) => {
     const [activeTab, setActiveTab] = useState(0)
 
-    const handleTabChange = (event, newValue) => {
-        setActiveTab(newValue)
+    const handleTabChange = (newValue) => {
+        setActiveTab(parseInt(newValue))
     }
 
     // Handle loading and error states
     if (!guildData) {
         return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-                <CircularProgress />
-            </Box>
+            <div className="flex justify-center items-center h-[50vh]">
+                <Spinner />
+            </div>
         )
     }
 
     if (guildData.error) {
         return (
-            <Box sx={{ p: 3 }}>
-                <Alert severity="error">
-                    <Typography variant="h6">Failed to load guild data</Typography>
-                    <Typography variant="body2">{guildData.error}</Typography>
+            <div className="p-6">
+                <Alert variant="destructive">
+                    <AlertTitle className="text-md">Failed to load guild data</AlertTitle>
+                    <AlertDescription className="text-sm">{guildData.error}</AlertDescription>
                 </Alert>
-            </Box>
+            </div>
         )
     }
 
@@ -108,9 +108,9 @@ const MPlus = ({ auditable, guildData, seasonalData }) => {
             case 1: // Leaderboard
                 if (seasonalData?.errors?.players) {
                     return (
-                        <Alert severity="error">
-                            <Typography variant="h6">Failed to load leaderboard</Typography>
-                            <Typography variant="body2">{seasonalData.errors.players}</Typography>
+                        <Alert variant="destructive">
+                            <AlertTitle className="text-md">Failed to load leaderboard</AlertTitle>
+                            <AlertDescription className="text-sm">{seasonalData.errors.players}</AlertDescription>
                         </Alert>
                     )
                 }
@@ -124,9 +124,9 @@ const MPlus = ({ auditable, guildData, seasonalData }) => {
             case 2: // Statistics
                 if (seasonalData?.errors?.stats) {
                     return (
-                        <Alert severity="error">
-                            <Typography variant="h6">Failed to load statistics</Typography>
-                            <Typography variant="body2">{seasonalData.errors.stats}</Typography>
+                        <Alert variant="destructive">
+                            <AlertTitle className="text-md">Failed to load statistics</AlertTitle>
+                            <AlertDescription className="text-sm">{seasonalData.errors.stats}</AlertDescription>
                         </Alert>
                     )
                 }
@@ -141,83 +141,32 @@ const MPlus = ({ auditable, guildData, seasonalData }) => {
         }
     }
 
-    //
-    // Render
     return (
-        <section className="guildAudit">
-            <>
-                <div className={`bodyContent sidebarclosed`}>
-                    <div className="mainContent">
-                        <div
-                            className="logoHolder"
-                            style={{ marginTop: '40px', padding: '0 16px' }}
-                        >
-                            <Typography
-                                variant="h2"
-                                component="h2"
-                                sx={{
-                                    textTransform: 'capitalize !important',
-                                    textAlign: 'left',
-                                }}
-                            >
-                                Mythic+
-                            </Typography>
-                            <Typography
-                                variant="p"
-                                component="p"
-                                color="text.secondary"
-                                sx={{
-                                    mb: 4,
-                                    textAlign: 'left',
-                                }}
-                            >
-                                {activeTab === 0 
-                                    ? "This information is based on each weekly reset."
-                                    : "Seasonal statistics and leaderboards for current Mythic+ season."
-                                }
-                            </Typography>
-                        </div>
-                        
-                        {/* Tabs */}
-                        <Paper sx={{ 
-                            mb: 3,
-                            backgroundColor: 'rgba(17, 17, 17, 0.8)',
-                            backdropFilter: 'blur(10px)',
-                            WebkitBackdropFilter: 'blur(10px)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
-                        }}>
-                            <Tabs
-                                value={activeTab}
-                                onChange={handleTabChange}
-                                sx={{
-                                    '& .MuiTab-root': {
-                                        color: '#B0C4DE',
-                                        fontWeight: '600',
-                                        textTransform: 'none',
-                                        fontSize: '1rem',
-                                        '&.Mui-selected': {
-                                            color: '#FFFFFF'
-                                        }
-                                    },
-                                    '& .MuiTabs-indicator': {
-                                        backgroundColor: '#FFD700'
-                                    }
-                                }}
-                            >
-                                <Tab label="Weekly Recap" />
-                                <Tab label="Leaderboard" />
-                                <Tab label="Statistics" />
-                            </Tabs>
-                        </Paper>
+        <section className="space-y-6">
+            <div className="flex flex-col gap-1">
+                <h2 className="text-3xl font-bold tracking-tight">Mythic+</h2>
+                <p className="text-sm text-muted-foreground">
+                    {activeTab === 0
+                        ? 'Weekly reset performance based on current lockout period.'
+                        : 'Seasonal statistics and leaderboards for the current Mythic+ season.'}
+                </p>
+            </div>
 
-                        {/* Tab Content */}
-                        <div className="">
-                            {renderTabContent()}
-                        </div>
-                    </div>
-                </div>
-            </>
+            <Tabs
+                value={activeTab.toString()}
+                onValueChange={handleTabChange}
+                className="space-y-6"
+            >
+                <TabsList>
+                    <TabsTrigger value="0">Weekly Recap</TabsTrigger>
+                    <TabsTrigger value="1">Leaderboard</TabsTrigger>
+                    <TabsTrigger value="2">Statistics</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value={activeTab.toString()}>
+                    {renderTabContent()}
+                </TabsContent>
+            </Tabs>
         </section>
     )
 }

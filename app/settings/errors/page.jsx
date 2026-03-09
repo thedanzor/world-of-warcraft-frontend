@@ -2,25 +2,12 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  Box,
-  Container,
-  Typography,
-  Alert,
-  CircularProgress,
-  Stack,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Snackbar
-} from '@mui/material'
-import {
-  BugReport as BugReportIcon,
-  Delete as DeleteIcon,
-  CheckCircle as CheckCircleIcon
-} from '@mui/icons-material'
+import { toast } from 'sonner'
+import { Bug, Trash2 } from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Spinner } from '@/components/ui/spinner'
 
 import ErrorCard from '@/core/components/ErrorCard'
 import ErrorStatsCard from '@/core/components/ErrorStatsCard'
@@ -39,8 +26,6 @@ const ErrorManagementPage = () => {
     severity: null,
     limit: 100
   })
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' })
-  const [deleteDialog, setDeleteDialog] = useState({ open: false, errorId: null })
 
   // Fetch errors
   const fetchErrors = async () => {
@@ -64,11 +49,7 @@ const ErrorManagementPage = () => {
       }
     } catch (error) {
       console.error('Error fetching errors:', error)
-      setSnackbar({
-        open: true,
-        message: 'Failed to fetch errors: ' + error.message,
-        severity: 'error'
-      })
+      toast.error('Failed to fetch errors: ' + error.message)
     } finally {
       setLoading(false)
     }
@@ -88,11 +69,7 @@ const ErrorManagementPage = () => {
       }
     } catch (error) {
       console.error('Error fetching stats:', error)
-      setSnackbar({
-        open: true,
-        message: 'Failed to fetch statistics: ' + error.message,
-        severity: 'error'
-      })
+      toast.error('Failed to fetch statistics: ' + error.message)
     } finally {
       setStatsLoading(false)
     }
@@ -132,18 +109,10 @@ const ErrorManagementPage = () => {
         throw new Error(data.error || 'Failed to resolve error')
       }
       
-      setSnackbar({
-        open: true,
-        message: 'Error marked as resolved',
-        severity: 'success'
-      })
+      toast.success('Error marked as resolved')
     } catch (error) {
       console.error('Error resolving error:', error)
-      setSnackbar({
-        open: true,
-        message: 'Failed to resolve error: ' + error.message,
-        severity: 'error'
-      })
+      toast.error('Failed to resolve error: ' + error.message)
       throw error
     }
   }
@@ -160,18 +129,10 @@ const ErrorManagementPage = () => {
         throw new Error(data.error || 'Failed to delete error')
       }
       
-      setSnackbar({
-        open: true,
-        message: 'Error deleted successfully',
-        severity: 'success'
-      })
+      toast.success('Error deleted successfully')
     } catch (error) {
       console.error('Error deleting error:', error)
-      setSnackbar({
-        open: true,
-        message: 'Failed to delete error: ' + error.message,
-        severity: 'error'
-      })
+      toast.error('Failed to delete error: ' + error.message)
       throw error
     }
   }
@@ -217,11 +178,7 @@ const ErrorManagementPage = () => {
       console.log('Bulk delete response data:', data)
       
       if (data.success) {
-        setSnackbar({
-          open: true,
-          message: data.message || `Successfully deleted ${data.result?.deletedCount || 0} errors`,
-          severity: 'success'
-        })
+        toast.success(data.message || `Successfully deleted ${data.result?.deletedCount || 0} errors`)
         // Refresh the data
         await fetchErrors()
         await fetchStats()
@@ -230,11 +187,7 @@ const ErrorManagementPage = () => {
       }
     } catch (error) {
       console.error('Error bulk deleting:', error)
-      setSnackbar({
-        open: true,
-        message: 'Failed to delete errors: ' + error.message,
-        severity: 'error'
-      })
+      toast.error('Failed to delete errors: ' + error.message)
     }
   }
 
@@ -247,70 +200,69 @@ const ErrorManagementPage = () => {
     fetchStats()
   }, [])
 
-  const handleCloseSnackbar = () => {
-    setSnackbar(prev => ({ ...prev, open: false }))
-  }
-
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Box mb={4}>
-        <Stack direction="row" alignItems="center" spacing={2} mb={2}>
-          <BugReportIcon fontSize="large" />
-          <Typography variant="h4" component="h1">
+    <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <div className="mb-8">
+        <div className="flex items-center space-x-4 mb-4">
+          <Bug className="h-8 w-8" />
+          <h1 className="text-3xl font-bold">
             Error Management
-          </Typography>
-        </Stack>
-        <Typography variant="body1" color="text.secondary">
+          </h1>
+        </div>
+        <p className="text-muted-foreground">
           Monitor and manage application errors with detailed insights and filtering options.
-        </Typography>
-      </Box>
+        </p>
+      </div>
 
       {/* Statistics */}
-      <Box mb={4}>
+      <div className="mb-8">
         <ErrorStatsCard stats={stats} loading={statsLoading} />
-      </Box>
+      </div>
 
       {/* Filters */}
-      <ErrorFilters
-        filters={filters}
-        onFilterChange={handleFilterChange}
-        onClearFilters={handleClearFilters}
-        onRefresh={handleRefresh}
-        loading={loading}
-      />
+      <div className="mb-8">
+        <ErrorFilters
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          onClearFilters={handleClearFilters}
+          onRefresh={handleRefresh}
+          loading={loading}
+        />
+      </div>
 
       {/* Bulk Actions */}
       {errors.length > 0 && (
-        <Box mb={3}>
-          <Stack direction="row" spacing={2}>
+        <div className="mb-6">
+          <div className="flex items-center space-x-4">
             <Button
-              variant="outlined"
-              color="error"
-              startIcon={<DeleteIcon />}
+              variant="destructive"
               onClick={handleBulkDelete}
               disabled={loading}
             >
+              <Trash2 className="mr-2 h-4 w-4" />
               Delete Filtered Errors
             </Button>
-            <Typography variant="body2" color="text.secondary" sx={{ alignSelf: 'center' }}>
+            <span className="text-sm text-muted-foreground">
               {errors.length} error{errors.length !== 1 ? 's' : ''} found
-            </Typography>
-          </Stack>
-        </Box>
+            </span>
+          </div>
+        </div>
       )}
 
       {/* Error List */}
-      <Box>
+      <div>
         {loading ? (
-          <Box display="flex" justifyContent="center" py={4}>
-            <CircularProgress />
-          </Box>
+          <div className="flex justify-center py-8">
+            <Spinner className="h-8 w-8 text-primary" />
+          </div>
         ) : errors.length === 0 ? (
-          <Alert severity="info">
-            No errors found matching your criteria.
+          <Alert variant="default">
+            <AlertDescription>
+              No errors found matching your criteria.
+            </AlertDescription>
           </Alert>
         ) : (
-          <Stack spacing={2}>
+          <div className="space-y-4">
             {errors.map((error) => (
               <ErrorCard
                 key={error._id}
@@ -322,18 +274,10 @@ const ErrorManagementPage = () => {
                 onDeleteError={handleDeleteError}
               />
             ))}
-          </Stack>
+          </div>
         )}
-      </Box>
-
-      {/* Snackbar for notifications */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        message={snackbar.message}
-      />
-    </Container>
+      </div>
+    </div>
   )
 }
 

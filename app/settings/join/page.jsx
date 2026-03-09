@@ -1,31 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Paper,
-  IconButton,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Alert,
-  CircularProgress,
-  Grid,
-  Card,
-  CardContent,
-  Divider,
-} from '@mui/material';
-import {
-  Add as AddIcon,
-  Delete as DeleteIcon,
-  ArrowUpward as ArrowUpIcon,
-  ArrowDownward as ArrowDownIcon,
-  Save as SaveIcon,
-} from '@mui/icons-material';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Spinner } from '@/components/ui/spinner';
+import { Plus, Trash2, ArrowUp, ArrowDown, Save, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export default function JoinPageEditor() {
   const [joinText, setJoinText] = useState({ 
@@ -324,125 +309,140 @@ export default function JoinPageEditor() {
   // Render block editor
   const renderBlockEditor = (section, block) => {
     return (
-      <Card key={block.id} sx={{ mb: 2, border: '2px solid', borderColor: 'primary.main' }}>
-        <CardContent>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-            <Typography variant="h6">
+      <Card key={block.id} className="mb-4 border-2 border-primary">
+        <CardContent className="pt-4">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-md font-medium">
               Block: {block.type.charAt(0).toUpperCase() + block.type.slice(1)}
-            </Typography>
-            <Box>
-              <FormControl size="small" sx={{ minWidth: 120, mr: 1 }}>
-                <InputLabel>Layout</InputLabel>
+            </h3>
+            <div className="flex items-center gap-2">
+              <div className="w-32">
                 <Select
                   value={block.layout}
-                  label="Layout"
-                  onChange={(e) => updateBlock(section.id, block.id, { layout: e.target.value })}
+                  onValueChange={(value) => updateBlock(section.id, block.id, { layout: value })}
                 >
-                  <MenuItem value="full">Full Width</MenuItem>
-                  <MenuItem value="left">Left Half</MenuItem>
-                  <MenuItem value="right">Right Half</MenuItem>
+                  <SelectTrigger aria-label="Layout">
+                    <SelectValue placeholder="Layout" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="full">Full Width</SelectItem>
+                    <SelectItem value="left">Left Half</SelectItem>
+                    <SelectItem value="right">Right Half</SelectItem>
+                  </SelectContent>
                 </Select>
-              </FormControl>
-              <IconButton 
+              </div>
+              <Button 
+                variant="ghost" 
+                size="icon"
                 onClick={() => removeBlock(section.id, block.id)}
-                color="error"
-                size="small"
+                className="text-destructive hover:text-destructive hover:bg-destructive/10"
               >
-                <DeleteIcon />
-              </IconButton>
-            </Box>
-          </Box>
-
-          <TextField
-            fullWidth
-            label="Title"
-            value={block.title}
-            onChange={(e) => updateBlock(section.id, block.id, { title: e.target.value })}
-            sx={{ mb: 2 }}
-          />
-
-          {block.type === 'text' && (
-            <TextField
-              fullWidth
-              label="Content"
-              multiline
-              rows={4}
-              value={block.content}
-              onChange={(e) => updateBlock(section.id, block.id, { content: e.target.value })}
-            />
-          )}
-
-          {block.type === 'list' && (
-            <Box>
-              {(block.items || []).map((item, index) => (
-                <Box key={index} sx={{ display: 'flex', gap: 1, mb: 1 }}>
-                  <TextField
-                    fullWidth
-                    label={`Item ${index + 1}`}
-                    value={item}
-                    onChange={(e) => updateListItem(section.id, block.id, index, e.target.value)}
-                  />
-                  <IconButton
-                    onClick={() => removeListItem(section.id, block.id, index)}
-                    color="error"
-                    size="small"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Box>
-              ))}
-              <Button
-                startIcon={<AddIcon />}
-                onClick={() => addListItem(section.id, block.id)}
-                size="small"
-              >
-                Add Item
+                <Trash2 className="w-4 h-4" />
               </Button>
-            </Box>
-          )}
+            </div>
+          </div>
 
-          {block.type === 'contact' && (
-            <Box>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>Discord</Typography>
-              <TextField
-                fullWidth
-                label="Discord Label"
-                value={block.discord?.label || ''}
-                onChange={(e) => updateBlock(section.id, block.id, {
-                  discord: { ...block.discord, label: e.target.value }
-                })}
-                sx={{ mb: 1 }}
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <Label>Title</Label>
+              <Input
+                value={block.title}
+                onChange={(e) => updateBlock(section.id, block.id, { title: e.target.value })}
               />
-              <TextField
-                fullWidth
-                label="Discord URL"
-                value={block.discord?.url || ''}
-                onChange={(e) => updateBlock(section.id, block.id, {
-                  discord: { ...block.discord, url: e.target.value }
-                })}
-                sx={{ mb: 2 }}
-              />
-              
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>Email</Typography>
-              <TextField
-                fullWidth
-                label="Email Label"
-                value={block.email?.label || ''}
-                onChange={(e) => updateBlock(section.id, block.id, {
-                  email: { ...block.email, label: e.target.value }
-                })}
-                sx={{ mb: 1 }}
-              />
-              <TextField
-                fullWidth
-                label="Email URL"
-                value={block.email?.url || ''}
-                onChange={(e) => updateBlock(section.id, block.id, {
-                  email: { ...block.email, url: e.target.value }
-                })}
-              />
-            </Box>
-          )}
+            </div>
+
+            {block.type === 'text' && (
+              <div className="space-y-1.5">
+                <Label>Content</Label>
+                <Textarea
+                  rows={4}
+                  value={block.content}
+                  onChange={(e) => updateBlock(section.id, block.id, { content: e.target.value })}
+                />
+              </div>
+            )}
+
+            {block.type === 'list' && (
+              <div className="space-y-2">
+                {(block.items || []).map((item, index) => (
+                  <div key={index} className="flex gap-2 items-center">
+                    <div className="flex-1 space-y-1.5">
+                      <Label className="sr-only">{`Item ${index + 1}`}</Label>
+                      <Input
+                        value={item}
+                        onChange={(e) => updateListItem(section.id, block.id, index, e.target.value)}
+                        placeholder={`Item ${index + 1}`}
+                      />
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeListItem(section.id, block.id, index)}
+                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => addListItem(section.id, block.id)}
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Item
+                </Button>
+              </div>
+            )}
+
+            {block.type === 'contact' && (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <h4 className="font-medium text-sm">Discord</h4>
+                  <div className="space-y-1.5">
+                    <Label>Discord Label</Label>
+                    <Input
+                      value={block.discord?.label || ''}
+                      onChange={(e) => updateBlock(section.id, block.id, {
+                        discord: { ...block.discord, label: e.target.value }
+                      })}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Discord URL</Label>
+                    <Input
+                      value={block.discord?.url || ''}
+                      onChange={(e) => updateBlock(section.id, block.id, {
+                        discord: { ...block.discord, url: e.target.value }
+                      })}
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <h4 className="font-medium text-sm">Email</h4>
+                  <div className="space-y-1.5">
+                    <Label>Email Label</Label>
+                    <Input
+                      value={block.email?.label || ''}
+                      onChange={(e) => updateBlock(section.id, block.id, {
+                        email: { ...block.email, label: e.target.value }
+                      })}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Email URL</Label>
+                    <Input
+                      value={block.email?.url || ''}
+                      onChange={(e) => updateBlock(section.id, block.id, {
+                        email: { ...block.email, url: e.target.value }
+                      })}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
     );
@@ -450,180 +450,187 @@ export default function JoinPageEditor() {
 
   // Render preview
   const renderPreview = (section, block) => {
-    const widthStyle = block.layout === 'full' ? '100%' : '50%';
+    const widthClass = block.layout === 'full' ? 'w-full' : 'w-[calc(50%-0.5rem)]';
     
     return (
-      <Box 
+      <div 
         key={block.id}
-        sx={{ 
-          width: widthStyle,
-          p: 2,
-          border: '1px dashed rgba(255, 255, 255, 0.2)',
-          borderRadius: 1,
-          minHeight: '100px'
-        }}
+        className={`${widthClass} p-4 border border-dashed border-white/20 rounded-md min-h-[100px] flex-grow-0`}
       >
-        <Typography variant="h6" sx={{ color: '#FFD700', mb: 1 }}>
+        <h4 className="text-[#FFD700] text-md font-medium mb-2">
           {block.title || 'Untitled'}
-        </Typography>
+        </h4>
         
         {block.type === 'text' && (
-          <Typography variant="body2">
+          <p className="text-sm">
             {block.content || 'No content yet...'}
-          </Typography>
+          </p>
         )}
         
         {block.type === 'list' && (
-          <Box component="ul" sx={{ pl: 2 }}>
+          <ul className="pl-4 list-disc text-sm">
             {(block.items || []).map((item, i) => (
-              <li key={i}><Typography variant="body2">{item || 'Empty item'}</Typography></li>
+              <li key={i}>{item || 'Empty item'}</li>
             ))}
-          </Box>
+          </ul>
         )}
         
         {block.type === 'contact' && (
-          <Box>
+          <div className="text-sm space-y-1">
             {block.discord?.label && (
-              <Typography variant="body2">Discord: {block.discord.label}</Typography>
+              <p>Discord: {block.discord.label}</p>
             )}
             {block.email?.label && (
-              <Typography variant="body2">Email: {block.email.label}</Typography>
+              <p>Email: {block.email.label}</p>
             )}
-          </Box>
+          </div>
         )}
-      </Box>
+      </div>
     );
   };
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-        <CircularProgress />
-      </Box>
+      <div className="flex justify-center p-8">
+        <Spinner className="w-8 h-8" />
+      </div>
     );
   }
 
   return (
-    <Box>
+    <div className="max-w-6xl mx-auto">
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>
-          {error}
+        <Alert variant="destructive" className="mb-6">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
       
       {success && (
-        <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess('')}>
-          {success}
+        <Alert className="mb-6 bg-green-500/10 text-green-500 border-green-500/20">
+          <CheckCircle2 className="h-4 w-4 text-green-500" />
+          <AlertTitle>Success</AlertTitle>
+          <AlertDescription>{success}</AlertDescription>
         </Alert>
       )}
 
-      <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+      <div className="flex flex-wrap gap-4 mb-8">
         <Button
-          variant="contained"
-          startIcon={<SaveIcon />}
           onClick={handleSave}
           disabled={saving}
         >
+          <Save className="w-4 h-4 mr-2" />
           {saving ? 'Saving...' : 'Save Changes'}
         </Button>
         <Button
-          variant="outlined"
+          variant="outline"
           onClick={handleSeedJoinText}
           disabled={saving}
         >
           Seed Example Data
         </Button>
         <Button
-          variant="outlined"
-          startIcon={<AddIcon />}
+          variant="outline"
           onClick={addSection}
         >
+          <Plus className="w-4 h-4 mr-2" />
           Add Section
         </Button>
-      </Box>
+      </div>
 
       {/* Hero Section Editor */}
-      <Paper sx={{ p: 3, mb: 3, bgcolor: 'rgba(255, 215, 0, 0.05)' }}>
-        <Typography variant="h5" sx={{ mb: 3 }}>Hero Section</Typography>
+      <div className="p-6 mb-8 rounded-lg border bg-primary/5">
+        <h2 className="text-xl font-semibold mb-6">Hero Section</h2>
         
-        <TextField
-          fullWidth
-          label="Hero Title"
-          value={joinText.hero?.title || ''}
-          onChange={(e) => setJoinText(prev => ({
-            ...prev,
-            hero: { ...prev.hero, title: e.target.value }
-          }))}
-          sx={{ mb: 2 }}
-        />
-        
-        <TextField
-          fullWidth
-          label="Hero Subtitle"
-          multiline
-          rows={2}
-          value={joinText.hero?.subtitle || ''}
-          onChange={(e) => setJoinText(prev => ({
-            ...prev,
-            hero: { ...prev.hero, subtitle: e.target.value }
-          }))}
-          sx={{ mb: 3 }}
-        />
-        
-        <Divider sx={{ my: 2 }} />
-        
-        <Typography variant="h6" sx={{ mb: 2 }}>Hero Badges</Typography>
-        {(joinText.hero?.badges || []).map((badge, index) => (
-          <Box key={index} sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center' }}>
-            <TextField
-              label={`Badge ${index + 1} Label`}
-              value={badge.label}
-              onChange={(e) => {
-                const newBadges = [...(joinText.hero?.badges || [])];
-                newBadges[index] = { ...newBadges[index], label: e.target.value };
-                setJoinText(prev => ({
-                  ...prev,
-                  hero: { ...prev.hero, badges: newBadges }
-                }));
-              }}
-              sx={{ flex: 2 }}
+        <div className="space-y-4 mb-6">
+          <div className="space-y-1.5">
+            <Label>Hero Title</Label>
+            <Input
+              value={joinText.hero?.title || ''}
+              onChange={(e) => setJoinText(prev => ({
+                ...prev,
+                hero: { ...prev.hero, title: e.target.value }
+              }))}
             />
-            <FormControl sx={{ flex: 1 }}>
-              <InputLabel>Color</InputLabel>
-              <Select
-                value={badge.color}
-                onChange={(e) => {
-                  const newBadges = [...(joinText.hero?.badges || [])];
-                  newBadges[index] = { ...newBadges[index], color: e.target.value };
+          </div>
+          
+          <div className="space-y-1.5">
+            <Label>Hero Subtitle</Label>
+            <Textarea
+              rows={2}
+              value={joinText.hero?.subtitle || ''}
+              onChange={(e) => setJoinText(prev => ({
+                ...prev,
+                hero: { ...prev.hero, subtitle: e.target.value }
+              }))}
+            />
+          </div>
+        </div>
+        
+        <Separator className="my-6" />
+        
+        <h3 className="text-md font-medium mb-4">Hero Badges</h3>
+        <div className="space-y-4 mb-4">
+          {(joinText.hero?.badges || []).map((badge, index) => (
+            <div key={index} className="flex items-end gap-4">
+              <div className="space-y-1.5 flex-[2]">
+                <Label>{`Badge ${index + 1} Label`}</Label>
+                <Input
+                  value={badge.label}
+                  onChange={(e) => {
+                    const newBadges = [...(joinText.hero?.badges || [])];
+                    newBadges[index] = { ...newBadges[index], label: e.target.value };
+                    setJoinText(prev => ({
+                      ...prev,
+                      hero: { ...prev.hero, badges: newBadges }
+                    }));
+                  }}
+                />
+              </div>
+              <div className="space-y-1.5 flex-1">
+                <Label>Color</Label>
+                <Select
+                  value={badge.color}
+                  onValueChange={(value) => {
+                    const newBadges = [...(joinText.hero?.badges || [])];
+                    newBadges[index] = { ...newBadges[index], color: value };
+                    setJoinText(prev => ({
+                      ...prev,
+                      hero: { ...prev.hero, badges: newBadges }
+                    }));
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Color" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="gold">Gold</SelectItem>
+                    <SelectItem value="blue">Blue</SelectItem>
+                    <SelectItem value="green">Green</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  const newBadges = (joinText.hero?.badges || []).filter((_, i) => i !== index);
                   setJoinText(prev => ({
                     ...prev,
                     hero: { ...prev.hero, badges: newBadges }
                   }));
                 }}
-                label="Color"
+                className="text-destructive hover:text-destructive hover:bg-destructive/10 mb-0.5"
               >
-                <MenuItem value="gold">Gold</MenuItem>
-                <MenuItem value="blue">Blue</MenuItem>
-                <MenuItem value="green">Green</MenuItem>
-              </Select>
-            </FormControl>
-            <IconButton
-              onClick={() => {
-                const newBadges = (joinText.hero?.badges || []).filter((_, i) => i !== index);
-                setJoinText(prev => ({
-                  ...prev,
-                  hero: { ...prev.hero, badges: newBadges }
-                }));
-              }}
-              color="error"
-              size="small"
-            >
-              <DeleteIcon />
-            </IconButton>
-          </Box>
-        ))}
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
         <Button
-          startIcon={<AddIcon />}
+          variant="outline"
+          size="sm"
           onClick={() => {
             const newBadges = [...(joinText.hero?.badges || []), { label: '', color: 'gold' }];
             setJoinText(prev => ({
@@ -631,109 +638,123 @@ export default function JoinPageEditor() {
               hero: { ...prev.hero, badges: newBadges }
             }));
           }}
-          size="small"
         >
+          <Plus className="w-4 h-4 mr-2" />
           Add Badge
         </Button>
-      </Paper>
+      </div>
 
-      <Typography variant="h5" sx={{ mb: 3 }}>Content Sections</Typography>
+      <h2 className="text-2xl font-semibold mb-6">Content Sections</h2>
 
       {joinText.sections && joinText.sections.map((section, sectionIndex) => (
-        <Paper key={section.id} sx={{ p: 3, mb: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-            <Typography variant="h5">Section {sectionIndex + 1}</Typography>
-            <Box>
-              <IconButton onClick={() => moveSectionUp(section.id)} disabled={sectionIndex === 0}>
-                <ArrowUpIcon />
-              </IconButton>
-              <IconButton onClick={() => moveSectionDown(section.id)} disabled={sectionIndex === (joinText.sections || []).length - 1}>
-                <ArrowDownIcon />
-              </IconButton>
-              <IconButton onClick={() => removeSection(section.id)} color="error">
-                <DeleteIcon />
-              </IconButton>
-            </Box>
-          </Box>
+        <div key={section.id} className="p-6 mb-8 rounded-lg border bg-card">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-semibold">Section {sectionIndex + 1}</h3>
+            <div className="flex gap-2">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => moveSectionUp(section.id)} 
+                disabled={sectionIndex === 0}
+              >
+                <ArrowUp className="w-4 h-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => moveSectionDown(section.id)} 
+                disabled={sectionIndex === (joinText.sections || []).length - 1}
+              >
+                <ArrowDown className="w-4 h-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => removeSection(section.id)} 
+                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
 
-          <Grid container spacing={3}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Editor Column */}
-            <Grid item xs={12} md={6}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Editor</Typography>
+            <div>
+              <h4 className="text-md font-medium mb-4">Editor</h4>
               
               {(section.blocks || []).map(block => renderBlockEditor(section, block))}
               
               {(!section.blocks || section.blocks.length === 0) && (
-                <Box sx={{ textAlign: 'center', py: 4, border: '2px dashed', borderColor: 'divider', borderRadius: 1 }}>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                <div className="text-center py-8 border-2 border-dashed border-border rounded-lg mb-4">
+                  <p className="text-sm text-muted-foreground">
                     No blocks yet. Add one to get started.
-                  </Typography>
-                </Box>
+                  </p>
+                </div>
               )}
 
-              <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
+              <div className="flex flex-wrap gap-2 mt-4">
                 <Button
-                  startIcon={<AddIcon />}
+                  variant="outline"
+                  size="sm"
                   onClick={() => addBlock(section.id, 'text', 'full')}
-                  size="small"
-                  variant="outlined"
                 >
+                  <Plus className="w-4 h-4 mr-2" />
                   Add Text
                 </Button>
                 <Button
-                  startIcon={<AddIcon />}
+                  variant="outline"
+                  size="sm"
                   onClick={() => addBlock(section.id, 'list', 'left')}
-                  size="small"
-                  variant="outlined"
                 >
+                  <Plus className="w-4 h-4 mr-2" />
                   Add List
                 </Button>
                 <Button
-                  startIcon={<AddIcon />}
+                  variant="outline"
+                  size="sm"
                   onClick={() => addBlock(section.id, 'contact', 'full')}
-                  size="small"
-                  variant="outlined"
                 >
+                  <Plus className="w-4 h-4 mr-2" />
                   Add Contact
                 </Button>
-              </Box>
-            </Grid>
+              </div>
+            </div>
 
             {/* Preview Column */}
-            <Grid item xs={12} md={6}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Live Preview</Typography>
-              <Paper sx={{ p: 2, bgcolor: 'background.default', minHeight: '200px' }}>
+            <div>
+              <h4 className="text-md font-medium mb-4">Live Preview</h4>
+              <div className="p-4 rounded-lg bg-background border min-h-[200px]">
                 {(!section.blocks || section.blocks.length === 0) ? (
-                  <Box sx={{ textAlign: 'center', py: 4 }}>
-                    <Typography variant="body2" color="text.secondary">
+                  <div className="text-center py-8">
+                    <p className="text-sm text-muted-foreground">
                       Add blocks to see preview
-                    </Typography>
-                  </Box>
+                    </p>
+                  </div>
                 ) : (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+                  <div className="flex flex-wrap gap-4">
                     {(section.blocks || []).map(block => renderPreview(section, block))}
-                  </Box>
+                  </div>
                 )}
-              </Paper>
-            </Grid>
-          </Grid>
-        </Paper>
+              </div>
+            </div>
+          </div>
+        </div>
       ))}
 
       {(!joinText.sections || joinText.sections.length === 0) && (
-        <Paper sx={{ p: 4, textAlign: 'center' }}>
-          <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
+        <div className="p-12 text-center rounded-lg border bg-card">
+          <h3 className="text-xl text-muted-foreground mb-6">
             No sections yet
-          </Typography>
+          </h3>
           <Button
-            variant="contained"
-            startIcon={<AddIcon />}
             onClick={addSection}
           >
+            <Plus className="w-4 h-4 mr-2" />
             Add Your First Section
           </Button>
-        </Paper>
+        </div>
       )}
-    </Box>
+    </div>
   );
 }

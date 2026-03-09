@@ -1,25 +1,16 @@
 'use client'
 
 import React from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
-  Box,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-  Button,
-  Stack,
-  Chip,
-  IconButton,
-  Tooltip,
-  Typography
-} from '@mui/material'
-import {
-  FilterList as FilterIcon,
-  Clear as ClearIcon,
-  Refresh as RefreshIcon
-} from '@mui/icons-material'
+  Filter as FilterIcon,
+  X as ClearIcon,
+  RefreshCw as RefreshIcon
+} from 'lucide-react'
 
 const ErrorFilters = ({ 
   filters, 
@@ -37,97 +28,110 @@ const ErrorFilters = ({
   }
 
   return (
-    <Box sx={{ mb: 3 }}>
-      <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-        <FilterIcon />
-        <Typography variant="h6">Filters</Typography>
+    <div className="mb-6">
+      <div className="flex flex-row items-center gap-4 mb-4">
+        <FilterIcon className="w-5 h-5" />
+        <h2 className="text-md font-semibold">Filters</h2>
         {getActiveFiltersCount() > 0 && (
-          <Chip 
-            label={`${getActiveFiltersCount()} active`} 
-            color="primary" 
-            size="small"
-          />
+          <Badge variant="default">
+            {getActiveFiltersCount()} active
+          </Badge>
         )}
-        <Box sx={{ flexGrow: 1 }} />
-        <Tooltip title="Refresh">
-          <IconButton onClick={onRefresh} disabled={loading}>
-            <RefreshIcon />
-          </IconButton>
-        </Tooltip>
+        <div className="flex-grow" />
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" onClick={onRefresh} disabled={loading}>
+                <RefreshIcon className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Refresh</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <Button 
-          startIcon={<ClearIcon />}
+          variant="outline"
           onClick={onClearFilters}
           disabled={getActiveFiltersCount() === 0}
+          className="gap-2"
         >
+          <ClearIcon className="w-4 h-4" />
           Clear All
         </Button>
-      </Stack>
+      </div>
 
-      <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
-        <FormControl size="small" sx={{ minWidth: 120 }}>
-          <InputLabel>Type</InputLabel>
+      <div className="flex flex-row gap-4 flex-wrap">
+        <div className="min-w-[140px]">
           <Select
-            value={filters.type || ''}
-            label="Type"
-            onChange={(e) => handleFilterChange('type', e.target.value || null)}
+            value={filters.type || 'all'}
+            onValueChange={(val) => handleFilterChange('type', val === 'all' ? null : val)}
           >
-            <MenuItem value="">All Types</MenuItem>
-            <MenuItem value="api">API</MenuItem>
-            <MenuItem value="guild-fetch">Guild Fetch</MenuItem>
-            <MenuItem value="database">Database</MenuItem>
+            <SelectTrigger>
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="api">API</SelectItem>
+              <SelectItem value="guild-fetch">Guild Fetch</SelectItem>
+              <SelectItem value="database">Database</SelectItem>
+            </SelectContent>
           </Select>
-        </FormControl>
+        </div>
 
-        <FormControl size="small" sx={{ minWidth: 120 }}>
-          <InputLabel>Severity</InputLabel>
+        <div className="min-w-[140px]">
           <Select
-            value={filters.severity || ''}
-            label="Severity"
-            onChange={(e) => handleFilterChange('severity', e.target.value || null)}
+            value={filters.severity || 'all'}
+            onValueChange={(val) => handleFilterChange('severity', val === 'all' ? null : val)}
           >
-            <MenuItem value="">All Severities</MenuItem>
-            <MenuItem value="high">High</MenuItem>
-            <MenuItem value="medium">Medium</MenuItem>
-            <MenuItem value="low">Low</MenuItem>
+            <SelectTrigger>
+              <SelectValue placeholder="Severity" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Severities</SelectItem>
+              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="low">Low</SelectItem>
+            </SelectContent>
           </Select>
-        </FormControl>
+        </div>
 
-        <FormControl size="small" sx={{ minWidth: 120 }}>
-          <InputLabel>Status</InputLabel>
+        <div className="min-w-[140px]">
           <Select
-            value={filters.resolved === null ? '' : filters.resolved ? 'true' : 'false'}
-            label="Status"
-            onChange={(e) => {
-              const value = e.target.value
-              handleFilterChange('resolved', value === '' ? null : value === 'true')
+            value={filters.resolved === null ? 'all' : filters.resolved ? 'true' : 'false'}
+            onValueChange={(val) => {
+              handleFilterChange('resolved', val === 'all' ? null : val === 'true')
             }}
           >
-            <MenuItem value="">All Status</MenuItem>
-            <MenuItem value="false">Unresolved</MenuItem>
-            <MenuItem value="true">Resolved</MenuItem>
+            <SelectTrigger>
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="false">Unresolved</SelectItem>
+              <SelectItem value="true">Resolved</SelectItem>
+            </SelectContent>
           </Select>
-        </FormControl>
+        </div>
 
-        <TextField
-          size="small"
-          label="Endpoint"
-          placeholder="Filter by endpoint..."
-          value={filters.endpoint || ''}
-          onChange={(e) => handleFilterChange('endpoint', e.target.value || null)}
-          sx={{ minWidth: 200 }}
-        />
+        <div className="min-w-[200px]">
+          <Input
+            placeholder="Filter by endpoint..."
+            value={filters.endpoint || ''}
+            onChange={(e) => handleFilterChange('endpoint', e.target.value || null)}
+          />
+        </div>
 
-        <TextField
-          size="small"
-          label="Limit"
-          type="number"
-          value={filters.limit || 100}
-          onChange={(e) => handleFilterChange('limit', parseInt(e.target.value) || 100)}
-          inputProps={{ min: 1, max: 1000 }}
-          sx={{ minWidth: 100 }}
-        />
-      </Stack>
-    </Box>
+        <div className="w-[100px]">
+          <Input
+            type="number"
+            placeholder="Limit"
+            value={filters.limit || 100}
+            onChange={(e) => handleFilterChange('limit', parseInt(e.target.value) || 100)}
+            min={1}
+            max={1000}
+          />
+        </div>
+      </div>
+    </div>
   )
 }
 

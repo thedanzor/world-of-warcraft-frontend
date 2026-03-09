@@ -4,17 +4,6 @@
  */
 
 import React from 'react'
-import { 
-    Typography, 
-    Box, 
-    Paper, 
-    Grid, 
-    Card, 
-    CardContent,
-    Chip,
-    Divider,
-    Alert
-} from '@mui/material'
 import { P } from '@/core/components/typography'
 import Link from 'next/link'
 import getRatingColor from '@/core/utils/getRatingColor'
@@ -39,10 +28,10 @@ const SeasonalStatistics = ({ data, guildData }) => {
 
     if (!data) {
         return (
-            <Alert severity="info">
-                <Typography variant="h6">No seasonal data available</Typography>
-                <Typography variant="body2">Seasonal statistics will appear here once guild data is updated.</Typography>
-            </Alert>
+            <div className="bg-blue-500/10 border border-blue-500/20 text-blue-500 rounded-lg p-4">
+                <h6 className="text-md font-medium mb-1">No seasonal data available</h6>
+                <p className="text-sm">Seasonal statistics will appear here once guild data is updated.</p>
+            </div>
         )
     }
 
@@ -63,120 +52,92 @@ const SeasonalStatistics = ({ data, guildData }) => {
         return getRatingColor(score, 'mplus')
     }
 
-    const StatCard = ({ title, value, subtitle, color = '#FFFFFF' }) => (
-        <Card sx={{ 
-            backgroundColor: 'rgba(17, 17, 17, 0.8)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-            height: '100%'
-        }}>
-            <CardContent>
-                <Typography variant="h6" sx={{ color: '#B0C4DE', mb: 1 }}>
-                    {title}
-                </Typography>
-                <Typography variant="h4" sx={{ color, fontWeight: '700', mb: 1 }}>
-                    {value}
-                </Typography>
-                {subtitle && (
-                    <Typography variant="body2" sx={{ color: '#B0C4DE' }}>
-                        {subtitle}
-                    </Typography>
-                )}
-            </CardContent>
-        </Card>
+    const StatCard = ({ title, value, subtitle, color = 'currentColor' }) => (
+        <div className="bg-card border border-border shadow-sm rounded-xl h-full p-6">
+            <h6 className="text-muted-foreground font-medium mb-2">
+                {title}
+            </h6>
+            <p className="text-3xl font-bold mb-2" style={{ color: color === 'currentColor' ? 'var(--foreground)' : color }}>
+                {value}
+            </p>
+            {subtitle && (
+                <p className="text-sm text-muted-foreground">
+                    {subtitle}
+                </p>
+            )}
+        </div>
     )
 
     const AchievementCard = ({ achievement }) => (
-        <Card sx={{ 
-            backgroundColor: 'rgba(17, 17, 17, 0.8)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-            height: '100%'
-        }}>
-            <CardContent>
-                <Typography variant="h6" sx={{ color: '#FFFFFF', mb: 2 }}>
-                    {achievement.title}
-                </Typography>
-                {achievement.player && (
-                    <Box sx={{ mb: 2 }}>
-                        <Link href={getPlayerUrl(achievement.player.name, achievement.player.realm)} style={{ textDecoration: 'none' }}>
-                            <Typography variant="h4" sx={{ 
-                                color: '#FFD700', 
-                                fontWeight: '700',
-                                cursor: 'pointer',
-                                '&:hover': { color: '#FFFFFF' }
-                            }}>
-                                {achievement.player.name}
-                            </Typography>
-                        </Link>
-                        <Typography variant="body2" sx={{ color: '#B0C4DE' }}>
-                            {achievement.player.spec} {achievement.player.class}
-                        </Typography>
-                    </Box>
-                )}
-                {achievement.value && (
-                    <Typography variant="h5" sx={{ color: getScoreColor(achievement.value), fontWeight: '700' }}>
-                        {achievement.value}
-                    </Typography>
-                )}
-            </CardContent>
-        </Card>
+        <div className="bg-card border border-border shadow-sm rounded-xl h-full p-6">
+            <h6 className="text-foreground text-sm font-medium mb-4">
+                {achievement.title}
+            </h6>
+            {achievement.player && (
+                <div className="mb-4">
+                    <Link href={getPlayerUrl(achievement.player.name, achievement.player.realm)} className="no-underline group">
+                        <h4 className={`text-2xl font-bold transition-opacity group-hover:opacity-80 text-${achievement.player.class?.toLowerCase().replace(/\s+/g, '')}`}>
+                            {achievement.player.name ? achievement.player.name.charAt(0).toUpperCase() + achievement.player.name.slice(1).toLowerCase() : ''}
+                        </h4>
+                    </Link>
+                    <p className="text-sm text-muted-foreground mt-1">
+                        {achievement.player.spec} {achievement.player.class}
+                    </p>
+                </div>
+            )}
+            {achievement.value && (
+                <h5 className="text-xl font-bold" style={{ color: getScoreColor(achievement.value) }}>
+                    {achievement.value}
+                </h5>
+            )}
+        </div>
     )
 
     return (
-        <Box>
+        <div>
             {/* Season Info */}
-            <Paper sx={{ 
-                mb: 3,
-                p: 3,
-                backgroundColor: 'rgba(17, 17, 17, 0.8)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
-            }}>
-                <Typography variant="h4" sx={{ color: '#FFFFFF', mb: 1 }}>
+            <div className="mb-6 p-6 bg-card border border-border shadow-sm rounded-xl">
+                <h4 className="text-foreground text-2xl font-bold mb-2">
                     Season {data.season} Statistics
-                </Typography>
-                <Typography variant="body1" sx={{ color: '#B0C4DE' }}>
+                </h4>
+                <p className="text-muted-foreground">
                     Last updated: {new Date(data.lastUpdated).toLocaleString()}
-                </Typography>
-            </Paper>
+                </p>
+            </div>
 
             {/* Overview Stats */}
-            <Grid container spacing={3} sx={{ mb: 4 }}>
-                <Grid item xs={12} sm={6} md={3}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                <div className="col-span-1">
                     <StatCard 
                         title="Total Characters"
                         value={data.totalCharacters}
                         subtitle="Guild members"
                     />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                </div>
+                <div className="col-span-1">
                     <StatCard 
                         title="M+ Players"
                         value={data.charactersWithMplus}
                         subtitle={`${Math.round((data.charactersWithMplus / data.totalCharacters) * 100)}% participation`}
                         color="#4CAF50"
                     />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                </div>
+                <div className="col-span-1">
                     <StatCard 
                         title="Total Runs"
                         value={data.totalRuns}
                         subtitle={`${data.totalTimedRuns} timed`}
                         color="#FF9800"
                     />
-                </Grid>
-            </Grid>
+                </div>
+            </div>
 
             {/* Key Achievements */}
-            <Typography variant="h5" sx={{ color: '#FFFFFF', mb: 2 }}>
+            <h5 className="text-foreground text-xl font-bold mb-4">
                 Key Achievements
-            </Typography>
-            <Grid container spacing={3} sx={{ mb: 4 }}>
-                <Grid item xs={12} sm={6} md={4}>
+            </h5>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+                <div className="col-span-1">
                     <AchievementCard 
                         achievement={{
                             title: "Highest Key Overall",
@@ -184,8 +145,8 @@ const SeasonalStatistics = ({ data, guildData }) => {
                             player: data.achievements?.highestKeyOverall?.player
                         }}
                     />
-                </Grid>
-                <Grid item xs={12} sm={6} md={4}>
+                </div>
+                <div className="col-span-1">
                     <AchievementCard 
                         achievement={{
                             title: "Highest Timed Key",
@@ -193,8 +154,8 @@ const SeasonalStatistics = ({ data, guildData }) => {
                             player: data.achievements?.highestTimedKey?.player
                         }}
                     />
-                </Grid>
-                <Grid item xs={12} sm={6} md={4}>
+                </div>
+                <div className="col-span-1">
                     <AchievementCard 
                         achievement={{
                             title: "Top Rated Player",
@@ -202,21 +163,15 @@ const SeasonalStatistics = ({ data, guildData }) => {
                             value: data.achievements?.topRatedPlayer?.rating
                         }}
                     />
-                </Grid>
-            </Grid>
+                </div>
+            </div>
 
             {/* Top Players */}
-            <Typography variant="h5" sx={{ color: '#FFFFFF', mb: 2 }}>
+            <h5 className="text-foreground text-xl font-bold mb-4">
                 Top 5 Players
-            </Typography>
-            <Paper sx={{ 
-                mb: 4,
-                backgroundColor: 'rgba(17, 17, 17, 0.8)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
-            }}>
-                <Box sx={{ p: 3 }}>
+            </h5>
+            <div className="mb-8 bg-card border border-border shadow-sm rounded-xl">
+                <div className="p-6">
                     {data.topPlayers.slice(0, 5).map((player, index) => {
                         // Helper function to get guild data for a player
                         const getGuildPlayerData = (playerName) => {
@@ -227,44 +182,27 @@ const SeasonalStatistics = ({ data, guildData }) => {
                         const guildPlayer = getGuildPlayerData(player.name)
                         
                         return (
-                            <Box key={index} sx={{ mb: 2 }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                        <Chip 
-                                            label={`#${index + 1}`}
-                                            size="small"
-                                            sx={{ 
-                                                backgroundColor: index < 3 ? '#FFD700' : 'rgba(255, 255, 255, 0.1)',
-                                                color: '#FFFFFF',
-                                                fontWeight: '600'
-                                            }}
-                                        />
+                            <div key={index} className="mb-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <span 
+                                            className={`px-2 py-1 text-xs font-semibold rounded-full ${index < 3 ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}
+                                        >
+                                            #{index + 1}
+                                        </span>
                                         {/* Avatar */}
-                                        <div className="mediaWrapper" style={{ 
-                                            display: 'flex', 
-                                            justifyContent: 'center',
-                                            alignItems: 'center'
-                                        }}>
+                                        <div className="mediaWrapper flex justify-center items-center">
                                             {guildPlayer?.media?.assets?.length ? (
                                                 <img
                                                     src={guildPlayer.media.assets[0].value}
                                                     alt={player.name}
                                                     width={40}
                                                     height={40}
-                                                    style={{
-                                                        borderRadius: '8px',
-                                                        border: '1px solid rgba(255, 255, 255, 0.08)',
-                                                        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
-                                                    }}
+                                                    className="rounded-full border border-border shadow-sm object-cover"
                                                 />
                                             ) : (
                                                 <img
-                                                    style={{ 
-                                                        opacity: '0.4',
-                                                        borderRadius: '8px',
-                                                        border: '1px solid rgba(255, 255, 255, 0.08)',
-                                                        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
-                                                    }}
+                                                    className="opacity-40 rounded-full border border-border shadow-sm object-cover"
                                                     src={'/images/logo-without-text.png'}
                                                     alt={player.name}
                                                     width={40}
@@ -272,85 +210,69 @@ const SeasonalStatistics = ({ data, guildData }) => {
                                                 />
                                             )}
                                         </div>
-                                        <Link href={getPlayerUrl(player.name, player.realm)} style={{ textDecoration: 'none' }}>
-                                            <div className={`name ${player.class}`} style={{ cursor: 'pointer' }}>
-                                                <Typography variant="h6" sx={{ 
-                                                    color: '#FFFFFF', 
-                                                    fontWeight: '600',
-                                                    '&:hover': { color: '#FFD700' }
-                                                }}>
-                                                    {player.name}
-                                                </Typography>
-                                                <Typography variant="body2" sx={{ color: '#B0C4DE' }}>
+                                        <Link href={getPlayerUrl(player.name, player.realm)} className="no-underline group">
+                                            <div className="cursor-pointer">
+                                                <h6 className={`font-semibold text-md transition-opacity group-hover:opacity-80 text-${player.class?.toLowerCase().replace(/\s+/g, '')}`}>
+                                                    {player.name ? player.name.charAt(0).toUpperCase() + player.name.slice(1).toLowerCase() : ''}
+                                                </h6>
+                                                <p className="text-sm text-muted-foreground mt-0.5">
                                                     {player.spec} {player.class}
-                                                </Typography>
+                                                </p>
                                             </div>
                                         </Link>
-                                    </Box>
-                                <Box sx={{ textAlign: 'right' }}>
+                                    </div>
+                                <div className="text-right">
                                     {(() => {
                                         const guildPlayer = getGuildPlayerData(player.name)
                                         const currentScore = guildPlayer?.raw_mplus?.current_mythic_rating?.rating || player.rating || 0
                                         const scoreColor = guildPlayer?.raw_mplus?.current_mythic_rating?.color
                                         
                                         return (
-                                            <Typography variant="h6" sx={{ 
-                                                color: getScoreColor(currentScore, scoreColor), 
-                                                fontWeight: '700' 
-                                            }}>
+                                            <h6 className="text-md font-bold" style={{ color: getScoreColor(currentScore, scoreColor) }}>
                                                 {Math.round(currentScore)}
-                                            </Typography>
+                                            </h6>
                                         )
                                     })()}
-                                    <Typography variant="body2" sx={{ color: '#B0C4DE' }}>
+                                    <p className="text-sm text-muted-foreground mt-1">
                                         {player.totalRuns} runs
-                                    </Typography>
-                                </Box>
-                            </Box>
-                            {index < 4 && <Divider sx={{ mt: 2, borderColor: 'rgba(255, 255, 255, 0.1)' }} />}
-                        </Box>
+                                    </p>
+                                </div>
+                            </div>
+                            {index < 4 && <hr className="mt-4 border-border" />}
+                        </div>
                         )
                     })}
-                </Box>
-            </Paper>
+                </div>
+            </div>
 
             {/* Dungeon Statistics */}
-            <Typography variant="h5" sx={{ color: '#FFFFFF', mb: 2 }}>
+            <h5 className="text-foreground text-xl font-bold mb-4">
                 Dungeon Performance
-            </Typography>
-            <Grid container spacing={2}>
+            </h5>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 {Object.entries(data.dungeonLeaderboard).slice(0, 8).map(([dungeonName, stats]) => (
-                    <Grid item xs={12} sm={6} md={3} key={dungeonName}>
-                        <Card sx={{ 
-                            backgroundColor: 'rgba(17, 17, 17, 0.8)',
-                            backdropFilter: 'blur(10px)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-                            height: '100%'
-                        }}>
-                            <CardContent>
-                                <Typography variant="h6" sx={{ color: '#FFFFFF', mb: 1, fontSize: '0.9rem' }}>
-                                    {dungeonName}
-                                </Typography>
-                                <Typography variant="h5" sx={{ color: getScoreColor(stats.highestKey * 100), fontWeight: '700', mb: 1 }}>
-                                    +{stats.highestKey}
-                                </Typography>
-                                <Typography variant="body2" sx={{ color: '#B0C4DE' }}>
-                                    {stats.totalRuns} runs ({stats.playerCount} players)
-                                </Typography>
-                                <Typography variant="body2" sx={{ 
-                                    color: stats.completionRate >= 80 ? '#4CAF50' : 
-                                           stats.completionRate >= 60 ? '#FF9800' : '#F44336',
-                                    fontWeight: '600'
-                                }}>
-                                    {Math.round(stats.completionRate)}% timed
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
+                    <div key={dungeonName} className="col-span-1">
+                        <div className="bg-card border border-border shadow-sm rounded-xl h-full p-4">
+                            <h6 className="text-foreground mb-2 text-sm font-medium">
+                                {dungeonName}
+                            </h6>
+                            <h5 className="text-xl font-bold mb-2" style={{ color: getScoreColor(stats.highestKey * 100) }}>
+                                +{stats.highestKey}
+                            </h5>
+                            <p className="text-sm text-muted-foreground mb-1">
+                                {stats.totalRuns} runs ({stats.playerCount} players)
+                            </p>
+                            <p className="text-sm font-semibold" style={{ 
+                                color: stats.completionRate >= 80 ? '#4CAF50' : 
+                                       stats.completionRate >= 60 ? '#FF9800' : '#F44336'
+                            }}>
+                                {Math.round(stats.completionRate)}% timed
+                            </p>
+                        </div>
+                    </div>
                 ))}
-            </Grid>
-        </Box>
+            </div>
+        </div>
     )
 }
 

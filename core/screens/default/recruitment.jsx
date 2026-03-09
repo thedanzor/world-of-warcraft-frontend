@@ -1,452 +1,233 @@
 'use client'
 
-// React
 import { useState, useEffect } from 'react'
 
-// Material-UI components
-import { Box, Paper, Grid, CircularProgress, Alert, Typography, Chip, Container } from '@mui/material'
+import { Spinner } from '@/components/ui/spinner'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
 import { 
-    Chat as ChatIcon, 
-    Email as EmailIcon,
+    MessageCircle as ChatIcon, 
+    Mail as EmailIcon,
     CheckCircle as CheckCircleIcon,
-    EmojiEvents as TrophyIcon,
-    People as PeopleIcon,
-    Schedule as ScheduleIcon,
-    ContactMail as ContactMailIcon,
-    Gavel as RulesIcon
-} from '@mui/icons-material'
+    Trophy as TrophyIcon,
+    Users as PeopleIcon,
+    Clock as ScheduleIcon,
+    Contact as ContactMailIcon,
+    Gavel as RulesIcon,
+    ArrowRight,
+} from 'lucide-react'
 
-// Internal components
 import ContentWrapper from '@/core/components/content'
 
-// Styles
-import '@/core/screens/default/scss/recruitment.scss'
+const ICON_MAP = {
+    requirements: RulesIcon,
+    benefits: TrophyIcon,
+    process: CheckCircleIcon,
+    needs: PeopleIcon,
+    schedule: ScheduleIcon,
+    contact: ContactMailIcon,
+}
 
-/**
- * Recruitment - Guild recruitment and information page
- * Displays guild requirements, benefits, and application process
- * Uses a section-based system for flexible content layout
- */
+const ACCENT_COLORS = {
+    requirements: { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/20' },
+    benefits: { bg: 'bg-yellow-500/10', text: 'text-yellow-400', border: 'border-yellow-500/20' },
+    process: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/20' },
+    needs: { bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/20' },
+    schedule: { bg: 'bg-purple-500/10', text: 'text-purple-400', border: 'border-purple-500/20' },
+    contact: { bg: 'bg-primary/10', text: 'text-primary', border: 'border-primary/20' },
+}
+
+const getCardType = (title = '') => {
+    const t = title.toLowerCase()
+    if (t.includes('requirement') || t.includes('criteria')) return 'requirements'
+    if (t.includes('benefit') || t.includes('guild')) return 'benefits'
+    if (t.includes('process') || t.includes('application')) return 'process'
+    if (t.includes('need') || t.includes('recruiting')) return 'needs'
+    if (t.includes('schedule') || t.includes('raid')) return 'schedule'
+    if (t.includes('contact') || t.includes('join')) return 'contact'
+    return 'process'
+}
+
 const Recruitment = () => {
-    const [joinText, setJoinText] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
+    const [joinText, setJoinText] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
 
     useEffect(() => {
         const fetchJoinText = async () => {
             try {
-                setLoading(true);
-                setError('');
-                
+                setLoading(true)
+                setError('')
                 const response = await fetch('/api/jointext', {
                     cache: 'no-store',
-                    headers: {
-                        'Cache-Control': 'no-cache',
-                    }
-                });
-                const data = await response.json();
-
-                console.log('📥 Join page received data:', data);
-                console.log('📦 Sections count:', data.joinText?.sections?.length || 0);
+                    headers: { 'Cache-Control': 'no-cache' },
+                })
+                const data = await response.json()
 
                 if (!response.ok) {
-                    setError(data.message || data.error || 'Failed to load join text');
-                    return;
+                    setError(data.message || data.error || 'Failed to load join text')
+                    return
                 }
 
-                // Ensure hero exists with defaults if not present
-                const fetchedData = data.joinText || {};
+                const fetchedData = data.joinText || {}
                 if (!fetchedData.hero) {
                     fetchedData.hero = {
                         title: 'Join Our Guild',
                         subtitle: 'Embark on epic adventures with skilled players.',
-                        badges: []
-                    };
+                        badges: [],
+                    }
                 }
-                setJoinText(fetchedData);
-            } catch (error) {
-                console.error('Error fetching join text:', error);
-                setError('Failed to load join text. Please try again.');
+                setJoinText(fetchedData)
+            } catch (err) {
+                setError('Failed to load join text. Please try again.')
             } finally {
-                setLoading(false);
+                setLoading(false)
             }
-        };
+        }
+        fetchJoinText()
+    }, [])
 
-        fetchJoinText();
-    }, []);
-
-    const renderBlock = (block, sectionIndex) => {
-        const widthProps = block.layout === 'full' 
-            ? { xs: 12 } 
-            : { xs: 12, md: 6 };
-
-        // Determine card type for styling and icon
-        const getCardType = () => {
-            const title = block.title.toLowerCase();
-            if (title.includes('requirement') || title.includes('criteria')) return 'requirements';
-            if (title.includes('benefit') || title.includes('guild')) return 'benefits';
-            if (title.includes('process') || title.includes('application')) return 'process';
-            if (title.includes('need') || title.includes('recruiting')) return 'needs';
-            if (title.includes('schedule') || title.includes('raid')) return 'schedule';
-            if (title.includes('contact') || title.includes('join')) return 'contact';
-            return '';
-        };
-
-        const getIcon = () => {
-            const cardType = getCardType();
-            const iconProps = { sx: { fontSize: '2rem', color: '#FFD700' } };
-            
-            switch(cardType) {
-                case 'requirements': return <RulesIcon {...iconProps} />;
-                case 'benefits': return <TrophyIcon {...iconProps} />;
-                case 'process': return <CheckCircleIcon {...iconProps} />;
-                case 'needs': return <PeopleIcon {...iconProps} />;
-                case 'schedule': return <ScheduleIcon {...iconProps} />;
-                case 'contact': return <ContactMailIcon {...iconProps} />;
-                default: return <CheckCircleIcon {...iconProps} />;
-            }
-        };
+    const renderBlock = (block) => {
+        const cardType = getCardType(block.title)
+        const Icon = ICON_MAP[cardType] || CheckCircleIcon
+        const accent = ACCENT_COLORS[cardType] || ACCENT_COLORS.process
+        const widthClass = block.layout === 'full' ? 'col-span-12' : 'col-span-12 md:col-span-6'
 
         return (
-            <Grid item {...widthProps} key={block.id}>
-                <Paper 
-                    className={`recruitment-card ${getCardType()}`}
-                    elevation={0}
-                    sx={{ 
-                        height: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        position: 'relative',
-                        overflow: 'visible'
-                    }}
-                >
-                    {/* Icon Badge */}
-                    <Box 
-                        className="card-icon-badge"
-                        sx={{
-                            position: 'absolute',
-                            top: -16,
-                            left: 24,
-                            background: 'linear-gradient(135deg, #1a2332 0%, #0f1621 100%)',
-                            border: '2px solid #FFD700',
-                            borderRadius: '12px',
-                            padding: '8px 12px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 1,
-                            boxShadow: '0 4px 12px rgba(255, 215, 0, 0.3)',
-                            zIndex: 1
-                        }}
-                    >
-                        {getIcon()}
-                    </Box>
+            <div className={widthClass} key={block.id}>
+                <div className={`h-full rounded-xl border ${accent.border} bg-card shadow-sm p-6 flex flex-col gap-5`}>
+                    {/* Header */}
+                    <div className="flex items-center gap-3">
+                        <div className={`p-2.5 rounded-lg ${accent.bg} shrink-0`}>
+                            <Icon className={`w-5 h-5 ${accent.text}`} />
+                        </div>
+                        <h3 className="text-base font-semibold tracking-tight">{block.title}</h3>
+                    </div>
 
-                    <Box sx={{ pt: 2.5 }}>
-                        <Typography 
-                            component="h3"
-                            sx={{ 
-                                color: '#FFD700',
-                                fontSize: '1.5rem',
-                                fontWeight: 600,
-                                mb: 3,
-                                mt: 1.5,
-                                letterSpacing: '-0.01em',
-                                textShadow: '0 2px 8px rgba(255, 215, 0, 0.2)'
-                            }}
-                        >
-                            {block.title}
-                        </Typography>
-                    </Box>
+                    {/* Divider */}
+                    <div className={`h-px w-full ${accent.bg}`} />
 
                     {block.type === 'text' && (
-                        <Typography 
-                            variant="body1" 
-                            sx={{ 
-                                whiteSpace: 'pre-line',
-                                color: '#B0C4DE',
-                                lineHeight: 1.8,
-                                fontSize: '1.0625rem',
-                                mt: 0.5
-                            }}
-                        >
+                        <p className="whitespace-pre-line text-muted-foreground leading-relaxed text-sm flex-1">
                             {block.content}
-                        </Typography>
+                        </p>
                     )}
 
                     {block.type === 'list' && (
-                        <Box 
-                            component="ul" 
-                            sx={{ 
-                                pl: 0,
-                                m: 0,
-                                mt: 0.5,
-                                listStyle: 'none',
-                                '& li': {
-                                    position: 'relative',
-                                    pl: 3.5,
-                                    mb: 2,
-                                    display: 'flex',
-                                    alignItems: 'flex-start',
-                                    '&:before': {
-                                        content: '"▸"',
-                                        position: 'absolute',
-                                        left: 0,
-                                        top: '2px',
-                                        color: '#FFD700',
-                                        fontWeight: 'bold',
-                                        fontSize: '1.25rem',
-                                        lineHeight: 1
-                                    },
-                                    '&:last-child': {
-                                        mb: 0
-                                    }
-                                }
-                            }}
-                        >
+                        <ul className="space-y-3 flex-1">
                             {block.items.map((item, index) => (
-                                <li key={index}>
-                                    <Typography 
-                                        variant="body1" 
-                                        component="span"
-                                        sx={{ 
-                                            color: '#B0C4DE',
-                                            lineHeight: 1.7,
-                                            fontSize: '1rem'
-                                        }}
-                                    >
-                                        {item}
-                                    </Typography>
+                                <li key={index} className="flex items-start gap-3">
+                                    <ArrowRight className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${accent.text}`} />
+                                    <span className="text-muted-foreground text-sm leading-relaxed">{item}</span>
                                 </li>
                             ))}
-                        </Box>
+                        </ul>
                     )}
 
                     {block.type === 'contact' && (
-                        <Box sx={{ textAlign: 'center', mt: 2 }}>
-                            <Box sx={{ 
-                                display: 'flex', 
-                                flexDirection: { xs: 'column', sm: 'row' },
-                                gap: 2,
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                            }}>
-                                {block.discord?.url && (
-                                    <Chip 
-                                        icon={<ChatIcon />} 
-                                        label={block.discord.label} 
-                                        component="a" 
-                                        href={block.discord.url} 
-                                        target="_blank"
-                                        clickable
-                                        sx={{ 
-                                            bgcolor: '#5865F2', 
-                                            color: 'white',
-                                            fontSize: '1rem',
-                                            py: 2.5,
-                                            px: 3,
-                                            height: 'auto',
-                                            '& .MuiChip-icon': {
-                                                fontSize: '1.25rem',
-                                                color: 'white'
-                                            },
-                                            '&:hover': { 
-                                                bgcolor: '#4752C4',
-                                                transform: 'translateY(-2px)',
-                                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
-                                            },
-                                            transition: 'all 0.2s ease-in-out'
-                                        }}
-                                    />
-                                )}
-                                {block.email?.url && (
-                                    <Chip 
-                                        icon={<EmailIcon />} 
-                                        label={block.email.label} 
-                                        component="a" 
-                                        href={block.email.url}
-                                        clickable
-                                        sx={{ 
-                                            bgcolor: '#FFD700', 
-                                            color: '#0a1628',
-                                            fontSize: '1rem',
-                                            fontWeight: 600,
-                                            py: 2.5,
-                                            px: 3,
-                                            height: 'auto',
-                                            '& .MuiChip-icon': {
-                                                fontSize: '1.25rem',
-                                                color: '#0a1628'
-                                            },
-                                            '&:hover': { 
-                                                bgcolor: '#FFC700',
-                                                transform: 'translateY(-2px)',
-                                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
-                                            },
-                                            transition: 'all 0.2s ease-in-out'
-                                        }}
-                                    />
-                                )}
-                            </Box>
-                        </Box>
+                        <div className="flex flex-col sm:flex-row gap-3 mt-auto pt-2">
+                            {block.discord?.url && (
+                                <a
+                                    href={block.discord.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-flex items-center justify-center gap-2 bg-[#5865F2] hover:bg-[#4752C4] text-white text-sm font-medium py-2.5 px-5 rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                                >
+                                    <ChatIcon className="w-4 h-4" />
+                                    {block.discord.label}
+                                </a>
+                            )}
+                            {block.email?.url && (
+                                <a
+                                    href={block.email.url}
+                                    className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium py-2.5 px-5 rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                                >
+                                    <EmailIcon className="w-4 h-4" />
+                                    {block.email.label}
+                                </a>
+                            )}
+                        </div>
                     )}
-                </Paper>
-            </Grid>
-        );
-    };
+                </div>
+            </div>
+        )
+    }
 
     if (loading) {
         return (
-            <section className="recruitment">
-                <ContentWrapper>
-                    <Box sx={{ pt: 5, pb: 8, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-                        <CircularProgress />
-                    </Box>
-                </ContentWrapper>
-            </section>
-        );
+            <div className="flex justify-center items-center min-h-[50vh]">
+                <Spinner size="lg" />
+            </div>
+        )
     }
 
     if (error || !joinText || !joinText.sections) {
         return (
-            <section className="recruitment">
-                <ContentWrapper>
-                    <Box sx={{ pt: 5, pb: 8 }}>
-                        <Alert severity="error">
-                            {error || 'Failed to load join page content. Please try again later.'}
-                        </Alert>
-                    </Box>
-                </ContentWrapper>
-            </section>
-        );
+            <div className="p-6">
+                <Alert variant="destructive">
+                    <AlertDescription>
+                        {error || 'Failed to load join page content. Please try again later.'}
+                    </AlertDescription>
+                </Alert>
+            </div>
+        )
     }
 
-    // Sort sections by order
-    const sortedSections = [...joinText.sections].sort((a, b) => a.order - b.order);
-
-    // Hero badge color mapping
-    const getBadgeStyle = (color) => {
-        const styles = {
-            gold: {
-                bgcolor: 'rgba(255, 215, 0, 0.1)',
-                color: '#FFD700',
-                border: '1px solid rgba(255, 215, 0, 0.3)'
-            },
-            blue: {
-                bgcolor: 'rgba(176, 196, 222, 0.1)',
-                color: '#B0C4DE',
-                border: '1px solid rgba(176, 196, 222, 0.3)'
-            },
-            green: {
-                bgcolor: 'rgba(81, 207, 102, 0.1)',
-                color: '#51cf66',
-                border: '1px solid rgba(81, 207, 102, 0.3)'
-            }
-        };
-        return styles[color] || styles.blue;
-    };
+    const sortedSections = [...joinText.sections].sort((a, b) => a.order - b.order)
 
     return (
-        <section className="recruitment">
-            {/* Hero Section */}
+        <section className="space-y-0">
+            {/* Hero */}
             {joinText.hero && (
-                <Box 
-                    className="recruitment-hero"
-                    sx={{
-                        background: 'none',
-                        borderBottom: '2px solid rgba(255, 215, 0, 0.3)',
-                        py: 8,
-                        position: 'relative',
-                        overflow: 'hidden',
-                        '&::before': {
-                            content: '""',
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            background: 'radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 70%)',
-                            pointerEvents: 'none'
-                        }
-                    }}
-                >
-                    <Container maxWidth="lg">
-                        <Box sx={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
-                            <Typography 
-                                variant="h1" 
-                                sx={{ 
-                                    fontSize: { xs: '2.5rem', md: '3.5rem' },
-                                    fontWeight: 700,
-                                    color: '#FFFFFF',
-                                    mb: 2,
-                                    textShadow: '0 4px 16px rgba(255, 215, 0, 0.3)',
-                                    letterSpacing: '-0.02em'
-                                }}
-                            >
-                                {joinText.hero.title}
-                            </Typography>
-                            <Typography 
-                                variant="h5" 
-                                sx={{ 
-                                    fontSize: { xs: '1.125rem', md: '1.375rem' },
-                                    color: '#B0C4DE',
-                                    maxWidth: '800px',
-                                    mx: 'auto',
-                                    lineHeight: 1.6,
-                                    opacity: 0.9
-                                }}
-                            >
-                                {joinText.hero.subtitle}
-                            </Typography>
-                            
-                            {/* Decorative Elements */}
-                            {joinText.hero.badges && joinText.hero.badges.length > 0 && (
-                                <Box sx={{ 
-                                    mt: 4, 
-                                    display: 'flex', 
-                                    justifyContent: 'center', 
-                                    gap: 2,
-                                    flexWrap: 'wrap'
-                                }}>
+                <div className="relative -mx-6 md:-mx-8 lg:-mx-12 mb-10 overflow-hidden">
+                    {/* Background gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-primary/3 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(255,255,255,0.06)_0%,transparent_100%)] pointer-events-none" />
+                    
+                    <div className="relative px-6 md:px-8 lg:px-12 py-14 text-center">
+                        <div className="max-w-2xl mx-auto">
+                            {joinText.hero.badges?.length > 0 && (
+                                <div className="flex justify-center gap-2 flex-wrap mb-5">
                                     {joinText.hero.badges.map((badge, index) => (
-                                        <Chip 
+                                        <Badge
                                             key={index}
-                                            label={badge.label} 
-                                            sx={{ 
-                                                ...getBadgeStyle(badge.color),
-                                                fontWeight: 600
-                                            }} 
-                                        />
+                                            variant="outline"
+                                            className={`text-xs font-medium px-3 py-1 ${
+                                                badge.color === 'gold' ? 'border-yellow-500/40 text-yellow-400 bg-yellow-500/10' :
+                                                badge.color === 'green' ? 'border-emerald-500/40 text-emerald-400 bg-emerald-500/10' :
+                                                'border-border/60 text-muted-foreground'
+                                            }`}
+                                        >
+                                            {badge.label}
+                                        </Badge>
                                     ))}
-                                </Box>
+                                </div>
                             )}
-                        </Box>
-                    </Container>
-                </Box>
+                            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+                                {joinText.hero.title}
+                            </h1>
+                            <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
+                                {joinText.hero.subtitle}
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Bottom fade */}
+                    <div className="absolute bottom-0 left-0 right-0 h-px bg-border/50" />
+                </div>
             )}
 
             {/* Content Sections */}
-            <ContentWrapper>
-                <Box sx={{ pt: 10, pb: 12 }}>
-                    {sortedSections.map((section, sectionIndex) => {
-                        // Sort blocks by order
-                        const sortedBlocks = [...section.blocks].sort((a, b) => a.order - b.order);
-                        
-                        return (
-                            <Box 
-                                key={section.id} 
-                                className="recruitment-section"
-                                sx={{ 
-                                    mb: sectionIndex === sortedSections.length - 1 ? 0 : 12,
-                                }}
-                            >
-                                <Grid container spacing={4}>
-                                    {sortedBlocks.map(block => renderBlock(block, sectionIndex))}
-                                </Grid>
-                            </Box>
-                        );
-                    })}
-                </Box>
-            </ContentWrapper>
+            <div className="space-y-6">
+                {sortedSections.map((section) => {
+                    const sortedBlocks = [...section.blocks].sort((a, b) => a.order - b.order)
+                    return (
+                        <div key={section.id} className="grid grid-cols-12 gap-4">
+                            {sortedBlocks.map(block => renderBlock(block))}
+                        </div>
+                    )
+                })}
+            </div>
         </section>
     )
 }

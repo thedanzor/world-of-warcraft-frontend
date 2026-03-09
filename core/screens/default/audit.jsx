@@ -56,28 +56,18 @@
 // React
 import React, { useMemo } from 'react'
 
-// Material-UI components
-import Slider from '@mui/material/Slider'
-import Box from '@mui/material/Box'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import Typography from '@mui/material/Typography'
-import Chip from '@mui/material/Chip'
-import Paper from '@mui/material/Paper'
-import Tabs from '@mui/material/Tabs'
-import Tab from '@mui/material/Tab'
-import Badge from '@mui/material/Badge'
-import TextField from '@mui/material/TextField'
-import InputAdornment from '@mui/material/InputAdornment'
-import SearchIcon from '@mui/icons-material/Search'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ExpandLessIcon from '@mui/icons-material/ExpandLess'
-import Button from '@mui/material/Button'
+// Shadcn & Tailwind components
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Slider } from '@/components/ui/slider'
+import { Search, ChevronDown, ChevronUp } from 'lucide-react'
 
 // Internal components
 import AuditBlock from '@/core/modules/auditBlock'
+import AuditAnalytics from '@/core/components/AuditAnalytics'
 import { P } from '@/core/components/typography'
 
 // Internal utilities and config
@@ -87,7 +77,6 @@ import useAuditData from '@/core/hooks/useAuditData'
 import config from '@/app.config.js'
 
 // Styles
-import '@/core/screens/default/scss/guildAudit.scss'
 
 // Static variables
 const {
@@ -124,7 +113,7 @@ const GuildAudit = ({ auditable, initialData }) => {
     const [lockTimeStamp, setLockTimeStamp] = React.useState(
         getPreviousWednesdayAt1AM(Date.now())
     )
-    const [showAdvancedFilters, setShowAdvancedFilters] = React.useState(false)
+    const [showAdvancedFilters, setShowAdvancedFilters] = React.useState(true)
 
     const builtClassList = useMemo(() => buildInitialClassList(data), [data])
     const dataToUse = useAuditData(data, [
@@ -185,526 +174,159 @@ const GuildAudit = ({ auditable, initialData }) => {
         }
     }, [data])
 
+    const toggleClassFilter = (className) => {
+        setClassFilter(prev => 
+            prev.includes(className) 
+                ? prev.filter(c => c !== className)
+                : [...prev, className]
+        )
+    }
+
     return (
-        <section className="guildAudit">
-            <>
-                <div className={`bodyContent`}>
-                    <div className="mainContent">
-                        <div className="scrollerContainer">
-                            <div
-                                className="logoHolder"
-                                style={{ marginTop: '40px', padding: '0 16px' }}
-                            >
-                                <Typography
-                                    variant="h2"
-                                    component="h2"
-                                    sx={{
-                                        textTransform: 'capitalize !important',
-                                        textAlign: 'left',
-                                    }}
-                                >
-                                    Audit
-                                </Typography>
-                                <Typography
-                                    variant="p"
-                                    component="p"
-                                    color="text.secondary"
-                                    sx={{ mb: 4 }}
-                                >
-                                    Last audit ran{' '}
-                                    {new Date(
-                                        initialData.timestamp
-                                    ).toLocaleString()}
-                                </Typography>
-                            </div>
+        <section className="space-y-6">
+            <div className="flex flex-col gap-1">
+                <h2 className="text-3xl font-bold tracking-tight">Audit</h2>
+                <p className="text-sm text-muted-foreground">
+                    Last audit ran {new Date(initialData.timestamp).toLocaleString()}
+                </p>
+            </div>
 
-                            <Box sx={{ padding: '0 16px' }}>
-                                <Paper
-                                    sx={{
-                                        p: 2,
-                                        mb: 2,
-                                        borderRadius: 2,
-                                        bgcolor: 'background.paper',
-                                    }}
-                                >
-                                    <Typography
-                                        variant="h6"
-                                        sx={{ fontSize: '1.15rem' }}
-                                    >
-                                        Character Search
-                                    </Typography>
-                                    <Typography
-                                        variant="body2"
-                                        color="text.secondary"
-                                        gutterBottom
-                                    >
-                                        Search for specific characters by name
-                                    </Typography>
-                                    <TextField
-                                        fullWidth
-                                        placeholder="Search by Character Name"
-                                        value={query}
-                                        onChange={(e) =>
-                                            setQuery(
-                                                e.target.value.replace(
-                                                    /\s/g,
-                                                    ''
-                                                )
-                                            )
-                                        }
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <SearchIcon />
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                    />
-                                </Paper>
-
-                                {/* Advanced Filters - Hidden by default */}
-                                {showAdvancedFilters && (
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            gap: 2,
-                                            flexWrap: 'wrap',
-                                            mb: 2,
-                                        }}
-                                    >
-                                        <Paper
-                                            sx={{
-                                                width: {
-                                                    xs: '100%',
-                                                    sm: 'calc(50% - 8px)',
-                                                    md: 'calc(25% - 12px)',
-                                                },
-                                                p: 2,
-                                                borderRadius: 2,
-                                                bgcolor: 'background.paper',
-                                            }}
-                                        >
-                                            <Typography
-                                                variant="h6"
-                                                sx={{ fontSize: '1.15rem' }}
-                                            >
-                                                Item Level Filter
-                                            </Typography>
-                                            <Typography
-                                                variant="body2"
-                                                color="text.secondary"
-                                                gutterBottom
-                                            >
-                                                Filter characters by minimum item
-                                                level
-                                            </Typography>
-                                            <Slider
-                                                value={ilevelFilter}
-                                                onChange={(e, newValue) =>
-                                                    setIlevelFilter(newValue)
-                                                }
-                                                valueLabelDisplay="auto"
-                                                min={MIN_CHECK_CAP}
-                                                max={MAX_CHECK_CAP}
-                                                marks
-                                            />
-                                        </Paper>
-
-                                        <Paper
-                                            sx={{
-                                                width: {
-                                                    xs: '100%',
-                                                    sm: 'calc(50% - 8px)',
-                                                    md: 'calc(25% - 12px)',
-                                                },
-                                                p: 2,
-                                                borderRadius: 2,
-                                                bgcolor: 'background.paper',
-                                            }}
-                                        >
-                                            <Typography
-                                                variant="h6"
-                                                sx={{ fontSize: '1.15rem' }}
-                                            >
-                                                Rank Filter
-                                            </Typography>
-                                            <Typography
-                                                variant="body2"
-                                                color="text.secondary"
-                                                gutterBottom
-                                            >
-                                                Filter characters by their guild
-                                                rank
-                                            </Typography>
-                                            <FormControl fullWidth>
-                                                <Select
-                                                    value={rankFilter}
-                                                    onChange={(e) =>
-                                                        setRankFilter(
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                >
-                                                    <MenuItem value="all">
-                                                        All (
-                                                        {numbOfCombinedMainsAndAlts}
-                                                        )
-                                                    </MenuItem>
-                                                    <MenuItem value="mains">
-                                                        Mains ({numbOfMains})
-                                                    </MenuItem>
-                                                    <MenuItem value="alts">
-                                                        Alts ({numbOfAlts})
-                                                    </MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </Paper>
-
-                                        <Paper
-                                            sx={{
-                                                width: {
-                                                    xs: '100%',
-                                                    sm: 'calc(50% - 8px)',
-                                                    md: 'calc(25% - 12px)',
-                                                },
-                                                p: 2,
-                                                borderRadius: 2,
-                                                bgcolor: 'background.paper',
-                                            }}
-                                        >
-                                            <Typography
-                                                variant="h6"
-                                                sx={{ fontSize: '1.15rem' }}
-                                            >
-                                                Spec Filter
-                                            </Typography>
-                                            <Typography
-                                                variant="body2"
-                                                color="text.secondary"
-                                                gutterBottom
-                                            >
-                                                Filter characters by their role
-                                                specialization
-                                            </Typography>
-                                            <FormControl fullWidth>
-                                                <Select
-                                                    value={specFilter}
-                                                    onChange={(e) =>
-                                                        setSpecFilter(
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                >
-                                                    <MenuItem value="all">
-                                                        All
-                                                    </MenuItem>
-                                                    <MenuItem value="tanks">
-                                                        Tanks
-                                                    </MenuItem>
-                                                    <MenuItem value="healers">
-                                                        Healers
-                                                    </MenuItem>
-                                                    <MenuItem value="dps">
-                                                        DPS
-                                                    </MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </Paper>
-
-                                        <Paper
-                                            sx={{
-                                                width: {
-                                                    xs: '100%',
-                                                    sm: 'calc(50% - 8px)',
-                                                    md: 'calc(25% - 12px)',
-                                                },
-                                                p: 2,
-                                                borderRadius: 2,
-                                                bgcolor: 'background.paper',
-                                            }}
-                                        >
-                                            <Typography
-                                                variant="h6"
-                                                sx={{ fontSize: '1.15rem' }}
-                                            >
-                                                Class Filter
-                                            </Typography>
-                                            <Typography
-                                                variant="body2"
-                                                color="text.secondary"
-                                                gutterBottom
-                                            >
-                                                Filter characters by their class
-                                            </Typography>
-                                            <FormControl fullWidth>
-                                                <Select
-                                                    multiple
-                                                    value={classFilter}
-                                                    onChange={(e) =>
-                                                        setClassFilter(
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    input={<OutlinedInput />}
-                                                    renderValue={(selected) => (
-                                                        <Box
-                                                            sx={{
-                                                                display: 'flex',
-                                                                flexWrap: 'wrap',
-                                                                gap: 0.5,
-                                                            }}
-                                                        >
-                                                            {selected.map(
-                                                                (value) => (
-                                                                    <Chip
-                                                                        key={value}
-                                                                        label={
-                                                                            value
-                                                                        }
-                                                                    />
-                                                                )
-                                                            )}
-                                                        </Box>
-                                                    )}
-                                                >
-                                                    {builtClassList.map(
-                                                        (className) => (
-                                                            <MenuItem
-                                                                key={className}
-                                                                value={className}
-                                                            >
-                                                                {className}
-                                                            </MenuItem>
-                                                        )
-                                                    )}
-                                                </Select>
-                                            </FormControl>
-                                        </Paper>
-                                    </Box>
-                                )}
-
-                                {/* Show More/Less Toggle Button */}
-                                <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
-                                    <Button
-                                        variant="contained"
-                                        onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-                                        startIcon={showAdvancedFilters ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                                        sx={{
-                                            borderRadius: 2,
-                                            textTransform: 'none',
-                                            fontWeight: 600,
-                                            fontSize: '0.875rem',
-                                            px: 3,
-                                            py: 1,
-                                        }}
-                                    >
-                                        {showAdvancedFilters ? 'Show Less' : 'Show More Filters'}
-                                    </Button>
-                                </Box>
-
-                                {!loading && showSearchError && (
-                                    <div className="auditResponse">
-                                        <P
-                                            style={{
-                                                fontWeight: 'bold',
-                                                maxWidth: '900px',
-                                                paddingTop: '200px',
-                                            }}
-                                        >
-                                            No characters could be found with
-                                            that search query, the character may
-                                            not be in the guild or too far
-                                            behind in progression to be audited.{' '}
-                                            <br />
-                                            Please reach out to an officer if
-                                            you believe this to be an error or
-                                            mistake.
-                                        </P>
-                                    </div>
-                                )}
-
-                                {!loading && !showSearchError && (
-                                    <div className="auditResponse">
-                                        <Paper
-                                            sx={{
-                                                width: '100%',
-                                                mb: 2,
-                                                overflowX: 'auto',
-                                            }}
-                                        >
-                                            <Tabs
-                                                value={activeTab}
-                                                onChange={(e, newValue) =>
-                                                    setActiveTab(newValue)
-                                                }
-                                                variant="scrollable"
-                                                scrollButtons={true}
-                                                allowScrollButtonsMobile
-                                                sx={{
-                                                    '.MuiTabs-scrollButtons': {
-                                                        '&.Mui-disabled': {
-                                                            opacity: 0.3,
-                                                        },
-                                                    },
-                                                }}
-                                            >
-                                                <Tab
-                                                    label={
-                                                        <Badge
-                                                            badgeContent={
-                                                                dataToUse?.all
-                                                                    ?.length ||
-                                                                0
-                                                            }
-                                                            color="primary"
-                                                            sx={{
-                                                                position:
-                                                                    'relative',
-                                                                padding: '8px',
-                                                            }}
-                                                        >
-                                                            All
-                                                        </Badge>
-                                                    }
-                                                    value="all"
-                                                />
-                                                <Tab
-                                                    label={
-                                                        <Badge
-                                                            badgeContent={
-                                                                dataToUse
-                                                                    ?.onlyMissingEnchants
-                                                                    ?.length ||
-                                                                0
-                                                            }
-                                                            color="primary"
-                                                            sx={{
-                                                                position:
-                                                                    'relative',
-                                                                padding: '8px',
-                                                            }}
-                                                        >
-                                                            Missing Enchants
-                                                        </Badge>
-                                                    }
-                                                    value="enchants"
-                                                />
-                                                {dataToUse?.normalLocked
-                                                    ?.length > 0 && (
-                                                    <Tab
-                                                        label={
-                                                            <Badge
-                                                                badgeContent={
-                                                                    dataToUse
-                                                                        ?.normalLocked
-                                                                        ?.length ||
-                                                                    0
-                                                                }
-                                                                color="primary"
-                                                                sx={{
-                                                                    position:
-                                                                        'relative',
-                                                                    padding:
-                                                                        '8px',
-                                                                }}
-                                                            >
-                                                                Locked (Normal)
-                                                            </Badge>
-                                                        }
-                                                        value="lockedNormal"
-                                                    />
-                                                )}
-                                                {dataToUse?.heroicLocked
-                                                    ?.length > 0 && (
-                                                    <Tab
-                                                        label={
-                                                            <Badge
-                                                                badgeContent={
-                                                                    dataToUse
-                                                                        ?.heroicLocked
-                                                                        ?.length ||
-                                                                    0
-                                                                }
-                                                                color="primary"
-                                                                sx={{
-                                                                    position:
-                                                                        'relative',
-                                                                    padding:
-                                                                        '8px',
-                                                                }}
-                                                            >
-                                                                Locked (Heroic)
-                                                            </Badge>
-                                                        }
-                                                        value="lockedHeroic"
-                                                    />
-                                                )}
-                                                {dataToUse?.mythicLocked
-                                                    ?.length > 0 && (
-                                                    <Tab
-                                                        label={
-                                                            <Badge
-                                                                badgeContent={
-                                                                    dataToUse
-                                                                        ?.mythicLocked
-                                                                        ?.length ||
-                                                                    0
-                                                                }
-                                                                color="primary"
-                                                                sx={{
-                                                                    position:
-                                                                        'relative',
-                                                                    padding:
-                                                                        '8px',
-                                                                }}
-                                                            >
-                                                                Locked (Mythic)
-                                                            </Badge>
-                                                        }
-                                                        value="lockedMythic"
-                                                    />
-                                                )}
-                                            </Tabs>
-                                        </Paper>
-                                        <Box sx={{ overflowX: 'auto' }}>
-                                            {activeTab === 'all' && (
-                                                <AuditBlock
-                                                    data={dataToUse}
-                                                    name="all"
-                                                />
-                                            )}
-                                            {activeTab === 'enchants' && (
-                                                <AuditBlock
-                                                    data={dataToUse}
-                                                    name="onlyMissingEnchants"
-                                                />
-                                            )}
-                                            {activeTab === 'lockedNormal' && (
-                                                <AuditBlock
-                                                    data={dataToUse}
-                                                    name="normalLocked"
-                                                />
-                                            )}
-                                            {activeTab === 'lockedHeroic' && (
-                                                <AuditBlock
-                                                    data={dataToUse}
-                                                    name="heroicLocked"
-                                                />
-                                            )}
-                                            {activeTab === 'lockedMythic' && (
-                                                <AuditBlock
-                                                    data={dataToUse}
-                                                    name="mythicLocked"
-                                                />
-                                            )}
-                                        </Box>
-                                    </div>
-                                )}
-                            </Box>
-                        </div>
+            {/* Filters */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {/* Search */}
+                <div className="lg:col-span-4">
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                        <Input
+                            className="pl-9"
+                            placeholder="Search by character name…"
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value.replace(/\s/g, ''))}
+                        />
                     </div>
                 </div>
-            </>
+
+                {/* Item Level */}
+                <div className="p-4 rounded-lg bg-card border border-border/50 shadow-sm space-y-3">
+                    <div>
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Item Level</p>
+                        <p className="text-2xl font-bold mt-1">{ilevelFilter}</p>
+                    </div>
+                    <Slider
+                        value={[ilevelFilter]}
+                        onValueChange={(val) => setIlevelFilter(val[0])}
+                        min={MIN_CHECK_CAP}
+                        max={MAX_CHECK_CAP}
+                        step={1}
+                    />
+                </div>
+
+                {/* Rank Filter */}
+                <div className="p-4 rounded-lg bg-card border border-border/50 shadow-sm space-y-3">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Rank</p>
+                    <Select value={rankFilter} onValueChange={setRankFilter}>
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select rank" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All ({numbOfCombinedMainsAndAlts})</SelectItem>
+                            <SelectItem value="mains">Mains ({numbOfMains})</SelectItem>
+                            <SelectItem value="alts">Alts ({numbOfAlts})</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                {/* Spec Filter */}
+                <div className="p-4 rounded-lg bg-card border border-border/50 shadow-sm space-y-3">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Role</p>
+                    <Select value={specFilter} onValueChange={setSpecFilter}>
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All</SelectItem>
+                            <SelectItem value="tanks">Tanks</SelectItem>
+                            <SelectItem value="healers">Healers</SelectItem>
+                            <SelectItem value="dps">DPS</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                {/* Class Filter */}
+                <div className="p-4 rounded-lg bg-card border border-border/50 shadow-sm space-y-3">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Class</p>
+                    <div className="flex flex-wrap gap-1">
+                        {builtClassList.map((className) => (
+                            <Badge
+                                key={className}
+                                variant={classFilter.includes(className) ? "default" : "outline"}
+                                className="cursor-pointer text-xs"
+                                onClick={() => toggleClassFilter(className)}
+                            >
+                                {className}
+                            </Badge>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* Analytics */}
+            {!loading && !showSearchError && dataToUse?.all?.length > 0 && (
+                <AuditAnalytics players={dataToUse.all} />
+            )}
+
+            {/* Results */}
+            {!loading && showSearchError && (
+                <div className="rounded-lg border border-border bg-card p-8 text-center">
+                    <p className="text-muted-foreground max-w-lg mx-auto">
+                        No characters found with that search query. The character may not be in the guild
+                        or too far behind in progression to be audited.
+                    </p>
+                </div>
+            )}
+
+            {!loading && !showSearchError && (
+                <div className="space-y-4">
+                    <Tabs value={activeTab} onValueChange={setActiveTab}>
+                        <div className="overflow-x-auto pb-px">
+                            <TabsList className="gap-1">
+                                <TabsTrigger value="all" className="gap-2">
+                                    All
+                                    <Badge variant="secondary" className="text-xs px-1.5 py-0 min-w-[1.5rem] justify-center">{dataToUse?.all?.length || 0}</Badge>
+                                </TabsTrigger>
+                                <TabsTrigger value="enchants" className="gap-2">
+                                    Missing Enchants
+                                    <Badge variant="secondary" className="text-xs px-1.5 py-0 min-w-[1.5rem] justify-center">{dataToUse?.onlyMissingEnchants?.length || 0}</Badge>
+                                </TabsTrigger>
+                                {dataToUse?.normalLocked?.length > 0 && (
+                                    <TabsTrigger value="lockedNormal" className="gap-2">
+                                        Locked Normal
+                                        <Badge variant="secondary" className="text-xs px-1.5 py-0 min-w-[1.5rem] justify-center">{dataToUse?.normalLocked?.length || 0}</Badge>
+                                    </TabsTrigger>
+                                )}
+                                {dataToUse?.heroicLocked?.length > 0 && (
+                                    <TabsTrigger value="lockedHeroic" className="gap-2">
+                                        Locked Heroic
+                                        <Badge variant="secondary" className="text-xs px-1.5 py-0 min-w-[1.5rem] justify-center">{dataToUse?.heroicLocked?.length || 0}</Badge>
+                                    </TabsTrigger>
+                                )}
+                                {dataToUse?.mythicLocked?.length > 0 && (
+                                    <TabsTrigger value="lockedMythic" className="gap-2">
+                                        Locked Mythic
+                                        <Badge variant="secondary" className="text-xs px-1.5 py-0 min-w-[1.5rem] justify-center">{dataToUse?.mythicLocked?.length || 0}</Badge>
+                                    </TabsTrigger>
+                                )}
+                            </TabsList>
+                        </div>
+
+                        <TabsContent value="all"><AuditBlock data={dataToUse} name="all" /></TabsContent>
+                        <TabsContent value="enchants"><AuditBlock data={dataToUse} name="onlyMissingEnchants" /></TabsContent>
+                        <TabsContent value="lockedNormal"><AuditBlock data={dataToUse} name="normalLocked" /></TabsContent>
+                        <TabsContent value="lockedHeroic"><AuditBlock data={dataToUse} name="heroicLocked" /></TabsContent>
+                        <TabsContent value="lockedMythic"><AuditBlock data={dataToUse} name="mythicLocked" /></TabsContent>
+                    </Tabs>
+                </div>
+            )}
         </section>
     )
 }

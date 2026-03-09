@@ -2,48 +2,31 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import {
-  Box,
-  Container,
-  Typography,
-  Card,
-  CardContent,
-  Button,
-  Stack,
-  Chip,
-  Alert,
-  CircularProgress,
-  Divider,
-  Grid,
-  IconButton,
-  Tooltip,
-  Snackbar,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Paper,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon
-} from '@mui/material'
-import {
-  ArrowBack as ArrowBackIcon,
-  BugReport as BugReportIcon,
-  CheckCircle as ResolvedIcon,
-  Delete as DeleteIcon,
-  ExpandMore as ExpandMoreIcon,
-  Schedule as TimeIcon,
-  Computer as ComputerIcon,
-  Person as PersonIcon,
-  Code as CodeIcon,
-  Info as InfoIcon,
-  Warning as WarningIcon,
-  Error as ErrorIcon,
-  Http as HttpIcon,
-  LocationOn as LocationIcon
-} from '@mui/icons-material'
 import { formatDistanceToNow, format } from 'date-fns'
+import {
+  ArrowLeft,
+  Bug,
+  CheckCircle,
+  Trash2,
+  Clock,
+  Monitor,
+  User,
+  Code,
+  Info,
+  AlertTriangle,
+  XOctagon,
+  Network,
+  MapPin
+} from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
+import { Spinner } from '@/components/ui/spinner'
+import { Separator } from '@/components/ui/separator'
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
+import { toast } from 'sonner'
 
 const ErrorDetailPage = () => {
   const router = useRouter()
@@ -53,7 +36,6 @@ const ErrorDetailPage = () => {
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState(false)
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' })
 
   // Fetch error details
   const fetchError = async () => {
@@ -69,11 +51,7 @@ const ErrorDetailPage = () => {
       }
     } catch (err) {
       console.error('Error fetching error details:', err)
-      setSnackbar({
-        open: true,
-        message: 'Failed to fetch error details: ' + err.message,
-        severity: 'error'
-      })
+      toast.error('Failed to fetch error details: ' + err.message)
     } finally {
       setLoading(false)
     }
@@ -90,21 +68,13 @@ const ErrorDetailPage = () => {
       
       if (data.success) {
         setError(prev => ({ ...prev, resolved: true }))
-        setSnackbar({
-          open: true,
-          message: 'Error marked as resolved',
-          severity: 'success'
-        })
+        toast.success('Error marked as resolved')
       } else {
         throw new Error(data.error || 'Failed to resolve error')
       }
     } catch (err) {
       console.error('Error resolving:', err)
-      setSnackbar({
-        open: true,
-        message: 'Failed to resolve error: ' + err.message,
-        severity: 'error'
-      })
+      toast.error('Failed to resolve error: ' + err.message)
     } finally {
       setActionLoading(false)
     }
@@ -120,11 +90,7 @@ const ErrorDetailPage = () => {
       const data = await response.json()
       
       if (data.success) {
-        setSnackbar({
-          open: true,
-          message: 'Error deleted successfully',
-          severity: 'success'
-        })
+        toast.success('Error deleted successfully')
         setTimeout(() => {
           router.push('/errors')
         }, 1500)
@@ -133,11 +99,7 @@ const ErrorDetailPage = () => {
       }
     } catch (err) {
       console.error('Error deleting:', err)
-      setSnackbar({
-        open: true,
-        message: 'Failed to delete error: ' + err.message,
-        severity: 'error'
-      })
+      toast.error('Failed to delete error: ' + err.message)
     } finally {
       setActionLoading(false)
     }
@@ -149,347 +111,318 @@ const ErrorDetailPage = () => {
     }
   }, [errorId])
 
-  const getSeverityColor = (severity) => {
+  const getSeverityVariant = (severity) => {
     switch (severity) {
-      case 'high': return 'error'
-      case 'medium': return 'warning'
-      case 'low': return 'info'
+      case 'high': return 'destructive'
+      case 'medium': return 'secondary'
+      case 'low': return 'outline'
       default: return 'default'
     }
   }
 
-  const getSeverityIcon = (severity) => {
+  const getSeverityColor = (severity) => {
     switch (severity) {
-      case 'high': return <ErrorIcon />
-      case 'medium': return <WarningIcon />
-      case 'low': return <InfoIcon />
-      default: return <BugReportIcon />
+      case 'high': return 'text-destructive'
+      case 'medium': return 'text-amber-500'
+      case 'low': return 'text-blue-500'
+      default: return 'text-foreground'
     }
   }
 
-  const getTypeIcon = (type) => {
+  const getSeverityIcon = (severity, className = "h-4 w-4") => {
+    switch (severity) {
+      case 'high': return <XOctagon className={className} />
+      case 'medium': return <AlertTriangle className={className} />
+      case 'low': return <Info className={className} />
+      default: return <Bug className={className} />
+    }
+  }
+
+  const getTypeIcon = (type, className = "h-5 w-5") => {
     switch (type) {
-      case 'api': return <HttpIcon />
-      case 'guild-fetch': return <PersonIcon />
-      case 'database': return <ComputerIcon />
-      default: return <BugReportIcon />
+      case 'api': return <Network className={className} />
+      case 'guild-fetch': return <User className={className} />
+      case 'database': return <Monitor className={className} />
+      default: return <Bug className={className} />
     }
-  }
-
-  const handleCloseSnackbar = () => {
-    setSnackbar(prev => ({ ...prev, open: false }))
   }
 
   if (loading) {
     return (
-      <Container maxWidth="xl" sx={{ py: 4 }}>
-        <Box display="flex" justifyContent="center" py={8}>
-          <CircularProgress />
-        </Box>
-      </Container>
+      <div className="container max-w-7xl mx-auto py-8 px-4">
+        <div className="flex justify-center items-center py-24">
+          <Spinner className="h-8 w-8" />
+        </div>
+      </div>
     )
   }
 
   if (!error) {
     return (
-      <Container maxWidth="xl" sx={{ py: 4 }}>
-        <Alert severity="error">
-          Error not found or failed to load.
+      <div className="container max-w-7xl mx-auto py-8 px-4">
+        <Alert variant="destructive">
+          <XOctagon className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>Error not found or failed to load.</AlertDescription>
         </Alert>
-      </Container>
+      </div>
     )
   }
 
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
+    <div className="container max-w-7xl mx-auto py-8 px-4">
       {/* Header */}
-      <Box mb={4}>
-        <Stack direction="row" alignItems="center" spacing={2} mb={2}>
-          <IconButton onClick={() => router.push('/errors')}>
-            <ArrowBackIcon />
-          </IconButton>
-          <BugReportIcon fontSize="large" />
-          <Typography variant="h4" component="h1">
+      <div className="mb-8">
+        <div className="flex flex-row items-center gap-4 mb-4">
+          <Button variant="ghost" size="icon" onClick={() => router.push('/errors')}>
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <Bug className="h-8 w-8 text-muted-foreground" />
+          <h1 className="text-3xl font-bold tracking-tight">
             Error Details
-          </Typography>
-          <Chip 
-            label={error.severity.toUpperCase()} 
-            color={getSeverityColor(error.severity)}
-            icon={getSeverityIcon(error.severity)}
-          />
+          </h1>
+          <Badge 
+            variant={getSeverityVariant(error.severity)}
+            className="flex items-center gap-1.5"
+          >
+            {getSeverityIcon(error.severity, "h-3 w-3")}
+            {error.severity.toUpperCase()}
+          </Badge>
           {error.resolved && (
-            <Chip 
-              icon={<ResolvedIcon />}
-              label="RESOLVED" 
-              color="success"
-            />
+            <Badge 
+              variant="default"
+              className="bg-green-600 hover:bg-green-700 flex items-center gap-1.5"
+            >
+              <CheckCircle className="h-3 w-3" />
+              RESOLVED
+            </Badge>
           )}
-        </Stack>
-      </Box>
+        </div>
+      </div>
 
-      <Grid container spacing={3}>
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Main Error Information */}
-        <Grid item xs={12} lg={8}>
-          <Stack spacing={3}>
-            {/* Error Summary */}
-            <Card>
-              <CardContent>
-                <Stack direction="row" alignItems="center" spacing={2} mb={2}>
-                  {getTypeIcon(error.type)}
-                  <Typography variant="h5">
-                    {error.error.name}
-                  </Typography>
-                </Stack>
-                <Typography variant="body1" color="text.secondary" mb={2}>
-                  {error.error.message}
-                </Typography>
-                <Stack direction="row" spacing={2}>
-                  <Chip label={error.type} variant="outlined" />
-                  <Chip label={`Status ${error.error.status}`} variant="outlined" />
-                  {error.error.code && (
-                    <Chip label={error.error.code} variant="outlined" />
+        <div className="md:col-span-12 lg:col-span-8 flex flex-col gap-6">
+          {/* Error Summary */}
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3 mb-4">
+                {getTypeIcon(error.type, "h-6 w-6 text-muted-foreground")}
+                <h2 className="text-xl font-semibold">
+                  {error.error.name}
+                </h2>
+              </div>
+              <p className="text-muted-foreground mb-4">
+                {error.error.message}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="outline">{error.type}</Badge>
+                <Badge variant="outline">Status {error.error.status}</Badge>
+                {error.error.code && (
+                  <Badge variant="outline">{error.error.code}</Badge>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Stack Trace */}
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="text-md font-semibold mb-4">
+                Stack Trace
+              </h3>
+              <div className="p-4 bg-muted/50 rounded-md border font-mono text-sm whitespace-pre-wrap overflow-auto max-h-[400px]">
+                {error.error.stack}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Context Information */}
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="text-md font-semibold mb-4">
+                Request Context
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <Network className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium leading-none mb-1">Method</p>
+                      <p className="text-sm text-muted-foreground">{error.context.method}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <MapPin className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium leading-none mb-1">Endpoint</p>
+                      <p className="text-sm text-muted-foreground break-all">{error.context.url}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Monitor className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium leading-none mb-1">IP Address</p>
+                      <p className="text-sm text-muted-foreground">{error.context.ip}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <Clock className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium leading-none mb-1">Timestamp</p>
+                      <p className="text-sm text-muted-foreground">{format(new Date(error.timestamp), 'PPpp')}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Code className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium leading-none mb-1">Process ID</p>
+                      <p className="text-sm text-muted-foreground">{error.context.processId}</p>
+                    </div>
+                  </div>
+                  {error.context.character && (
+                    <div className="flex items-start gap-3">
+                      <User className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-medium leading-none mb-1">Character</p>
+                        <p className="text-sm text-muted-foreground">{error.context.character}</p>
+                      </div>
+                    </div>
                   )}
-                </Stack>
-              </CardContent>
-            </Card>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-            {/* Stack Trace */}
+          {/* Query Parameters */}
+          {error.context.query && Object.keys(error.context.query).length > 0 && (
             <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Stack Trace
-                </Typography>
-                <Paper 
-                  variant="outlined" 
-                  sx={{ 
-                    p: 2, 
-                    backgroundColor: '#f5f5f5',
-                    fontFamily: 'monospace',
-                    fontSize: '0.875rem',
-                    whiteSpace: 'pre-wrap',
-                    overflow: 'auto',
-                    maxHeight: 400
-                  }}
-                >
-                  {error.error.stack}
-                </Paper>
+              <CardContent className="pt-6">
+                <h3 className="text-md font-semibold mb-4">
+                  Query Parameters
+                </h3>
+                <div className="p-4 bg-muted/50 rounded-md border font-mono text-sm overflow-auto">
+                  <pre className="m-0">
+                    {JSON.stringify(error.context.query, null, 2)}
+                  </pre>
+                </div>
               </CardContent>
             </Card>
+          )}
 
-            {/* Context Information */}
+          {/* Route Parameters */}
+          {error.context.params && Object.keys(error.context.params).length > 0 && (
             <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Request Context
-                </Typography>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <List dense>
-                      <ListItem>
-                        <ListItemIcon>
-                          <HttpIcon />
-                        </ListItemIcon>
-                        <ListItemText 
-                          primary="Method" 
-                          secondary={error.context.method}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon>
-                          <LocationIcon />
-                        </ListItemIcon>
-                        <ListItemText 
-                          primary="Endpoint" 
-                          secondary={error.context.url}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon>
-                          <ComputerIcon />
-                        </ListItemIcon>
-                        <ListItemText 
-                          primary="IP Address" 
-                          secondary={error.context.ip}
-                        />
-                      </ListItem>
-                    </List>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <List dense>
-                      <ListItem>
-                        <ListItemIcon>
-                          <TimeIcon />
-                        </ListItemIcon>
-                        <ListItemText 
-                          primary="Timestamp" 
-                          secondary={format(new Date(error.timestamp), 'PPpp')}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon>
-                          <CodeIcon />
-                        </ListItemIcon>
-                        <ListItemText 
-                          primary="Process ID" 
-                          secondary={error.context.processId}
-                        />
-                      </ListItem>
-                      {error.context.character && (
-                        <ListItem>
-                          <ListItemIcon>
-                            <PersonIcon />
-                          </ListItemIcon>
-                          <ListItemText 
-                            primary="Character" 
-                            secondary={error.context.character}
-                          />
-                        </ListItem>
-                      )}
-                    </List>
-                  </Grid>
-                </Grid>
+              <CardContent className="pt-6">
+                <h3 className="text-md font-semibold mb-4">
+                  Route Parameters
+                </h3>
+                <div className="p-4 bg-muted/50 rounded-md border font-mono text-sm overflow-auto">
+                  <pre className="m-0">
+                    {JSON.stringify(error.context.params, null, 2)}
+                  </pre>
+                </div>
               </CardContent>
             </Card>
+          )}
 
-            {/* Query Parameters */}
-            {error.context.query && Object.keys(error.context.query).length > 0 && (
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Query Parameters
-                  </Typography>
-                  <Paper variant="outlined" sx={{ p: 2 }}>
-                    <pre style={{ margin: 0, fontFamily: 'monospace' }}>
-                      {JSON.stringify(error.context.query, null, 2)}
-                    </pre>
-                  </Paper>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Route Parameters */}
-            {error.context.params && Object.keys(error.context.params).length > 0 && (
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Route Parameters
-                  </Typography>
-                  <Paper variant="outlined" sx={{ p: 2 }}>
-                    <pre style={{ margin: 0, fontFamily: 'monospace' }}>
-                      {JSON.stringify(error.context.params, null, 2)}
-                    </pre>
-                  </Paper>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* User Agent */}
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="h6">User Agent</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Paper variant="outlined" sx={{ p: 2 }}>
-                  <Typography variant="body2" sx={{ fontFamily: 'monospace', wordBreak: 'break-all' }}>
-                    {error.context.userAgent}
-                  </Typography>
-                </Paper>
-              </AccordionDetails>
-            </Accordion>
-          </Stack>
-        </Grid>
+          {/* User Agent */}
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="user-agent" className="border rounded-md px-4 bg-card shadow-sm data-[state=open]:rounded-b-none">
+              <AccordionTrigger className="text-md font-semibold hover:no-underline py-4">
+                User Agent
+              </AccordionTrigger>
+              <AccordionContent className="pb-4">
+                <div className="p-4 bg-muted/50 rounded-md border font-mono text-sm break-all">
+                  {error.context.userAgent}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
 
         {/* Actions Sidebar */}
-        <Grid item xs={12} lg={4}>
-          <Stack spacing={3}>
-            {/* Actions */}
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Actions
-                </Typography>
-                <Stack spacing={2}>
-                  {!error.resolved && (
-                    <Button
-                      variant="contained"
-                      color="success"
-                      startIcon={<ResolvedIcon />}
-                      onClick={handleResolve}
-                      disabled={actionLoading}
-                      fullWidth
-                    >
-                      Mark as Resolved
-                    </Button>
-                  )}
+        <div className="md:col-span-12 lg:col-span-4 flex flex-col gap-6">
+          {/* Actions */}
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="text-md font-semibold mb-4">
+                Actions
+              </h3>
+              <div className="flex flex-col gap-3">
+                {!error.resolved && (
                   <Button
-                    variant="outlined"
-                    color="error"
-                    startIcon={<DeleteIcon />}
-                    onClick={handleDelete}
+                    variant="default"
+                    className="w-full bg-green-600 hover:bg-green-700 justify-start"
+                    onClick={handleResolve}
                     disabled={actionLoading}
-                    fullWidth
                   >
-                    Delete Error
+                    <CheckCircle className="mr-2 h-4 w-4" />
+                    Mark as Resolved
                   </Button>
-                </Stack>
-              </CardContent>
-            </Card>
+                )}
+                <Button
+                  variant="destructive"
+                  className="w-full justify-start"
+                  onClick={handleDelete}
+                  disabled={actionLoading}
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete Error
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
-            {/* Error Metadata */}
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Metadata
-                </Typography>
-                <List dense>
-                  <ListItem>
-                    <ListItemText 
-                      primary="Error ID" 
-                      secondary={error._id}
-                      secondaryTypographyProps={{ 
-                        sx: { fontFamily: 'monospace', fontSize: '0.75rem' }
-                      }}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText 
-                      primary="Occurred" 
-                      secondary={`${formatDistanceToNow(new Date(error.timestamp), { addSuffix: true })} (${format(new Date(error.timestamp), 'PPpp')})`}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText 
-                      primary="Type" 
-                      secondary={error.type}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText 
-                      primary="Severity" 
-                      secondary={error.severity}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText 
-                      primary="Status" 
-                      secondary={error.resolved ? 'Resolved' : 'Unresolved'}
-                    />
-                  </ListItem>
-                </List>
-              </CardContent>
-            </Card>
-          </Stack>
-        </Grid>
-      </Grid>
-
-      {/* Snackbar for notifications */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        message={snackbar.message}
-      />
-    </Container>
+          {/* Error Metadata */}
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="text-md font-semibold mb-4">
+                Metadata
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm font-medium leading-none mb-1">Error ID</p>
+                  <p className="text-xs text-muted-foreground font-mono">{error._id}</p>
+                </div>
+                <Separator />
+                <div>
+                  <p className="text-sm font-medium leading-none mb-1">Occurred</p>
+                  <p className="text-sm text-muted-foreground">
+                    {formatDistanceToNow(new Date(error.timestamp), { addSuffix: true })}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    ({format(new Date(error.timestamp), 'PPpp')})
+                  </p>
+                </div>
+                <Separator />
+                <div>
+                  <p className="text-sm font-medium leading-none mb-1">Type</p>
+                  <p className="text-sm text-muted-foreground capitalize">{error.type}</p>
+                </div>
+                <Separator />
+                <div>
+                  <p className="text-sm font-medium leading-none mb-1">Severity</p>
+                  <div className={`text-sm font-medium capitalize ${getSeverityColor(error.severity)}`}>
+                    {error.severity}
+                  </div>
+                </div>
+                <Separator />
+                <div>
+                  <p className="text-sm font-medium leading-none mb-1">Status</p>
+                  <p className="text-sm text-muted-foreground">
+                    {error.resolved ? 'Resolved' : 'Unresolved'}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
   )
 }
 

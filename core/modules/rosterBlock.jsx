@@ -1,16 +1,6 @@
 import { useState, useEffect } from 'react'
 import { P } from '@/core/components/typography'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import TableSortLabel from '@mui/material/TableSortLabel'
-import TablePagination from '@mui/material/TablePagination'
-import Paper from '@mui/material/Paper'
-import Box from '@mui/material/Box'
-import { visuallyHidden } from '@mui/utils'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 import config from '@/app.config.js'
 
@@ -39,7 +29,7 @@ function EnhancedTableHead({ order, orderBy, onRequestSort, officerList }) {
     }
 
     return (
-        <TableHead>
+        <TableHeader>
             <TableRow>
                 {headCells.map((headCell) => {
                     if (
@@ -55,41 +45,30 @@ function EnhancedTableHead({ order, orderBy, onRequestSort, officerList }) {
                         return null
                     }
                     return (
-                        <TableCell
+                        <TableHead
                             key={headCell.id}
-                            sortDirection={
-                                orderBy === headCell.id ? order : false
-                            }
-                            sx={{ width: headCell.width }}
+                            style={{ width: headCell.width }}
                         >
                             {headCell.sortable ? (
-                                <TableSortLabel
-                                    active={orderBy === headCell.id}
-                                    direction={
-                                        orderBy === headCell.id ? order : 'asc'
-                                    }
+                                <div
+                                    className="flex items-center cursor-pointer select-none"
                                     onClick={createSortHandler(headCell.id)}
                                 >
                                     {headCell.label}
                                     {orderBy === headCell.id ? (
-                                        <Box
-                                            component="span"
-                                            sx={visuallyHidden}
-                                        >
-                                            {order === 'desc'
-                                                ? 'sorted descending'
-                                                : 'sorted ascending'}
-                                        </Box>
+                                        <span className="ml-1 text-xs">
+                                            {order === 'desc' ? '▼' : '▲'}
+                                        </span>
                                     ) : null}
-                                </TableSortLabel>
+                                </div>
                             ) : (
                                 headCell.label
                             )}
-                        </TableCell>
+                        </TableHead>
                     )
                 })}
             </TableRow>
-        </TableHead>
+        </TableHeader>
     )
 }
 
@@ -151,9 +130,9 @@ const AuditBlock = ({ data, name }) => {
     const sortedData = renderData.sort(getComparator(order, orderBy))
 
     return (
-        <Paper sx={{ width: '100%', mb: 2 }}>
-            <TableContainer>
-                <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+        <div className="w-full mb-4 bg-card rounded-md shadow-sm border border-border overflow-hidden">
+            <div className="overflow-x-auto">
+                <Table className="min-w-[750px]">
                     <EnhancedTableHead
                         order={order}
                         orderBy={orderBy}
@@ -167,7 +146,7 @@ const AuditBlock = ({ data, name }) => {
                             )
                             .map((item, index) => (
                                 <TableRow key={index}>
-                                    <TableCell sx={{ width: 120 }}>
+                                    <TableCell style={{ width: 120 }}>
                                         <div className="mediaWrapper">
                                             {item?.media?.assets?.length ? (
                                                 <img
@@ -178,6 +157,7 @@ const AuditBlock = ({ data, name }) => {
                                                     alt={item.name}
                                                     width={60}
                                                     height={60}
+                                                    className="rounded-md"
                                                 />
                                             ) : (
                                                 <img
@@ -188,21 +168,22 @@ const AuditBlock = ({ data, name }) => {
                                                     alt={item.name}
                                                     width={60}
                                                     height={60}
+                                                    className="rounded-md"
                                                 />
                                             )}
                                         </div>
                                     </TableCell>
-                                    <TableCell sx={{ width: 50 }}>
+                                    <TableCell style={{ width: 50 }}>
                                         {item.itemLevel}
                                     </TableCell>
-                                    <TableCell sx={{ width: 240 }}>
+                                    <TableCell style={{ width: 240 }}>
                                         <div
                                             className={`name ${item.class}`}
                                         >
-                                            <P>{item.name}</P>
+                                            <P className="font-medium">{item.name}</P>
                                         </div>
                                         <div className="classandspec">
-                                            <P className="spec">
+                                            <P className="spec text-sm text-muted-foreground">
                                                 {item.spec}{' '}
                                                 {item.class}
                                             </P>
@@ -247,17 +228,43 @@ const AuditBlock = ({ data, name }) => {
                             ))}
                     </TableBody>
                 </Table>
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[20, 50, 80, 100]}
-                component="div"
-                count={sortedData.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-        </Paper>
+            </div>
+            <div className="flex items-center justify-end px-4 py-3 border-t border-border bg-muted/20">
+                <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
+                        <span className="text-sm text-muted-foreground">Rows per page:</span>
+                        <select 
+                            className="h-8 w-[70px] rounded-md border border-input bg-transparent px-2 py-1 text-sm focus:outline-none"
+                            value={rowsPerPage} 
+                            onChange={handleChangeRowsPerPage}
+                        >
+                            {[20, 50, 80, 100].map(size => (
+                                <option key={size} value={size}>{size}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                        <span>{sortedData.length === 0 ? 0 : page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, sortedData.length)} of {sortedData.length}</span>
+                        <div className="flex space-x-1">
+                            <button 
+                                onClick={(e) => handleChangePage(e, page - 1)} 
+                                disabled={page === 0}
+                                className="p-1 rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                Prev
+                            </button>
+                            <button 
+                                onClick={(e) => handleChangePage(e, page + 1)} 
+                                disabled={page >= Math.ceil(sortedData.length / rowsPerPage) - 1 || sortedData.length === 0}
+                                className="p-1 rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     )
 }
 

@@ -1,18 +1,16 @@
 import { useState, useEffect } from 'react'
 import { P } from '@/core/components/typography'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import TableSortLabel from '@mui/material/TableSortLabel'
-import TablePagination from '@mui/material/TablePagination'
-import Paper from '@mui/material/Paper'
-import Box from '@mui/material/Box'
-import { visuallyHidden } from '@mui/utils'
-import Badge from '@mui/material/Badge'
-import Tooltip from '@mui/material/Tooltip'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
 
 import config from '@/app.config.js'
 
@@ -32,75 +30,48 @@ const processMissingEnchants = (missingEnchants) => {
     const value = missingEnchants.join(', ')
 
     return (
-        <Tooltip title={value} placement="top">
-            <span>{amount}</span>
-        </Tooltip>
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <span className="cursor-help border-b border-dotted border-muted-foreground/50">{amount}</span>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>{value}</p>
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
     )
 }
 
 const processTierItems = (tierSets) => {
     if (!tierSets) {
         return (
-            <Tooltip 
-                title="No tier set information available" 
-                placement="top"
-            >
-                <span>N/A</span>
-            </Tooltip>
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <span className="cursor-help border-b border-dotted border-muted-foreground/50">N/A</span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>No tier set information available</p>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
         )
     }
 
     const { season1, season2 } = tierSets;
     
     return (
-        <Tooltip 
-            title={`Season 1: ${season1}/5 | Season 2: ${season2}/5`} 
-            placement="top"
-        >
-            <span>{`${season1}/5 | ${season2}/5`}</span>
-        </Tooltip>
-    )
-}
-
-const processHasWaist = (missingWaist) => {
-    return (
-        <Tooltip
-            title={
-                !missingWaist
-                    ? 'Has "Durable Information Securing Container"'
-                    : 'Missing "Durable Information Securing Container"'
-            }
-            placement="top"
-        >
-            <span>
-                {!missingWaist ? (
-                    <span style={{ color: 'green' }}>⬤</span>
-                ) : (
-                    <span style={{ color: 'red' }}>✕</span>
-                )}
-            </span>
-        </Tooltip>
-    )
-}
-
-const processHasCloak = (missingCloak) => {
-    return (
-        <Tooltip
-            title={
-                !missingCloak
-                    ? 'Has "Reshii Wraps"'
-                    : 'Missing "Reshii Wraps"'
-            }
-            placement="top"
-        >
-            <span>
-                {!missingCloak ? (
-                    <span style={{ color: 'green' }}>⬤</span>
-                ) : (
-                    <span style={{ color: 'red' }}>✕</span>
-                )}
-            </span>
-        </Tooltip>
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <span className="cursor-help border-b border-dotted border-muted-foreground/50">{`${season1}/5 | ${season2}/5`}</span>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>{`Season 1: ${season1}/5 | Season 2: ${season2}/5`}</p>
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
     )
 }
 
@@ -112,8 +83,6 @@ const headCells = [
     { id: 'score', label: 'M+ Score', sortable: true },
     { id: 'pvp', label: 'PvP Rating', sortable: true },
     { id: 'enchants', label: 'Missing Enchants', sortable: false },
-    { id: 'hasWaist', label: 'Waist', sortable: false },
-    { id: 'hasCloak', label: 'Cloak', sortable: false },
     { id: 'tier', label: 'Tier Sets (S2|S3)', sortable: false },
     { id: 'locked', label: 'Locked', sortable: false },
 ]
@@ -126,57 +95,53 @@ function EnhancedTableHead({ order, orderBy, onRequestSort, officerList }) {
     }
 
     return (
-        <TableHead>
-            <TableRow>
-                {headCells.map((headCell) => {
-                    if (
-                        officerList &&
-                        [
-                            'guildRank',
-                            'enchants',
-                            'tier',
-                            'locked',
-                            'lastUpdated',
-                        ].includes(headCell.id)
-                    ) {
-                        return null
-                    }
-                    return (
-                        <TableCell
-                            key={headCell.id}
-                            sortDirection={
-                                orderBy === headCell.id ? order : false
-                            }
-                            sx={{ width: headCell.width }}
-                        >
-                            {headCell.sortable ? (
-                                <TableSortLabel
-                                    active={orderBy === headCell.id}
-                                    direction={
-                                        orderBy === headCell.id ? order : 'asc'
+        <TableHeader>
+                            <TableRow className="hover:bg-transparent border-b border-border">
+                                {headCells.map((headCell) => {
+                                    if (
+                                        officerList &&
+                                        [
+                                            'guildRank',
+                                            'enchants',
+                                            'tier',
+                                            'locked',
+                                            'lastUpdated',
+                                        ].includes(headCell.id)
+                                    ) {
+                                        return null
                                     }
-                                    onClick={createSortHandler(headCell.id)}
-                                >
+                                    return (
+                                        <TableHead
+                                            key={headCell.id}
+                                            style={{ width: headCell.width }}
+                                            className="text-muted-foreground font-medium text-sm"
+                                        >
+                                            {headCell.sortable ? (
+                                                <button
+                                                    onClick={createSortHandler(headCell.id)}
+                                                    className="flex items-center gap-1 hover:text-foreground transition-colors focus:outline-none"
+                                                >
                                     {headCell.label}
                                     {orderBy === headCell.id ? (
-                                        <Box
-                                            component="span"
-                                            sx={visuallyHidden}
-                                        >
-                                            {order === 'desc'
-                                                ? 'sorted descending'
-                                                : 'sorted ascending'}
-                                        </Box>
-                                    ) : null}
-                                </TableSortLabel>
+                                        <span className="flex flex-col">
+                                            {order === 'desc' ? (
+                                                <ChevronDown className="h-4 w-4" />
+                                            ) : (
+                                                <ChevronUp className="h-4 w-4" />
+                                            )}
+                                        </span>
+                                    ) : (
+                                        <span className="w-4" /> // Placeholder for alignment
+                                    )}
+                                </button>
                             ) : (
                                 headCell.label
                             )}
-                        </TableCell>
+                        </TableHead>
                     )
                 })}
             </TableRow>
-        </TableHead>
+        </TableHeader>
     )
 }
 
@@ -209,15 +174,21 @@ const getStatDifference = (current, stats) => {
 }
 
 const AuditBlock = ({ data, name, hideControls }) => {
+    const [order, setOrder] = useState('desc')
+    const [orderBy, setOrderBy] = useState('itemlevel')
+    const [page, setPage] = useState(0)
+    const [rowsPerPage, setRowsPerPage] = useState(RESULTS_PAGINATION.MAX_ITEMS)
+
+    // Reset pagination when data changes
+    useEffect(() => {
+        setPage(0)
+    }, [data])
+
     if (!data[name]?.length && name !== 'locked') {
         return null
     }
 
     const renderData = name !== 'locked' ? data[name] : data
-    const [order, setOrder] = useState('desc')
-    const [orderBy, setOrderBy] = useState('itemlevel')
-    const [page, setPage] = useState(0)
-    const [rowsPerPage, setRowsPerPage] = useState(RESULTS_PAGINATION.MAX_ITEMS)
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc'
@@ -233,11 +204,6 @@ const AuditBlock = ({ data, name, hideControls }) => {
         setRowsPerPage(parseInt(event.target.value, 10))
         setPage(0)
     }
-
-    // Reset pagination when data changes
-    useEffect(() => {
-        setPage(0)
-    }, [data])
 
     const getComparator = (order, orderBy) => {
         return order === 'desc'
@@ -263,9 +229,9 @@ const AuditBlock = ({ data, name, hideControls }) => {
     const sortedData = renderData.sort(getComparator(order, orderBy))
 
     return (
-        <Paper sx={{ width: '100%', mb: 2 }}>
-            <TableContainer>
-                <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+        <div className="w-full mb-4 rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+            <div className="overflow-x-auto bg-card/50">
+                <Table className="min-w-[750px]" aria-labelledby="tableTitle">
                     <EnhancedTableHead
                         order={order}
                         orderBy={orderBy}
@@ -277,10 +243,14 @@ const AuditBlock = ({ data, name, hideControls }) => {
                                 page * rowsPerPage,
                                 page * rowsPerPage + rowsPerPage
                             )
-                            .map((item, index) => (
-                                <TableRow key={index}>
-                                    <TableCell sx={{ width: 120 }}>
-                                        <div className="mediaWrapper">
+                            .map((item, index) => {
+                                const sanitizedClass = item.class ? item.class.toLowerCase().replace(/\s+/g, '') : ''
+                                const capitalizedName = item.name ? item.name.charAt(0).toUpperCase() + item.name.slice(1).toLowerCase() : ''
+                                
+                                return (
+                                <TableRow key={index} className="border-border hover:bg-muted/30 transition-colors">
+                                    <TableCell style={{ width: 120 }}>
+                                        <div className="mediaWrapper flex justify-center items-center p-2">
                                             {item?.media?.assets?.length ? (
                                                 <img
                                                     src={
@@ -288,243 +258,175 @@ const AuditBlock = ({ data, name, hideControls }) => {
                                                             ?.value
                                                     }
                                                     alt={item.name}
-                                                    width={60}
-                                                    height={60}
+                                                    width={48}
+                                                    height={48}
+                                                    className="rounded-full border border-border shadow-sm object-cover"
                                                 />
                                             ) : (
                                                 <img
-                                                    style={{ opacity: '0.4' }}
+                                                    className="opacity-40 rounded-full border border-border shadow-sm object-cover"
                                                     src={
                                                         '/images/logo-without-text.png'
                                                     }
                                                     alt={item.name}
-                                                    width={60}
-                                                    height={60}
+                                                    width={48}
+                                                    height={48}
                                                 />
                                             )}
                                         </div>
                                     </TableCell>
-                                    <TableCell sx={{ width: 50 }}>
+                                    <TableCell style={{ width: 50 }} className="text-muted-foreground">
                                         {item.stats ? (
-                                            <Badge
-                                                badgeContent={(() => {
-                                                    const diff =
-                                                        getStatDifference(
-                                                            item.itemLevel,
-                                                            item.stats
-                                                        )
+                                            <div className="relative inline-flex">
+                                                <span>{item.itemLevel}</span>
+                                                {(() => {
+                                                    const diff = getStatDifference(item.itemLevel, item.stats)
                                                     if (!diff) return null
-                                                    const change = Math.round(
-                                                        item.itemLevel -
-                                                            diff.data.itemLevel
+                                                    const change = Math.round(item.itemLevel - diff.data.itemLevel)
+                                                    if (change === 0) return null
+                                                    
+                                                    const colorClass = change > 0 ? 'bg-green-500' : 'bg-red-500'
+                                                    const displayChange = change > 0 ? `+${change}` : change
+                                                    
+                                                    return (
+                                                        <span className={`absolute -top-2 -right-4 flex h-4 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white ${colorClass}`}>
+                                                            {displayChange}
+                                                        </span>
                                                     )
-                                                    return change === 0
-                                                        ? null
-                                                        : change > 0
-                                                          ? `+${change}`
-                                                          : change
                                                 })()}
-                                                color={(() => {
-                                                    const diff =
-                                                        getStatDifference(
-                                                            item.itemLevel,
-                                                            item.stats
-                                                        )
-                                                    if (!diff) return 'default'
-                                                    const change =
-                                                        item.itemLevel -
-                                                        diff.data.itemLevel
-                                                    return change > 0
-                                                        ? 'success'
-                                                        : change < 0
-                                                          ? 'error'
-                                                          : 'default'
-                                                })()}
-                                            >
-                                                <span>
-                                                    {item.itemLevel}
-                                                </span>
-                                            </Badge>
+                                            </div>
                                         ) : (
                                             item.itemLevel
                                         )}
                                     </TableCell>
-                                    <TableCell sx={{ width: 240 }}>
-                                        <div
-                                            className={`name ${item.class}`}
-                                        >
-                                            <P>{item.name}</P>
+                                    <TableCell style={{ width: 240 }}>
+                                        <div className={`font-bold text-${sanitizedClass}`}>
+                                            {capitalizedName}
                                         </div>
-                                        <div className="classandspec">
-                                            <P className="spec">
-                                                {item.spec} {item.class}
-                                            </P>
+                                        <div className="text-xs text-muted-foreground font-medium mt-0.5">
+                                            {item.spec} {item.class}
                                         </div>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell className="text-muted-foreground">
                                         {GUILLD_RANKS[item.guildRank] || item.guildRank}
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell className="text-muted-foreground">
                                         {item.stats ? (
-                                            <Badge
-                                                badgeContent={(() => {
-                                                    const diff =
-                                                        getStatDifference(
-                                                            item.itemLevel,
-                                                            item.stats
-                                                        )
+                                            <div className="relative inline-flex">
+                                                <span className="font-bold text-md">{Math.round(item.mplus) || 0}</span>
+                                                {(() => {
+                                                    const diff = getStatDifference(item.itemLevel, item.stats)
                                                     if (!diff) return null
-                                                    const current =
-                                                        Math.round(item.mplus) || 0
-                                                    const change = Math.round(
-                                                        current -
-                                                            diff.data.mplus
+                                                    const current = Math.round(item.mplus) || 0
+                                                    const change = Math.round(current - diff.data.mplus)
+                                                    if (change === 0) return null
+                                                    
+                                                    const colorClass = change > 0 ? 'bg-green-500' : 'bg-red-500'
+                                                    const displayChange = change > 0 ? `+${change}` : change
+                                                    
+                                                    return (
+                                                        <span className={`absolute -top-2 -right-4 flex h-4 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white ${colorClass}`}>
+                                                            {displayChange}
+                                                        </span>
                                                     )
-                                                    return change === 0
-                                                        ? null
-                                                        : change > 0
-                                                          ? `+${change}`
-                                                          : change
                                                 })()}
-                                                color={(() => {
-                                                    const diff =
-                                                        getStatDifference(
-                                                            item.itemLevel,
-                                                            item.stats
-                                                        )
-                                                    if (!diff) return 'default'
-                                                    const current =
-                                                        Math.round(item.mplus) || 0
-                                                    const change =
-                                                        current -
-                                                        diff.data.mplus
-                                                    return change > 0
-                                                        ? 'success'
-                                                        : change < 0
-                                                          ? 'error'
-                                                          : 'default'
-                                                })()}
-                                            >
-                                                <span>
-                                                    {Math.round(item.mplus) || 0}
-                                                </span>
-                                            </Badge>
+                                            </div>
                                         ) : (
-                                            Math.round(item.mplus) || 0
+                                            <span className="font-bold text-md">{Math.round(item.mplus) || 0}</span>
                                         )}
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell className="text-muted-foreground">
                                         {item.stats ? (
-                                            <Badge
-                                                badgeContent={(() => {
-                                                    const diff =
-                                                        getStatDifference(
-                                                            item.itemLevel,
-                                                            item.stats
-                                                        )
+                                            <div className="relative inline-flex">
+                                                <span className="font-bold">{item.pvp || 0}</span>
+                                                {(() => {
+                                                    const diff = getStatDifference(item.itemLevel, item.stats)
                                                     if (!diff) return null
-                                                    const current =
-                                                        item.pvp || 0
-                                                    const change =
-                                                        current - diff.data.pvp
-                                                    return change === 0
-                                                        ? null
-                                                        : change > 0
-                                                          ? `+${change}`
-                                                          : change
+                                                    const current = item.pvp || 0
+                                                    const change = current - diff.data.pvp
+                                                    if (change === 0) return null
+                                                    
+                                                    const colorClass = change > 0 ? 'bg-green-500' : 'bg-red-500'
+                                                    const displayChange = change > 0 ? `+${change}` : change
+                                                    
+                                                    return (
+                                                        <span className={`absolute -top-2 -right-4 flex h-4 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white ${colorClass}`}>
+                                                            {displayChange}
+                                                        </span>
+                                                    )
                                                 })()}
-                                                color={(() => {
-                                                    const diff =
-                                                        getStatDifference(
-                                                            item.itemLevel,
-                                                            item.stats
-                                                        )
-                                                    if (!diff) return 'default'
-                                                    const current =
-                                                        item.pvp || 0
-                                                    const change =
-                                                        current - diff.data.pvp
-                                                    return change > 0
-                                                        ? 'success'
-                                                        : change < 0
-                                                          ? 'error'
-                                                          : 'default'
-                                                })()}
-                                            >
-                                                <span>
-                                                    {item.pvp || 0}
-                                                </span>
-                                            </Badge>
+                                            </div>
                                         ) : (
-                                            item.pvp || 0
+                                            <span className="font-bold">{item.pvp || 0}</span>
                                         )}
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell className="text-muted-foreground">
                                         {processMissingEnchants(
                                             item.missingEnchants
                                         )}
                                     </TableCell>
-                                    <TableCell>
-                                        {processHasWaist(item.missingWaist)}
-                                    </TableCell>
-                                    <TableCell>
-                                        {processHasCloak(item.missingCloak)}
-                                    </TableCell>
-                                    <TableCell>
+                                    <TableCell className="text-muted-foreground">
                                         {processTierItems(item.tierSets)}
                                     </TableCell>
-                                    <TableCell>
-                                        <Tooltip
-                                            title={
-                                                <div style={{ 
-                                                    whiteSpace: 'pre-line',
-                                                    fontSize: '0.875rem',
-                                                    padding: '8px'
-                                                }}>
+                                    <TableCell className="text-muted-foreground">
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <span className="cursor-help border-b border-dotted border-muted-foreground/30">
+                                                        {item.lockedToString}
+                                                    </span>
+                                                </TooltipTrigger>
+                                                <TooltipContent className="max-w-none whitespace-pre-line p-2 text-sm">
                                                     {item.lockedTooltipString}
-                                                </div>
-                                            }
-                                            placement="top"
-                                            arrow
-                                            componentsProps={{
-                                                tooltip: {
-                                                    sx: {
-                                                        bgcolor: 'background.paper',
-                                                        color: 'text.primary',
-                                                        '& .MuiTooltip-arrow': {
-                                                            color: 'background.paper',
-                                                        },
-                                                        boxShadow: 1,
-                                                        maxWidth: 'none'
-                                                    }
-                                                }
-                                            }}
-                                        >
-                                            <span style={{ 
-                                                cursor: 'help',
-                                                borderBottom: '1px dotted'
-                                            }}>
-                                                {item.lockedToString}
-                                            </span>
-                                        </Tooltip>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
                                     </TableCell>
                                 </TableRow>
-                            ))}
+                            )})}
                     </TableBody>
                 </Table>
-            </TableContainer>
+            </div>
             {!hideControls && (
-                <TablePagination
-                    rowsPerPageOptions={[20, 50, 80, 100]}
-                    component="div"
-                    count={sortedData.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
+                <div className="flex items-center justify-end px-4 py-3 border-t border-border bg-card/50 text-sm text-muted-foreground gap-4">
+                    <div className="flex items-center gap-2">
+                        <span>Rows per page:</span>
+                        <select
+                            value={rowsPerPage}
+                            onChange={handleChangeRowsPerPage}
+                            className="bg-background border border-input rounded-md px-2 py-1 text-foreground outline-none focus:ring-1 focus:ring-ring"
+                        >
+                            {[20, 50, 80, 100].map((option) => (
+                                <option key={option} value={option}>
+                                    {option}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <span>
+                            {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, sortedData.length)} of {sortedData.length}
+                        </span>
+                        <div className="flex items-center gap-1">
+                            <button
+                                onClick={(e) => handleChangePage(e, page - 1)}
+                                disabled={page === 0}
+                                className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground disabled:opacity-50 disabled:hover:bg-transparent transition-colors"
+                            >
+                                <ChevronLeft className="h-5 w-5" />
+                            </button>
+                            <button
+                                onClick={(e) => handleChangePage(e, page + 1)}
+                                disabled={page >= Math.ceil(sortedData.length / rowsPerPage) - 1}
+                                className="p-1 rounded-md hover:bg-accent hover:text-accent-foreground disabled:opacity-50 disabled:hover:bg-transparent transition-colors"
+                            >
+                                <ChevronRight className="h-5 w-5" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
-        </Paper>
+        </div>
     )
 }
 

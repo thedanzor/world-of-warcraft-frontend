@@ -1,45 +1,38 @@
 'use client'
 
 import React from 'react'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Separator } from '@/components/ui/separator'
 import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Chip,
-  IconButton,
-  Tooltip,
-  Stack,
-  Divider
-} from '@mui/material'
-import {
-  Error as ErrorIcon,
-  CheckCircle as ResolvedIcon,
-  Cancel as UnresolvedIcon,
-  Delete as DeleteIcon,
-  Visibility as ViewIcon,
-  Schedule as TimeIcon,
-  Computer as ComputerIcon,
-  Person as PersonIcon
-} from '@mui/icons-material'
+  AlertCircle as ErrorIcon,
+  CheckCircle2 as ResolvedIcon,
+  Trash2 as DeleteIcon,
+  Eye as ViewIcon,
+  Clock as TimeIcon,
+  Monitor as ComputerIcon,
+  User as PersonIcon
+} from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 
 const ErrorCard = ({ error, onView, onResolve, onDelete, onResolveError, onDeleteError }) => {
-  const getSeverityColor = (severity) => {
+  const getSeverityVariant = (severity) => {
     switch (severity) {
-      case 'high': return 'error'
-      case 'medium': return 'warning'
-      case 'low': return 'info'
-      default: return 'default'
+      case 'high': return 'destructive'
+      case 'medium': return 'default' // or warning if available
+      case 'low': return 'secondary'
+      default: return 'outline'
     }
   }
 
   const getTypeIcon = (type) => {
     switch (type) {
-      case 'api': return <ComputerIcon />
-      case 'guild-fetch': return <PersonIcon />
-      case 'database': return <ComputerIcon />
-      default: return <ErrorIcon />
+      case 'api': return <ComputerIcon className="w-5 h-5" />
+      case 'guild-fetch': return <PersonIcon className="w-5 h-5" />
+      case 'database': return <ComputerIcon className="w-5 h-5" />
+      default: return <ErrorIcon className="w-5 h-5" />
     }
   }
 
@@ -70,79 +63,81 @@ const ErrorCard = ({ error, onView, onResolve, onDelete, onResolveError, onDelet
 
   return (
     <Card 
-      sx={{ 
-        mb: 2, 
-        cursor: 'pointer',
-        border: error.resolved ? '1px solid #4caf50' : '1px solid transparent',
-        '&:hover': {
-          boxShadow: 3
-        }
-      }}
+      className={`mb-4 cursor-pointer transition-shadow hover:shadow-md ${error.resolved ? 'border-green-500' : 'border-transparent'}`}
       onClick={() => onView(error._id)}
     >
-      <CardContent>
-        <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
-          <Box display="flex" alignItems="center" gap={1}>
+      <CardContent className="p-4">
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex items-center gap-2 flex-wrap">
             {getTypeIcon(error.type)}
-            <Typography variant="h6" component="div">
+            <div className="text-md font-semibold">
               {error.error.name}
-            </Typography>
-            <Chip 
-              label={error.severity.toUpperCase()} 
-              color={getSeverityColor(error.severity)}
-              size="small"
-            />
+            </div>
+            <Badge variant={getSeverityVariant(error.severity)}>
+              {error.severity.toUpperCase()}
+            </Badge>
             {error.resolved && (
-              <Chip 
-                icon={<ResolvedIcon />}
-                label="RESOLVED" 
-                color="success"
-                size="small"
-              />
+              <Badge variant="outline" className="text-green-600 border-green-600 flex items-center gap-1">
+                <ResolvedIcon className="w-3 h-3" />
+                RESOLVED
+              </Badge>
             )}
-          </Box>
-          <Box display="flex" gap={1}>
-            <Tooltip title="View Details">
-              <IconButton size="small" onClick={handleView}>
-                <ViewIcon />
-              </IconButton>
-            </Tooltip>
-            {!error.resolved && (
-              <Tooltip title="Mark as Resolved">
-                <IconButton size="small" onClick={handleResolve}>
-                  <ResolvedIcon />
-                </IconButton>
+          </div>
+          <div className="flex gap-1">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleView}>
+                    <ViewIcon className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>View Details</TooltipContent>
               </Tooltip>
-            )}
-            <Tooltip title="Delete">
-              <IconButton size="small" onClick={handleDelete}>
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
-          </Box>
-        </Box>
+              
+              {!error.resolved && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleResolve}>
+                      <ResolvedIcon className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Mark as Resolved</TooltipContent>
+                </Tooltip>
+              )}
+              
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={handleDelete}>
+                    <DeleteIcon className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Delete</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        </div>
 
-        <Typography variant="body2" color="text.secondary" mb={1}>
+        <div className="text-sm text-muted-foreground mb-3">
           {error.error.message}
-        </Typography>
+        </div>
 
-        <Stack direction="row" spacing={2} alignItems="center" mb={1}>
-          <Box display="flex" alignItems="center" gap={0.5}>
-            <TimeIcon fontSize="small" />
-            <Typography variant="caption">
+        <div className="flex flex-row items-center gap-4 mb-2">
+          <div className="flex items-center gap-1.5">
+            <TimeIcon className="w-4 h-4 text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">
               {formatDistanceToNow(new Date(error.timestamp), { addSuffix: true })}
-            </Typography>
-          </Box>
-          <Divider orientation="vertical" flexItem />
-          <Typography variant="caption" color="text.secondary">
+            </span>
+          </div>
+          <Separator orientation="vertical" className="h-4" />
+          <span className="text-xs text-muted-foreground">
             {error.endpoint}
-          </Typography>
-        </Stack>
+          </span>
+        </div>
 
         {error.context.character && (
-          <Typography variant="caption" color="text.secondary">
+          <div className="text-xs text-muted-foreground">
             Character: {error.context.character}
-          </Typography>
+          </div>
         )}
       </CardContent>
     </Card>

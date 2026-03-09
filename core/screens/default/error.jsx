@@ -55,7 +55,7 @@ const Error = () => {
                         floatingText="Something went wrong"
                         highlightText="Error"
                     >
-                        Error
+                        
                     </MultiColorHeadingH1>
                 </div>
             </ContentWrapper>

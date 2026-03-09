@@ -1,19 +1,17 @@
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
 import {
-    LocalFireDepartment as MageIcon,
-    Pets as HunterIcon,
+    Flame as MageIcon,
+    PawPrint as HunterIcon,
     Shield as WarriorIcon,
-    Healing as PriestIcon,
-    Psychology as WarlockIcon,
-    AutoFixHigh as DruidIcon,
-    Bolt as ShamanIcon,
-    ContentCut as RogueIcon,
-    SelfImprovement as MonkIcon,
-    GppMaybe as DeathKnightIcon,
-    ColorLens as DemonHunterIcon,
-    Flare as EvokerIcon,
-} from '@mui/icons-material'
+    HeartPulse as PriestIcon,
+    Ghost as WarlockIcon,
+    Wand2 as DruidIcon,
+    Zap as ShamanIcon,
+    Scissors as RogueIcon,
+    PersonStanding as MonkIcon,
+    ShieldAlert as DeathKnightIcon,
+    Eye as DemonHunterIcon,
+    Sun as EvokerIcon,
+} from 'lucide-react'
 
 const BuffSummary = ({ buffs }) => {
     const buffIcons = {
@@ -37,13 +35,13 @@ const BuffSummary = ({ buffs }) => {
     }
 
     return (
-        <Box className="buff-summary">
-            <Typography variant="h6" sx={{ fontSize: '1.15rem' }}>
+        <div className="buff-summary">
+            <h6 className="text-[1.15rem] font-medium mb-1">
                 Buffs and Utilities
-            </Typography>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
+            </h6>
+            <p className="text-sm text-muted-foreground mb-4">
                 Shows how many characters provide each buff. Missing buffs are highlighted in red.
-            </Typography>
+            </p>
             <div className="buff-grid">
                 {Object.entries(buffs).map(([buffName, count]) => {
                     const Icon = buffIcons[buffName] || MageIcon
@@ -51,36 +49,28 @@ const BuffSummary = ({ buffs }) => {
                     return (
                         <div
                             key={buffName}
-                            className={`buff-item ${hasBuff ? 'active' : ''}`}
-                            style={{ flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}
+                            className={`buff-item ${hasBuff ? 'active' : ''} flex flex-col items-center text-center`}
                         >
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                                <Icon className="icon" />
-                                <Typography className="name">
+                            <div className="flex items-center gap-2 mb-1">
+                                <Icon className="icon w-5 h-5" />
+                                <span className="name">
                                     {buffName.replace(/([A-Z])/g, ' $1').trim()}
-                                </Typography>
-                            </Box>
+                                </span>
+                            </div>
                             {hasBuff ? (
-                                <Typography variant="caption" sx={{ 
-                                    fontSize: '0.875rem', 
-                                    fontWeight: 'bold',
-                                    color: '#10B981',
-                                }}>
+                                <span className="text-sm font-bold text-[#10B981]">
                                     {count} {count === 1 ? 'character' : 'characters'}
-                                </Typography>
+                                </span>
                             ) : (
-                                <Typography variant="caption" sx={{ 
-                                    fontSize: '0.75rem', 
-                                    color: 'text.secondary',
-                                }}>
+                                <span className="text-xs text-muted-foreground">
                                     Missing
-                                </Typography>
+                                </span>
                             )}
                         </div>
                     )
                 })}
             </div>
-        </Box>
+        </div>
     )
 }
 

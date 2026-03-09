@@ -4,20 +4,18 @@
  */
 
 import React, { useState } from 'react'
-import { 
-    Typography, 
-    Box, 
-    Paper, 
-    Table, 
-    TableBody, 
-    TableCell, 
-    TableContainer, 
-    TableHead, 
-    TableRow,
-    Chip,
-    Tooltip,
-    Alert
-} from '@mui/material'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Info } from 'lucide-react'
 import { P } from '@/core/components/typography'
 import Link from 'next/link'
 import getRatingColor from '@/core/utils/getRatingColor'
@@ -88,45 +86,36 @@ const SeasonalLeaderboard = ({ data, leaderboardData, guildData }) => {
         const averageScore = currentLeaderboardData.length > 0 ? totalScore / currentLeaderboardData.length : 0
 
         return (
-            <Box>
-                <TableContainer component={Paper} sx={{ 
-                    backgroundColor: 'rgba(17, 17, 17, 0.8)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
-                }}>
+            <div className="w-full overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+                <div className="overflow-x-auto bg-card/50">
                     <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Rank</TableCell>
-                                <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Avatar</TableCell>
-                                <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Character</TableCell>
-                                <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Rating</TableCell>
-                                <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Highest Key</TableCell>
-                                <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Total Runs</TableCell>
-                                <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Completion Rate</TableCell>
+                        <TableHeader>
+                            <TableRow className="hover:bg-transparent border-b border-border">
+                                <TableHead className="text-muted-foreground font-medium text-sm">Rank</TableHead>
+                                <TableHead className="text-muted-foreground font-medium text-sm">Avatar</TableHead>
+                                <TableHead className="text-muted-foreground font-medium text-sm">Character</TableHead>
+                                <TableHead className="text-muted-foreground font-medium text-sm">Rating</TableHead>
+                                <TableHead className="text-muted-foreground font-medium text-sm">Highest Key</TableHead>
+                                <TableHead className="text-muted-foreground font-medium text-sm">Total Runs</TableHead>
+                                <TableHead className="text-muted-foreground font-medium text-sm">Completion Rate</TableHead>
                             </TableRow>
-                        </TableHead>
+                        </TableHeader>
                         <TableBody>
-                            {currentLeaderboardData.map((player, index) => (
-                                <TableRow key={index}>
-                                    <TableCell sx={{ color: '#B0C4DE' }}>
-                                        <Chip 
-                                            label={`#${index + 1}`}
-                                            size="small"
-                                            sx={{ 
-                                                backgroundColor: index < 3 ? '#FFD700' : 'rgba(255, 255, 255, 0.1)',
-                                                color: '#FFFFFF',
-                                                fontWeight: '600'
-                                            }}
-                                        />
+                            {currentLeaderboardData.map((player, index) => {
+                                const sanitizedClass = player.class ? player.class.toLowerCase().replace(/\s+/g, '') : ''
+                                const capitalizedName = player.name ? player.name.charAt(0).toUpperCase() + player.name.slice(1).toLowerCase() : ''
+                                return (
+                                <TableRow key={index} className="border-b border-border hover:bg-muted/30 transition-colors">
+                                    <TableCell className="text-muted-foreground">
+                                        <Badge 
+                                            variant="secondary"
+                                            className={`font-semibold ${index < 3 ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}
+                                        >
+                                            #{index + 1}
+                                        </Badge>
                                     </TableCell>
-                                    <TableCell sx={{ color: '#B0C4DE' }}>
-                                        <div className="mediaWrapper" style={{ 
-                                            display: 'flex', 
-                                            justifyContent: 'center',
-                                            alignItems: 'center'
-                                        }}>
+                                    <TableCell className="text-muted-foreground">
+                                        <div className="flex justify-center items-center">
                                             {(() => {
                                                 const guildPlayer = getGuildPlayerData(player.name)
                                                 if (guildPlayer?.media?.assets?.length) {
@@ -136,22 +125,13 @@ const SeasonalLeaderboard = ({ data, leaderboardData, guildData }) => {
                                                             alt={player.name}
                                                             width={40}
                                                             height={40}
-                                                            style={{
-                                                                borderRadius: '8px',
-                                                                border: '1px solid rgba(255, 255, 255, 0.08)',
-                                                                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
-                                                            }}
+                                                            className="rounded-full border border-border shadow-sm object-cover"
                                                         />
                                                     )
                                                 } else {
                                                     return (
                                                         <img
-                                                            style={{ 
-                                                                opacity: '0.4',
-                                                                borderRadius: '8px',
-                                                                border: '1px solid rgba(255, 255, 255, 0.08)',
-                                                                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
-                                                            }}
+                                                            className="opacity-40 rounded-full border border-border shadow-sm object-cover"
                                                             src={'/images/logo-without-text.png'}
                                                             alt={player.name}
                                                             width={40}
@@ -162,220 +142,203 @@ const SeasonalLeaderboard = ({ data, leaderboardData, guildData }) => {
                                             })()}
                                         </div>
                                     </TableCell>
-                                    <TableCell sx={{ color: '#B0C4DE' }}>
-                                        <Link href={getPlayerUrl(player.name, guildData, player.realm)} style={{ textDecoration: 'none' }}>
-                                            <div className={`name ${player.class}`} style={{ cursor: 'pointer' }}>
-                                                <P sx={{ 
-                                                    fontWeight: '600', 
-                                                    color: '#FFFFFF',
-                                                    '&:hover': { color: '#FFD700' }
-                                                }}>
-                                                    {player.name}
+                                    <TableCell className="text-muted-foreground">
+                                        <Link href={getPlayerUrl(player.name, guildData, player.realm)} className="no-underline group block">
+                                            <div className="cursor-pointer">
+                                                <P className={`font-bold transition-opacity group-hover:opacity-80 text-${sanitizedClass}`}>
+                                                    {capitalizedName}
                                                 </P>
-                                                <P sx={{ fontSize: '0.875rem', color: '#B0C4DE' }}>
+                                                <P className="text-xs text-muted-foreground mt-0.5 font-medium">
                                                     {player.spec} {player.class}
                                                 </P>
                                             </div>
                                         </Link>
                                     </TableCell>
-                                    <TableCell sx={{ color: '#B0C4DE' }}>
+                                    <TableCell className="text-muted-foreground">
                                         {(() => {
                                             const guildPlayer = getGuildPlayerData(player.name)
                                             const currentScore = guildPlayer?.raw_mplus?.current_mythic_rating?.rating || player.rating || 0
                                             const scoreColor = guildPlayer?.raw_mplus?.current_mythic_rating?.color
                                             
                                             return (
-                                                <span style={{ 
-                                                    color: getScoreColor(currentScore, scoreColor),
-                                                    fontWeight: '700',
-                                                    fontSize: '1.125rem'
-                                                }}>
+                                                <span className="font-bold text-md" style={{ color: getScoreColor(currentScore, scoreColor) }}>
                                                     {Math.round(currentScore)}
                                                 </span>
                                             )
                                         })()}
                                     </TableCell>
-                                    <TableCell sx={{ color: '#B0C4DE' }}>
-                                        <Tooltip title={`Timed: ${player.highestTimedKey}, Overall: ${player.highestKeyOverall}`}>
-                                            <span style={{ fontWeight: '600' }}>
-                                                {player.highestTimedKey}
-                                            </span>
-                                        </Tooltip>
+                                    <TableCell className="text-muted-foreground">
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <span className="font-medium cursor-help border-b border-dotted border-muted-foreground/30 pb-0.5">
+                                                        {player.highestTimedKey}
+                                                    </span>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Timed: {player.highestTimedKey}, Overall: {player.highestKeyOverall}</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
                                     </TableCell>
-                                    <TableCell sx={{ color: '#B0C4DE' }}>
+                                    <TableCell className="text-muted-foreground font-medium">
                                         {player.totalRuns}
                                     </TableCell>
-                                    <TableCell sx={{ color: '#B0C4DE' }}>
-                                        <span style={{ 
+                                    <TableCell className="text-muted-foreground">
+                                        <span className="font-semibold" style={{ 
                                             color: player.completionRate >= 80 ? '#4CAF50' : 
-                                                   player.completionRate >= 60 ? '#FF9800' : '#F44336',
-                                            fontWeight: '600'
+                                                   player.completionRate >= 60 ? '#FF9800' : '#F44336'
                                         }}>
                                             {Math.round(player.completionRate)}%
                                         </span>
                                     </TableCell>
                                 </TableRow>
-                            ))}
+                            )})}
                         </TableBody>
                     </Table>
-                </TableContainer>
-            </Box>
+                </div>
+            </div>
         )
     }
 
     const renderDungeonsLeaderboard = () => (
-        <TableContainer component={Paper} sx={{ 
-            backgroundColor: 'rgba(17, 17, 17, 0.8)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
-        }}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Dungeon</TableCell>
-                        <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Highest Key</TableCell>
-                        <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Total Runs</TableCell>
-                        <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Timed Runs</TableCell>
-                        <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Completion Rate</TableCell>
-                        <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Players</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {currentLeaderboardData.map((dungeon, index) => (
-                        <TableRow key={index}>
-                            <TableCell sx={{ color: '#B0C4DE' }}>
-                                <P sx={{ fontWeight: '600', color: '#FFFFFF' }}>
-                                    {dungeon.name}
-                                </P>
-                            </TableCell>
-                            <TableCell sx={{ color: '#B0C4DE' }}>
-                                <span style={{ 
-                                    color: getScoreColor(dungeon.highestKey * 100),
-                                    fontWeight: '700',
-                                    fontSize: '1.125rem'
-                                }}>
-                                    {dungeon.highestKey}
-                                </span>
-                            </TableCell>
-                            <TableCell sx={{ color: '#B0C4DE' }}>
-                                {dungeon.totalRuns}
-                            </TableCell>
-                            <TableCell sx={{ color: '#B0C4DE' }}>
-                                {dungeon.timedRuns}
-                            </TableCell>
-                            <TableCell sx={{ color: '#B0C4DE' }}>
-                                <span style={{ 
-                                    color: dungeon.completionRate >= 80 ? '#4CAF50' : 
-                                           dungeon.completionRate >= 60 ? '#FF9800' : '#F44336',
-                                    fontWeight: '600'
-                                }}>
-                                    {Math.round(dungeon.completionRate)}%
-                                </span>
-                            </TableCell>
-                            <TableCell sx={{ color: '#B0C4DE' }}>
-                                {dungeon.playerCount}
-                            </TableCell>
+        <div className="w-full overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+            <div className="overflow-x-auto bg-card/50">
+                <Table>
+                    <TableHeader>
+                        <TableRow className="hover:bg-transparent border-b border-border">
+                            <TableHead className="text-muted-foreground font-medium text-sm">Dungeon</TableHead>
+                            <TableHead className="text-muted-foreground font-medium text-sm">Highest Key</TableHead>
+                            <TableHead className="text-muted-foreground font-medium text-sm">Total Runs</TableHead>
+                            <TableHead className="text-muted-foreground font-medium text-sm">Timed Runs</TableHead>
+                            <TableHead className="text-muted-foreground font-medium text-sm">Completion Rate</TableHead>
+                            <TableHead className="text-muted-foreground font-medium text-sm">Players</TableHead>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                    </TableHeader>
+                    <TableBody>
+                        {currentLeaderboardData.map((dungeon, index) => (
+                            <TableRow key={index} className="border-b border-border hover:bg-muted/30 transition-colors">
+                                <TableCell className="text-muted-foreground">
+                                    <P className="font-semibold text-foreground">
+                                        {dungeon.name}
+                                    </P>
+                                </TableCell>
+                                <TableCell className="text-muted-foreground">
+                                    <span className="font-bold text-md" style={{ color: getScoreColor(dungeon.highestKey * 100) }}>
+                                        {dungeon.highestKey}
+                                    </span>
+                                </TableCell>
+                                <TableCell className="text-muted-foreground font-medium">
+                                    {dungeon.totalRuns}
+                                </TableCell>
+                                <TableCell className="text-muted-foreground font-medium">
+                                    {dungeon.timedRuns}
+                                </TableCell>
+                                <TableCell className="text-muted-foreground">
+                                    <span className="font-semibold" style={{ 
+                                        color: dungeon.completionRate >= 80 ? '#4CAF50' : 
+                                               dungeon.completionRate >= 60 ? '#FF9800' : '#F44336'
+                                    }}>
+                                        {Math.round(dungeon.completionRate)}%
+                                    </span>
+                                </TableCell>
+                                <TableCell className="text-muted-foreground font-medium">
+                                    {dungeon.playerCount}
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+        </div>
     )
 
     const renderRolesLeaderboard = () => (
-        <TableContainer component={Paper} sx={{ 
-            backgroundColor: 'rgba(17, 17, 17, 0.8)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
-        }}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Role</TableCell>
-                        <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Average Rating</TableCell>
-                        <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Total Runs</TableCell>
-                        <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Timed Runs</TableCell>
-                        <TableCell sx={{ color: '#FFFFFF', fontWeight: '600' }}>Completion Rate</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {currentLeaderboardData.map((role, index) => (
-                        <TableRow key={index}>
-                            <TableCell sx={{ color: '#B0C4DE' }}>
-                                <P sx={{ fontWeight: '600', color: '#FFFFFF' }}>
-                                    {role.name}
-                                </P>
-                            </TableCell>
-                            <TableCell sx={{ color: '#B0C4DE' }}>
-                                <span style={{ 
-                                    color: getScoreColor(role.averageRating),
-                                    fontWeight: '700',
-                                    fontSize: '1.125rem'
-                                }}>
-                                    {Math.round(role.averageRating)}
-                                </span>
-                            </TableCell>
-                            <TableCell sx={{ color: '#B0C4DE' }}>
-                                {role.totalRuns}
-                            </TableCell>
-                            <TableCell sx={{ color: '#B0C4DE' }}>
-                                {role.timedRuns}
-                            </TableCell>
-                            <TableCell sx={{ color: '#B0C4DE' }}>
-                                <span style={{ 
-                                    color: role.completionRate >= 80 ? '#4CAF50' : 
-                                           role.completionRate >= 60 ? '#FF9800' : '#F44336',
-                                    fontWeight: '600'
-                                }}>
-                                    {Math.round(role.completionRate)}%
-                                </span>
-                            </TableCell>
+        <div className="w-full overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+            <div className="overflow-x-auto bg-card/50">
+                <Table>
+                    <TableHeader>
+                        <TableRow className="hover:bg-transparent border-b border-border">
+                            <TableHead className="text-muted-foreground font-medium text-sm">Role</TableHead>
+                            <TableHead className="text-muted-foreground font-medium text-sm">Average Rating</TableHead>
+                            <TableHead className="text-muted-foreground font-medium text-sm">Total Runs</TableHead>
+                            <TableHead className="text-muted-foreground font-medium text-sm">Timed Runs</TableHead>
+                            <TableHead className="text-muted-foreground font-medium text-sm">Completion Rate</TableHead>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                    </TableHeader>
+                    <TableBody>
+                        {currentLeaderboardData.map((role, index) => (
+                            <TableRow key={index} className="border-b border-border hover:bg-muted/30 transition-colors">
+                                <TableCell className="text-muted-foreground">
+                                    <P className="font-semibold text-foreground">
+                                        {role.name}
+                                    </P>
+                                </TableCell>
+                                <TableCell className="text-muted-foreground">
+                                    <span className="font-bold text-md" style={{ color: getScoreColor(role.averageRating) }}>
+                                        {Math.round(role.averageRating)}
+                                    </span>
+                                </TableCell>
+                                <TableCell className="text-muted-foreground font-medium">
+                                    {role.totalRuns}
+                                </TableCell>
+                                <TableCell className="text-muted-foreground font-medium">
+                                    {role.timedRuns}
+                                </TableCell>
+                                <TableCell className="text-muted-foreground">
+                                    <span className="font-semibold" style={{ 
+                                        color: role.completionRate >= 80 ? '#4CAF50' : 
+                                               role.completionRate >= 60 ? '#FF9800' : '#F44336'
+                                    }}>
+                                        {Math.round(role.completionRate)}%
+                                    </span>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+        </div>
     )
 
     if (!data) {
         return (
-            <Alert severity="info">
-                <Typography variant="h6">No seasonal data available</Typography>
-                <Typography variant="body2">Seasonal statistics will appear here once guild data is updated.</Typography>
+            <Alert variant="default" className="bg-blue-500/10 border-blue-500/20 text-blue-200">
+                <Info className="h-4 w-4" />
+                <AlertTitle>No seasonal data available</AlertTitle>
+                <AlertDescription>
+                    Seasonal statistics will appear here once guild data is updated.
+                </AlertDescription>
             </Alert>
         )
     }
 
 
     return (
-        <Box>
+        <div>
             {/* Leaderboard Type Selector */}
-            <Box sx={{ mb: 3, display: 'flex', gap: 1 }}>
+            <div className="mb-6 flex gap-2">
                 {['players', 'dungeons', 'roles'].map((type) => (
-                    <Chip
+                    <Badge
                         key={type}
-                        label={type.charAt(0).toUpperCase() + type.slice(1)}
+                        variant="secondary"
                         onClick={() => setLeaderboardType(type)}
-                        sx={{
-                            backgroundColor: leaderboardType === type ? '#FFD700' : 'rgba(255, 255, 255, 0.1)',
-                            color: '#FFFFFF',
-                            fontWeight: '600',
-                            cursor: 'pointer',
-                            '&:hover': {
-                                backgroundColor: leaderboardType === type ? '#FFD700' : 'rgba(255, 255, 255, 0.2)'
-                            }
-                        }}
-                    />
+                        className={`cursor-pointer px-4 py-1.5 text-sm font-semibold transition-colors ${
+                            leaderboardType === type 
+                                ? 'bg-[#FFD700] text-black hover:bg-[#FFD700]/90' 
+                                : 'bg-white/10 text-white hover:bg-white/20'
+                        }`}
+                    >
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </Badge>
                 ))}
-            </Box>
+            </div>
 
             {/* Leaderboard Content */}
             {leaderboardType === 'players' && renderPlayersLeaderboard()}
             {leaderboardType === 'dungeons' && renderDungeonsLeaderboard()}
             {leaderboardType === 'roles' && renderRolesLeaderboard()}
-        </Box>
+        </div>
     )
 }
 

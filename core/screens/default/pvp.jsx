@@ -60,15 +60,14 @@
 // React
 import React from 'react'
 
-// Material-UI components
-import { Typography, Box, Alert, CircularProgress } from '@mui/material'
+// Shadcn UI components
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Spinner } from '@/components/ui/spinner'
 
 // Internal components
 import PvpBlock from '@/core/modules/RatingBlock'
 
 // Styles
-import '@/core/screens/default/scss/pvp.scss'
-import '@/core/screens/default/scss/guildAudit.scss'
 
 /**
  * PVP - Rated PvP leaderboard and statistics display
@@ -78,20 +77,20 @@ const PVP = ({ auditable, guildData }) => {
     // Handle loading and error states
     if (!guildData) {
         return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-                <CircularProgress />
-            </Box>
+            <div className="flex justify-center items-center h-[50vh]">
+                <Spinner size="lg" />
+            </div>
         )
     }
 
     if (guildData.error) {
         return (
-            <Box sx={{ p: 3 }}>
-                <Alert severity="error">
-                    <Typography variant="h6">Failed to load guild data</Typography>
-                    <Typography variant="body2">{guildData.error}</Typography>
+            <div className="p-6">
+                <Alert variant="destructive">
+                    <AlertTitle>Failed to load guild data</AlertTitle>
+                    <AlertDescription>{guildData.error}</AlertDescription>
                 </Alert>
-            </Box>
+            </div>
         )
     }
 
@@ -106,28 +105,13 @@ const PVP = ({ auditable, guildData }) => {
                             className="logoHolder"
                             style={{ marginTop: '40px', padding: '0 16px' }}
                         >
-                            <Typography
-                                variant="h2"
-                                component="h2"
-                                sx={{
-                                    textTransform: 'capitalize !important',
-                                    textAlign: 'left',
-                                }}
-                            >
+                            <h2 className="text-4xl font-bold capitalize text-left mb-2">
                                 Rated PVP
-                            </Typography>
-                            <Typography
-                                variant="p"
-                                component="p"
-                                color="text.secondary"
-                                sx={{
-                                    mb: 4,
-                                    textAlign: 'left',
-                                }}
-                            >
+                            </h2>
+                            <p className="text-muted-foreground text-left mb-8">
                                 Last audit ran{' '}
                                 {guildData.timestamp ? new Date(guildData.timestamp).toLocaleString() : 'Unknown'}
-                            </Typography>
+                            </p>
                         </div>
                         <div>
                             <PvpBlock data={guildData} name="data" type="pvp" />

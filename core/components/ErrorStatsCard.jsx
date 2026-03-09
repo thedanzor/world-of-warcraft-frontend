@@ -1,33 +1,26 @@
 'use client'
 
 import React from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Spinner } from '@/components/ui/spinner'
 import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  Chip,
-  LinearProgress,
-  Stack
-} from '@mui/material'
-import {
-  Error as ErrorIcon,
-  CheckCircle as ResolvedIcon,
-  Cancel as UnresolvedIcon,
-  TrendingUp as TrendingUpIcon,
-  BugReport as BugReportIcon
-} from '@mui/icons-material'
+  AlertCircle as ErrorIcon,
+  CheckCircle2 as ResolvedIcon,
+  XCircle as UnresolvedIcon,
+  Bug as BugReportIcon
+} from 'lucide-react'
 
 const ErrorStatsCard = ({ stats, loading }) => {
   if (loading) {
     return (
       <Card>
-        <CardContent>
-          <LinearProgress />
-          <Typography variant="body2" sx={{ mt: 1 }}>
+        <CardContent className="p-6 flex flex-col items-center justify-center min-h-[200px]">
+          <Spinner className="w-8 h-8 mb-4" />
+          <div className="text-sm text-muted-foreground">
             Loading statistics...
-          </Typography>
+          </div>
         </CardContent>
       </Card>
     )
@@ -35,122 +28,111 @@ const ErrorStatsCard = ({ stats, loading }) => {
 
   const { overview, byType, byEndpoint } = stats
 
-  const StatItem = ({ label, value, color = 'primary', icon }) => (
-    <Box textAlign="center">
-      <Box display="flex" justifyContent="center" alignItems="center" mb={1}>
-        {icon}
-        <Typography variant="h4" color={color} sx={{ ml: 1 }}>
+  const StatItem = ({ label, value, colorClass = 'text-primary', icon }) => (
+    <div className="text-center">
+      <div className="flex justify-center items-center mb-2 gap-2">
+        {React.cloneElement(icon, { className: `w-6 h-6 ${colorClass}` })}
+        <div className={`text-3xl font-semibold ${colorClass}`}>
           {value}
-        </Typography>
-      </Box>
-      <Typography variant="body2" color="text.secondary">
+        </div>
+      </div>
+      <div className="text-sm text-muted-foreground">
         {label}
-      </Typography>
-    </Box>
+      </div>
+    </div>
   )
 
   return (
-    <Grid container spacing={3}>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Overview Stats */}
-      <Grid item xs={12}>
+      <div className="col-span-1 md:col-span-2">
         <Card>
+          <CardHeader>
+            <CardTitle className="text-md">Error Overview</CardTitle>
+          </CardHeader>
           <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Error Overview
-            </Typography>
-            <Grid container spacing={3}>
-              <Grid item xs={6} sm={3}>
-                <StatItem 
-                  label="Total Errors" 
-                  value={overview.total} 
-                  color="primary"
-                  icon={<ErrorIcon />}
-                />
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <StatItem 
-                  label="Resolved" 
-                  value={overview.resolved} 
-                  color="success"
-                  icon={<ResolvedIcon />}
-                />
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <StatItem 
-                  label="Unresolved" 
-                  value={overview.unresolved} 
-                  color="error"
-                  icon={<UnresolvedIcon />}
-                />
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <StatItem 
-                  label="High Severity" 
-                  value={overview.highSeverity} 
-                  color="error"
-                  icon={<BugReportIcon />}
-                />
-              </Grid>
-            </Grid>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+              <StatItem 
+                label="Total Errors" 
+                value={overview.total} 
+                colorClass="text-primary"
+                icon={<ErrorIcon />}
+              />
+              <StatItem 
+                label="Resolved" 
+                value={overview.resolved} 
+                colorClass="text-green-600"
+                icon={<ResolvedIcon />}
+              />
+              <StatItem 
+                label="Unresolved" 
+                value={overview.unresolved} 
+                colorClass="text-destructive"
+                icon={<UnresolvedIcon />}
+              />
+              <StatItem 
+                label="High Severity" 
+                value={overview.highSeverity} 
+                colorClass="text-destructive"
+                icon={<BugReportIcon />}
+              />
+            </div>
           </CardContent>
         </Card>
-      </Grid>
+      </div>
 
       {/* By Type */}
-      <Grid item xs={12} md={6}>
-        <Card>
+      <div>
+        <Card className="h-full">
+          <CardHeader>
+            <CardTitle className="text-md">Errors by Type</CardTitle>
+          </CardHeader>
           <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Errors by Type
-            </Typography>
-            <Stack spacing={1}>
+            <div className="flex flex-col gap-3">
               {byType.map((type) => (
-                <Box key={type._id} display="flex" justifyContent="space-between" alignItems="center">
-                  <Chip 
-                    label={type._id} 
-                    variant="outlined" 
-                    size="small"
-                  />
-                  <Typography variant="body2" fontWeight="bold">
+                <div key={type._id} className="flex justify-between items-center">
+                  <Badge variant="outline">
+                    {type._id}
+                  </Badge>
+                  <div className="text-sm font-bold">
                     {type.count}
-                  </Typography>
-                </Box>
+                  </div>
+                </div>
               ))}
-            </Stack>
+            </div>
           </CardContent>
         </Card>
-      </Grid>
+      </div>
 
       {/* By Endpoint */}
-      <Grid item xs={12} md={6}>
-        <Card>
+      <div>
+        <Card className="h-full">
+          <CardHeader>
+            <CardTitle className="text-md">Top Error Endpoints</CardTitle>
+          </CardHeader>
           <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Top Error Endpoints
-            </Typography>
-            <Stack spacing={1}>
+            <div className="flex flex-col gap-4">
               {byEndpoint.slice(0, 5).map((endpoint) => (
-                <Box key={endpoint._id}>
-                  <Typography variant="body2" noWrap>
+                <div key={endpoint._id}>
+                  <div className="text-sm truncate mb-1">
                     {endpoint._id}
-                  </Typography>
-                  <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Typography variant="caption" color="text.secondary">
+                  </div>
+                  <div className="flex justify-between items-center gap-4">
+                    <div className="text-xs text-muted-foreground whitespace-nowrap">
                       {endpoint.count} errors
-                    </Typography>
-                    <LinearProgress 
-                      variant="determinate" 
+                    </div>
+                    <Progress 
                       value={(endpoint.count / byEndpoint[0].count) * 100}
-                      sx={{ width: 60, height: 4 }}
+                      className="h-2"
                     />
-                  </Box>
-                </Box>
+                  </div>
+                </div>
               ))}
-            </Stack>
+            </div>
           </CardContent>
         </Card>
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   )
 }
 

@@ -1,46 +1,44 @@
 import React from 'react'
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
 
 const RaidRequirements = () => (
     <div>
-        <Typography variant="h2" sx={{ fontSize: '1.5rem', my: 3 }}>
+        <h2 className="text-2xl font-bold my-6">
             Raid Requirements
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
+        </h2>
+        <p className="text-muted-foreground mb-4">
             Everything here is subject to change, as we get more information and feedback.
-        </Typography>
+        </p>
         
-        <Box component="ul" sx={{ pl: 2 }}>
-            <Typography component="li" variant="body1" sx={{ mb: 1 }}>
+        <ul className="pl-4 list-disc space-y-2">
+            <li>
                 628 item level or higher is the ideal target
-            </Typography>
-            <Typography component="li" variant="body1" sx={{ mb: 1 }}>
+            </li>
+            <li>
                 Must obtain "Durable Information Securing Container" (waist) and "Reshii Wraps" (cloak)
-            </Typography>
-            <Typography component="li" variant="body1" sx={{ mb: 1 }}>
+            </li>
+            <li>
                 Required to study all posted mechanical breakdowns, videos, and raid summaries
-            </Typography>
-            <Typography component="li" variant="body1" sx={{ mb: 1 }}>
+            </li>
+            <li>
                 All standard raid addons must be installed and configured
-            </Typography>
-            <Typography component="li" variant="body1" sx={{ mb: 1 }}>
+            </li>
+            <li>
                 Pre-check starts at 7:45, pull time at 8:00 sharp - unprepared raiders will be temporarily removed
-            </Typography>
-            <Typography component="li" variant="body1" sx={{ mb: 1 }}>
+            </li>
+            <li>
                 Raid-locking during progression raids is discouraged and may impact future invites
-            </Typography>
-            <Typography component="li" variant="body1" sx={{ mb: 1 }}>
+            </li>
+            <li>
                 All gear must be enchanted for Heroic progression (any level enchants acceptable)
-            </Typography>
-            <Typography component="li" variant="body1" sx={{ mb: 1 }}>
+            </li>
+            <li>
                 Tier gear acquisition strategy TBD - items are harder to obtain but provide significant power increase (normal vs heroic)
-            </Typography>
-            <Typography component="li" variant="body1" sx={{ mb: 1 }}>
+            </li>
+            <li>
                 [Pending Renown System] Maintain relevant raid renown track for buffs and token access
-            </Typography>
-        </Box>
+            </li>
+        </ul>
     </div>
 )
 
-export default RaidRequirements 
+export default RaidRequirements

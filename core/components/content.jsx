@@ -1,4 +1,3 @@
-import './scss/content.scss'
 
 // This component allows us to center content nicely
 // and handle some initial responsive support

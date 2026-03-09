@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 
 // Utility functions for converting data
 function convertArrayToString(arr) {
@@ -59,22 +57,18 @@ const MRTImportExport = ({ handleToggle, data }) => {
   };
 
   return (
-    <Stack spacing={2} className="mrt-import-stack">
-      <TextField
-        multiline
-        fullWidth
-        minRows={10}
-        maxRows={20}
+    <div className="flex flex-col gap-4 mrt-import-stack">
+      <Textarea
+        className="min-h-[200px] w-full font-mono text-sm mrt-import-textfield"
         value={importData}
         onChange={(e) => setImportData(e.target.value)}
-        className="mrt-import-textfield"
       />
-      <Box className="mrt-import-actions">
-        <Button variant="contained" onClick={saveAndClose}>
+      <div className="mrt-import-actions">
+        <Button onClick={saveAndClose}>
           Save & Close
         </Button>
-      </Box>
-    </Stack>
+      </div>
+    </div>
   );
 };
 

@@ -1,8 +1,93 @@
 # World of Warcraft Guild Management Application
 
-A modern, responsive web application for managing and displaying World of Warcraft guild information, raid progression, and player statistics. Built with Next.js 14, React 18, and Material-UI.
+A modern, responsive web application for managing and displaying World of Warcraft guild information, raid progression, and player statistics.
 
-## Version 2.2 Changelog 🆕
+---
+
+## Version 3.0 — The Visual Overhaul 🆕
+
+Version 3.0 is a complete redesign of the entire application. Every screen, component, and interaction has been revisited with a focus on clarity, consistency, and character. The application now feels like a proper dashboard product rather than a stitched-together set of pages.
+
+### The Big Picture
+
+- **Full Midnight expansion support** — data, UI, and configuration are all updated to reflect the current WoW season
+- **Brand new design system** — replaced the old MUI component library with [shadcn/ui](https://ui.shadcn.com/), giving the application a clean, unified dark theme that actually looks good
+- **Charts and analytics everywhere** — key screens now visualise data with proper interactive charts rather than raw numbers in tables
+- **Character names always capitalised and class-coloured** — every character name across every screen now follows WoW conventions: `Knories` in Paladin pink, `Addnio` in Warrior tan, etc.
+- **No more hardcoded colours** — every colour token is now drawn from the design system, so it all adapts consistently
+
+---
+
+### What Changed Per Screen
+
+#### Navigation
+- Completely rebuilt sidebar — tighter spacing, uppercase section labels, proper active/hover states with distinct visual weight
+- Slim sticky header bar replaces the old tall toolbar
+- Settings login dialog polished to match the rest of the UI
+
+#### Dashboard
+- Stat cards now have subtle inner gradients and icon badges with coloured backgrounds
+- Top Players tables show capitalised, class-coloured names consistently
+- Layout cleaned up with proper spacing and section headings
+
+#### Audit
+- Filters redesigned as a clean 4-column grid (item level slider, rank, role, class badges)
+- **New analytics panel** added above the roster table showing live charts that update as you filter:
+  - Role distribution (tanks / healers / DPS) — donut chart with progress bars
+  - Enchant readiness — how many players are fully enchanted vs. missing enchants
+  - Raid lockout status — available vs. locked, broken down visually
+  - Class distribution — bar chart in WoW class colours with a pill grid below
+  - Raid buff coverage — compact grid showing which buffs you have and which are missing
+- Tab bar redesigned — no longer stretches full width with an ugly scrollbar
+- Table header typography cleaned up
+
+#### Mythic+
+- Fixed a crash on the M+ screen (missing import)
+- Screen wrapper markup cleaned up — removed legacy class-based divs
+- Tabs now use the new compact pill style
+
+#### Member Profile
+- Fully redesigned — hero card shows avatar with class-coloured border, stat pills, and an equipment status strip (enchants / tier set / active)
+- Most Played With section shows clean compact cards
+- Dungeon Performance table uses proper muted colour tokens
+
+#### Seasons / Sign-Up
+- Header repositioned with the sign-up button inline on desktop
+- **New stats dashboard** above the roster table:
+  - Season Goals — donut chart showing CE / AOTC / Social split with progress bars
+  - Role Distribution — donut chart + per-role progress bars with backup counts
+  - Class Distribution — bar chart in class colours + compact class pill grid
+  - Mythic+ Interest — who wants to push keys vs. who doesn't, with visual progress bars
+  - Raid Buffs — which buffs the signed-up roster covers, which are missing
+- Roster table redesigned with role badges (green/blue/red), goal badges (CE=gold, AOTC=purple), and class-coloured names
+- Sign-up success toast replaced the old ugly alert box
+
+#### Recruitment / Join
+- Hero section redesigned with a soft gradient background and coloured badge pills
+- Content cards now have accent-coloured borders and icon badges matching the card type (requirements=amber, benefits=yellow, schedule=purple, contact=primary)
+- List items use arrow icons in the accent colour instead of plain text bullets
+- Removed hardcoded glassmorphism effects that didn't fit the design system
+
+#### Roster Display
+- Role section headers now have coloured icon badges (emerald for tanks, blue for healers, red for DPS, etc.)
+- Wider grid, total player count shown in the subtitle
+- Error state uses proper styled card
+
+#### Character Cards
+- Shows spec + class together, not just class
+- Cleaner hover transition
+- Better text truncation on narrow cards
+
+### Global Improvements
+
+- **Thin custom scrollbar** across the whole app — replaces the browser default with a 5px scrollbar that suits the dark theme
+- **Tighter base font size** — dropped from 16px to 15px for a more refined feel
+- **All headings get `tracking-tight`** by default
+- All `#111111`, `#B0C4DE`, `#FFD700` hardcoded hex colours replaced with proper design tokens
+
+---
+
+## Version 2.2 Changelog
 
 ### Roster Builder Admin System
 - **Admin-Based Roster Management**: Roster builder is now restricted to admin users only

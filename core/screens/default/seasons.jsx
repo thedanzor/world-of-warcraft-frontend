@@ -54,12 +54,9 @@
 
 'use client'
 import React, { useState, useEffect } from 'react'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-import Alert from '@mui/material/Alert'
-import Snackbar from '@mui/material/Snackbar'
-import AddIcon from '@mui/icons-material/Add'
+import { Plus } from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
 
 import RaidRequirements from '@/core/components/RaidRequirements'
 import TabPanel from '@/core/components/SeasonsStats/TabPanel'
@@ -90,6 +87,15 @@ const SeasonsSection = ({ guildData, seasonsData }) => {
     // Handle case where guildData might be null
     const safeGuildData = guildData?.data || []
     const safeSeasonsData = seasonsData || []
+
+    useEffect(() => {
+        if (successMessage) {
+            const timer = setTimeout(() => {
+                setSuccessMessage('')
+            }, 6000)
+            return () => clearTimeout(timer)
+        }
+    }, [successMessage])
 
     const handleSignUpSubmit = async (formData) => {
         setLoading(true)
@@ -224,107 +230,53 @@ const SeasonsSection = ({ guildData, seasonsData }) => {
     const activeStats = getActiveData(tabValue)
 
     return (
-        <section className="dashboard">
-            <>
-                <Box sx={{ padding: { xs: '0 8px', sm: '0 16px' }, pb: 8 }}>
-                    {/* Header */}
-                    <div className="logoHolder" style={{ marginTop: '40px' }}>
-                        <Typography
-                            variant="h2"
-                            component="h2"
-                            sx={{
-                                textTransform: 'capitalize !important',
-                                textAlign: 'left',
-                                fontSize: { xs: '1.75rem', sm: '2rem' },
-                            }}
-                        >
-                            {seasonPageTitle}
-                        </Typography>
-                        <Typography
-                            variant="p"
-                            component="p"
-                            color="text.secondary"
-                            sx={{ mb: 2, textAlign: 'left' }}
-                        >
-                            {seasonPageDescription}
-                        </Typography>
-                        
-                        {/* Sign Up Button */}
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            startIcon={<AddIcon />}
-                            onClick={() => setSignUpOpen(true)}
-                            sx={{ 
-                                mb: 3,
-                                px: 3,
-                                py: 1.5,
-                                fontSize: '1rem',
-                                fontWeight: 600,
-                                borderRadius: 0.5,
-                                textTransform: 'none',
-                                backgroundColor: '#153034',
-                                color: '#ffffff',
-                                '&:hover': {
-                                    backgroundColor: '#1a3d42',
-                                    transform: 'translateY(-1px)'
-                                },
-                                transition: 'all 0.3s ease'
-                            }}
-                        >
-                            {seasonSignupButtonText}
-                        </Button>
-                    </div>
-
-                    {/* Tabs */}
-                    <Box sx={{ width: '100%', mb: 4 }}>
-
-                        {/* Tab Panels */}
-                        <div role="tabpanel" hidden={tabValue !== 0}>
-                            {tabValue === 0 && (
-                                <TabPanel
-                                    data={safeSeasonsData}
-                                    stats={activeStats}
-                                    totalClassCounts={activeStats.classCounts}
-                                    headCells={headCells}
-                                    title={seasonRosterTableTitle}
-                                    description={seasonRosterTableDescription}
-                                    classIcons={classIcons}
-                                    guildData={safeGuildData}
-                                />
-                            )}
-                        </div>
-
-                        <div role="tabpanel" hidden={tabValue !== 2}>
-                            {tabValue === 2 && <RaidRequirements />}
-                        </div>
-                    </Box>
-                </Box>
-
-                {/* Sign Up Form Dialog */}
-                <SignUpForm
-                    open={signUpOpen}
-                    onClose={() => setSignUpOpen(false)}
-                    onSubmit={handleSignUpSubmit}
-                    loading={loading}
-                    error={error}
-                    guildData={safeGuildData}
-                />
-
-                {/* Success Message */}
-                <Snackbar
-                    open={!!successMessage}
-                    autoHideDuration={6000}
-                    onClose={() => setSuccessMessage('')}
+        <section className="space-y-6">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h2 className="text-3xl font-bold tracking-tight">{seasonPageTitle}</h2>
+                    <p className="text-sm text-muted-foreground mt-1">{seasonPageDescription}</p>
+                </div>
+                <Button
+                    onClick={() => setSignUpOpen(true)}
+                    size="lg"
+                    className="shrink-0 gap-2"
                 >
-                    <Alert 
-                        onClose={() => setSuccessMessage('')} 
-                        severity="success"
-                    >
-                        {successMessage} - It may take a few minutes for the application to be processed.
-                    </Alert>
-                </Snackbar>
-            </>
+                    <Plus className="h-4 w-4" />
+                    {seasonSignupButtonText}
+                </Button>
+            </div>
+
+            {/* Roster Panel */}
+            <TabPanel
+                data={safeSeasonsData}
+                stats={activeStats}
+                totalClassCounts={activeStats.classCounts}
+                headCells={headCells}
+                title={seasonRosterTableTitle}
+                description={seasonRosterTableDescription}
+                classIcons={classIcons}
+                guildData={safeGuildData}
+            />
+
+            {/* Sign Up Form Dialog */}
+            <SignUpForm
+                open={signUpOpen}
+                onClose={() => setSignUpOpen(false)}
+                onSubmit={handleSignUpSubmit}
+                loading={loading}
+                error={error}
+                guildData={safeGuildData}
+            />
+
+            {/* Success toast */}
+            {!!successMessage && (
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+                    <div className="rounded-lg border border-green-500/30 bg-green-500/10 text-green-400 px-5 py-3 text-sm font-medium shadow-lg backdrop-blur-sm">
+                        {successMessage} &mdash; It may take a few minutes to process.
+                    </div>
+                </div>
+            )}
         </section>
     )
 }

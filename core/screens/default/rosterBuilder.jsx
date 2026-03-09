@@ -66,11 +66,9 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { DndProvider, useDrop } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
-// Material-UI components
-import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
-import Paper from '@mui/material/Paper'
+// Shadcn components & Lucide
+import { Button } from '@/components/ui/button'
+import { Trash2 } from 'lucide-react'
 
 // Internal utilities and config
 import { calculateRaidBuffs } from '@/core/utils/raidBuffs'
@@ -82,7 +80,6 @@ import RoleSlot from '@/core/components/RoleSlot'
 import BuffSummary from '@/core/components/BuffSummary'
 
 // Styles
-import '@/core/screens/default/scss/roster.scss'
 
 /**
  * RosterPlannerContent - The main roster planner component that uses useSearchParams
@@ -207,32 +204,18 @@ const RosterPlannerContent = ({ guildData }) => {
                 >
                     <section>
                         <div
-                            className="logoHolder"
-                            style={{ marginTop: '40px', padding: '0 0px' }}
+                            className="logoHolder mt-10 px-0"
                         >
-                            <Typography
-                                variant="h2"
-                                component="h2"
-                                sx={{
-                                    textTransform: 'capitalize !important',
-                                    textAlign: 'left',
-                                }}
-                            >
+                            <h2 className="text-3xl capitalize text-left mb-2 font-semibold">
                                 Roster Builder
-                            </Typography>
-                            <Typography
-                                variant="p"
-                                component="p"
-                                color="text.secondary"
-                                sx={{ mb: 4 }}
-                            >
+                            </h2>
+                            <p className="text-muted-foreground mb-4">
                                 <strong> NOTICE: </strong> This tool allows you to build your own roster based on main characters from the guild.
-                            </Typography>
+                            </p>
                             <Button
-                                variant="outlined"
-                                color="secondary"
+                                variant="outline"
                                 onClick={handleReset}
-                                sx={{ mb: 2 }}
+                                className="mb-4"
                             >
                                 Reset Roster
                             </Button>
@@ -265,11 +248,11 @@ const RosterPlannerContent = ({ guildData }) => {
                                     .flat()
                                     .some(assigned => assigned === character.name)
                         ).length === 0 ? (
-                            <Paper sx={{ p: 3, mb: 4 }}>
-                                <Typography>
+                            <div className="p-6 mb-8 rounded-lg shadow-sm bg-[#111111]/80 backdrop-blur-md border border-white/10">
+                                <p>
                                     Notice: All main characters have been assigned. You can drag characters from slots back to the pool or use the reset button to clear all assignments.
-                                </Typography>
-                            </Paper>
+                                </p>
+                            </div>
                         ) : (
                             <div
                                 className="character-grid"
@@ -302,27 +285,14 @@ const RosterPlannerContent = ({ guildData }) => {
 
                     <section>
                         <div
-                            className="logoHolder"
-                            style={{ marginTop: '40px', padding: '0 0px' }}
+                            className="logoHolder mt-10 px-0"
                         >
-                            <Typography
-                                variant="h2"
-                                component="h2"
-                                sx={{
-                                    textTransform: 'capitalize !important',
-                                    textAlign: 'left',
-                                }}
-                            >
+                            <h2 className="text-3xl capitalize text-left mb-2 font-semibold">
                                 Built Roster
-                            </Typography>
-                            <Typography
-                                variant="p"
-                                component="p"
-                                color="text.secondary"
-                                sx={{ mb: 4 }}
-                            >
+                            </h2>
+                            <p className="text-muted-foreground mb-8">
                                 Scroll down to see the utilities and buffs for the built roster.
-                            </Typography>
+                            </p>
                         </div>
                     </section>
 
@@ -330,13 +300,10 @@ const RosterPlannerContent = ({ guildData }) => {
                     <section className="role-sections">
                         {/* Tanks */}
                         <div className="role-group tanks">
-                            <Typography
-                                variant="h6"
-                                sx={{ fontWeight: 'bold' }}
-                            >
+                            <h6 className="text-md font-bold mb-2">
                                 Tanks (
                                 {assignments.tanks.filter(Boolean).length}/2)
-                            </Typography>
+                            </h6>
                             <div className="slot-container">
                                 {assignments.tanks.map((charId, index) => (
                                     <RoleSlot
@@ -354,13 +321,10 @@ const RosterPlannerContent = ({ guildData }) => {
 
                         {/* Healers */}
                         <div className="role-group healers">
-                            <Typography
-                                variant="h6"
-                                sx={{ fontWeight: 'bold' }}
-                            >
+                            <h6 className="text-md font-bold mb-2">
                                 Healers (
                                 {assignments.healers.filter(Boolean).length}/5)
-                            </Typography>
+                            </h6>
                             <div className="slot-container">
                                 {assignments.healers.map((charId, index) => (
                                     <RoleSlot
@@ -378,13 +342,10 @@ const RosterPlannerContent = ({ guildData }) => {
 
                         {/* DPS */}
                         <div className="role-group dps">
-                            <Typography
-                                variant="h6"
-                                sx={{ fontWeight: 'bold' }}
-                            >
+                            <h6 className="text-md font-bold mb-2">
                                 DPS ({assignments.dps.filter(Boolean).length}
                                 /18)
-                            </Typography>
+                            </h6>
                             <div className="slot-container">
                                 {assignments.dps.map((charId, index) => (
                                     <RoleSlot
@@ -402,13 +363,10 @@ const RosterPlannerContent = ({ guildData }) => {
 
                         {/* Substitutes */}
                         <div className="role-group substitutes">
-                            <Typography
-                                variant="h6"
-                                sx={{ fontWeight: 'bold' }}
-                            >
+                            <h6 className="text-md font-bold mb-2">
                                 Substitutes ({assignments.substitutes.filter(Boolean).length}
                                 /10)
-                            </Typography>
+                            </h6>
                             <div className="slot-container">
                                 {assignments.substitutes.map((charId, index) => (
                                     <RoleSlot
@@ -426,13 +384,10 @@ const RosterPlannerContent = ({ guildData }) => {
 
                         {/* Social */}
                         <div className="role-group social">
-                            <Typography
-                                variant="h6"
-                                sx={{ fontWeight: 'bold' }}
-                            >
+                            <h6 className="text-md font-bold mb-2">
                                 Social ({assignments.social.filter(Boolean).length}
                                 /10)
-                            </Typography>
+                            </h6>
                             <div className="slot-container">
                                 {assignments.social.map((charId, index) => (
                                     <RoleSlot
@@ -510,10 +465,10 @@ const TrashZone = ({ setAssignments }) => {
                         : 'transparent',
                 }}
             >
-                <DeleteOutlineIcon sx={{ fontSize: 40, color: '#666' }} />
-                <Typography variant="body1" sx={{ ml: 1 }}>
+                <Trash2 className="text-[#666] w-10 h-10" />
+                <p className="ml-2 text-base">
                     Drag here to remove
-                </Typography>
+                </p>
             </div>
         </section>
     )

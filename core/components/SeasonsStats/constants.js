@@ -1,31 +1,33 @@
 // Icons for WoW classes
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment' // Mage
-import PetsIcon from '@mui/icons-material/Pets' // Hunter
-import ShieldIcon from '@mui/icons-material/Shield' // Warrior/Paladin
-import HealingIcon from '@mui/icons-material/Healing' // Priest
-import PsychologyIcon from '@mui/icons-material/Psychology' // Warlock
-import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh' // Druid
-import BoltIcon from '@mui/icons-material/Bolt' // Shaman
-import ContentCutIcon from '@mui/icons-material/ContentCut' // Rogue
-import SelfImprovementIcon from '@mui/icons-material/SelfImprovement' // Monk
-import GppMaybeIcon from '@mui/icons-material/GppMaybe' // Death Knight
-import ColorLensIcon from '@mui/icons-material/ColorLens' // Demon Hunter
-import FlareIcon from '@mui/icons-material/Flare' // Evoker
+import {
+    Flame,
+    PawPrint,
+    Shield,
+    Cross,
+    Brain,
+    Wand2,
+    Zap,
+    Scissors,
+    User,
+    Skull,
+    Eye,
+    Sparkles
+} from 'lucide-react'
 
 export const classIcons = {
-    Warrior: ShieldIcon,
-    Paladin: ShieldIcon,
-    Hunter: PetsIcon,
-    Rogue: ContentCutIcon,
-    Priest: HealingIcon,
-    'Death Knight': GppMaybeIcon,
-    Shaman: BoltIcon,
-    Mage: LocalFireDepartmentIcon,
-    Warlock: PsychologyIcon,
-    Monk: SelfImprovementIcon,
-    Druid: AutoFixHighIcon,
-    'Demon Hunter': ColorLensIcon,
-    Evoker: FlareIcon,
+    Warrior: Shield,
+    Paladin: Shield,
+    Hunter: PawPrint,
+    Rogue: Scissors,
+    Priest: Cross,
+    'Death Knight': Skull,
+    Shaman: Zap,
+    Mage: Flame,
+    Warlock: Brain,
+    Monk: User,
+    Druid: Wand2,
+    'Demon Hunter': Eye,
+    Evoker: Sparkles,
 }
 
 export const classColors = {
@@ -65,4 +67,4 @@ export const classSpecs = {
 export const tankSpecs = ['Protection', 'Blood', 'Guardian', 'Brewmaster', 'Vengeance']
 
 // Healer specs
-export const healerSpecs = ['Holy', 'Discipline', 'Restoration', 'Mistweaver', 'Preservation'] 
+export const healerSpecs = ['Holy', 'Discipline', 'Restoration', 'Mistweaver', 'Preservation']

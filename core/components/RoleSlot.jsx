@@ -1,6 +1,5 @@
 import { useDrop } from 'react-dnd'
 import { useCallback } from 'react'
-import Paper from '@mui/material/Paper'
 import CharacterCard from './CharacterCard'
 
 const RoleSlot = ({ roleType, index, character, onDrop }) => {

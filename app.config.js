@@ -7,10 +7,10 @@ const data = {
 
     "LEVEL_REQUIREMENT": 80,
     "GUILD_RANK_REQUIREMENT": [0,1,2,3,4,5,6, 7,8,9,10],
-    "ITEM_LEVEL_REQUIREMENT": 450,
-    "MIN_CHECK_CAP": 450,
-    "MAX_CHECK_CAP": 720,
-    "MIN_TIER_ITEMLEVEL": 640,
+    "ITEM_LEVEL_REQUIREMENT": 170,
+    "MIN_CHECK_CAP": 170,
+    "MAX_CHECK_CAP": 270,
+    "MIN_TIER_ITEMLEVEL": 240,
     "ENCHANTABLE_PIECES": ["WRIST", "LEGS", "FEET", "CHEST", "MAIN_HAND", "FINGER_1", "FINGER_2"],
     "MAIN_RANKS": [0,1,3,4,5,6,7],
     "ALT_RANKS": [2,8,9,10],
@@ -41,7 +41,7 @@ const data = {
         "activeTab": "all",
         "specFilter": "all",
         "instanceIndex": 0,
-        "defaultItemLevel": 645
+        "defaultItemLevel": 180
     },
     "GUILLD_RANKS": [
         "Guild Lead",

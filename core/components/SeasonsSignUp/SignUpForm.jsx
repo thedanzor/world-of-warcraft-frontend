@@ -1,24 +1,14 @@
 'use client'
 import React, { useState } from 'react'
-import Box from '@mui/material/Box'
-import Paper from '@mui/material/Paper'
-import Typography from '@mui/material/Typography'
-import Grid from '@mui/material/Grid'
-import Button from '@mui/material/Button'
-import Dialog from '@mui/material/Dialog'
-import DialogTitle from '@mui/material/DialogTitle'
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
-import TextField from '@mui/material/TextField'
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Switch from '@mui/material/Switch'
-import Alert from '@mui/material/Alert'
-import CircularProgress from '@mui/material/CircularProgress'
-import AddIcon from '@mui/icons-material/Add'
+import { PlusIcon } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 import { classSpecs, classColors, tankSpecs, healerSpecs } from '../SeasonsStats/constants'
 
 // Helper function to capitalize character names
@@ -338,59 +328,38 @@ const SignUpForm = ({ open, onClose, onSubmit, loading, error, guildData }) => {
         if (!character) return null
 
         return (
-            <Paper sx={{ p: 2, mb: 2, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <div className="p-4 mb-4 bg-card border border-border rounded-md">
+                <div className="flex items-center">
                     {character.media?.assets?.length ? (
                         <img
                             src={character.media.assets[1].value}
                             alt={capitalizeCharacterName(character.name)}
-                            style={{ 
-                                width: 50, 
-                                height: 50, 
-                                borderRadius: '50%',
-                                marginRight: '1rem',
-                                objectFit: 'cover'
-                            }}
+                            className="w-12 h-12 rounded-full mr-4 object-cover"
                         />
                     ) : (
-                        <Box
-                            sx={{
-                                width: 50,
-                                height: 50,
-                                borderRadius: '50%',
-                                marginRight: '1rem',
-                                bgcolor: 'grey.300',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}
-                        >
-                            <Typography variant="caption" color="text.secondary">
+                        <div className="w-12 h-12 rounded-full mr-4 bg-muted flex items-center justify-center">
+                            <span className="text-xs text-muted-foreground">
                                 {capitalizeCharacterName(character.name).charAt(0)}
-                            </Typography>
-                        </Box>
+                            </span>
+                        </div>
                     )}
 
-                    <Box>
-                        <Typography 
-                            variant="subtitle1" 
-                            sx={{ 
-                                color: classColors[character.class] || '#ffffff',
-                                textTransform: 'capitalize',
-                                fontWeight: 'bold'
-                            }}
+                    <div>
+                        <h4 
+                            className="text-base font-bold capitalize"
+                            style={{ color: classColors[character.class] || '#ffffff' }}
                         >
                             {capitalizeCharacterName(character.name)}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
                             {character.class} • Level {character.level || '80'} • Item Level {character.itemLevel || '??'}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
+                        </p>
+                        <p className="text-xs text-muted-foreground">
                             {isSeason3 ? 'Season Character' : 'Current Character'}
-                        </Typography>
-                    </Box>
-                </Box>
-            </Paper>
+                        </p>
+                    </div>
+                </div>
+            </div>
         )
     }
 
@@ -399,175 +368,161 @@ const SignUpForm = ({ open, onClose, onSubmit, loading, error, guildData }) => {
         if (!showSeason3Placeholder) return null
 
         return (
-            <Paper sx={{ p: 3, mt: 2, mb: 2, bgcolor: 'background.paper', border: '1px solid', borderColor: 'warning.main' }}>
-                <Typography variant="subtitle1" color="warning.main" sx={{ mb: 3, fontWeight: 'bold' }}>
+            <div className="p-6 mt-4 mb-4 bg-card border border-amber-500/50 rounded-md">
+                <h4 className="text-sm font-bold text-amber-500 mb-6">
                     Character not found in guild data. Please provide details manually:
-                </Typography>
-                <Grid container spacing={3}>
-                    <Grid item xs={12}>
-                        <FormControl fullWidth>
-                            <InputLabel>Character Class</InputLabel>
-                            <Select
-                                value={formData.characterClass}
-                                onChange={(e) => handleInputChange('characterClass', e.target.value)}
-                                label="Character Class"
-                            >
+                </h4>
+                <div className="grid gap-6">
+                    <div className="space-y-2">
+                        <Label>Character Class</Label>
+                        <Select
+                            value={formData.characterClass}
+                            onValueChange={(value) => handleInputChange('characterClass', value)}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select class" />
+                            </SelectTrigger>
+                            <SelectContent>
                                 {Object.keys(classSpecs).map((className) => (
-                                    <MenuItem key={className} value={className}>
+                                    <SelectItem key={className} value={className}>
                                         {className}
-                                    </MenuItem>
+                                    </SelectItem>
                                 ))}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <FormControl fullWidth>
-                            <InputLabel>Main Spec</InputLabel>
-                            <Select
-                                value={formData.mainSpec}
-                                onChange={(e) => handleInputChange('mainSpec', e.target.value)}
-                                label="Main Spec"
-                                disabled={!formData.characterClass}
-                            >
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="space-y-2">
+                        <Label>Main Spec</Label>
+                        <Select
+                            value={formData.mainSpec}
+                            onValueChange={(value) => handleInputChange('mainSpec', value)}
+                            disabled={!formData.characterClass}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select main spec" />
+                            </SelectTrigger>
+                            <SelectContent>
                                 {getAvailableSpecs(formData.characterClass).map((spec) => (
-                                    <MenuItem key={spec} value={spec}>
+                                    <SelectItem key={spec} value={spec}>
                                         {spec} ({getRoleFromSpec(spec)})
-                                    </MenuItem>
+                                    </SelectItem>
                                 ))}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <FormControl fullWidth>
-                            <InputLabel>Off Spec (Optional)</InputLabel>
-                            <Select
-                                value={formData.offSpec}
-                                onChange={(e) => handleInputChange('offSpec', e.target.value)}
-                                label="Off Spec (Optional)"
-                                disabled={!formData.characterClass}
-                            >
-                                <MenuItem value="">None</MenuItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="space-y-2">
+                        <Label>Off Spec (Optional)</Label>
+                        <Select
+                            value={formData.offSpec}
+                            onValueChange={(value) => handleInputChange('offSpec', value)}
+                            disabled={!formData.characterClass}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select off spec" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="none">None</SelectItem>
                                 {getAvailableSpecs(formData.characterClass).map((spec) => (
-                                    <MenuItem key={spec} value={spec}>
+                                    <SelectItem key={spec} value={spec}>
                                         {spec} ({getRoleFromSpec(spec)})
-                                    </MenuItem>
+                                    </SelectItem>
                                 ))}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                </Grid>
-            </Paper>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+            </div>
         )
     }
 
     return (
-        <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
-            <DialogTitle>Sign Up for Season</DialogTitle>
-            <DialogContent>
-                <Grid container spacing={3} sx={{ mt: 1 }}>
+        <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) handleClose() }}>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                    <DialogTitle className="text-xl">Sign Up for Season</DialogTitle>
+                </DialogHeader>
+                
+                <div className="grid gap-6 py-4">
                     {/* Discord Name */}
-                    <Grid item xs={12}>
-                        <Typography variant="h6" sx={{ mb: 2, color: 'primary.main' }}>
-                            Contact Information
-                        </Typography>
-                        <TextField
-                            fullWidth
-                            label="Discord Name"
-                            value={formData.discordName}
-                            onChange={(e) => handleInputChange('discordName', e.target.value)}
-                            error={!!validationErrors.discordName}
-                            helperText={validationErrors.discordName || "Enter your Discord username (e.g., username#1234 or username)"}
-                            placeholder="username#1234"
-                            sx={{ mb: 2 }}
-                        />
-                    </Grid>
+                    <div className="space-y-3">
+                        <h3 className="text-md font-medium text-primary">Contact Information</h3>
+                        <div className="space-y-2">
+                            <Label htmlFor="discordName">Discord Name</Label>
+                            <Input
+                                id="discordName"
+                                value={formData.discordName}
+                                onChange={(e) => handleInputChange('discordName', e.target.value)}
+                                placeholder="username#1234"
+                                aria-invalid={!!validationErrors.discordName}
+                            />
+                            <p className={`text-xs ${validationErrors.discordName ? 'text-destructive' : 'text-muted-foreground'}`}>
+                                {validationErrors.discordName || "Enter your Discord username (e.g., username#1234 or username)"}
+                            </p>
+                        </div>
+                    </div>
 
                     {/* Current Character Search */}
-                    <Grid item xs={12}>
-                        <Typography variant="h6" sx={{ mb: 2, color: 'primary.main' }}>
-                            Current Character
-                        </Typography>
-                        <TextField
-                            fullWidth
-                            label="Current Character Name"
-                            value={formData.currentCharacterName}
-                            onChange={(e) => handleInputChange('currentCharacterName', e.target.value)}
-                            error={!!validationErrors.currentCharacterName}
-                            helperText={validationErrors.currentCharacterName || "Start typing to search for your character, then click on a character card to select"}
-                            InputProps={{
-                                endAdornment: isSearching && (
-                                    <CircularProgress size={20} />
-                                )
-                            }}
-                            sx={{ mb: 2 }}
-                        />
+                    <div className="space-y-3">
+                        <h3 className="text-md font-medium text-primary">Current Character</h3>
+                        <div className="space-y-2 relative">
+                            <Label htmlFor="currentCharacterName">Current Character Name</Label>
+                            <div className="relative">
+                                <Input
+                                    id="currentCharacterName"
+                                    value={formData.currentCharacterName}
+                                    onChange={(e) => handleInputChange('currentCharacterName', e.target.value)}
+                                    aria-invalid={!!validationErrors.currentCharacterName}
+                                    className="pr-8"
+                                />
+                                {isSearching && (
+                                    <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                                        <Spinner className="w-4 h-4" />
+                                    </div>
+                                )}
+                            </div>
+                            <p className={`text-xs ${validationErrors.currentCharacterName ? 'text-destructive' : 'text-muted-foreground'}`}>
+                                {validationErrors.currentCharacterName || "Start typing to search for your character, then click on a character card to select"}
+                            </p>
+                        </div>
                         
                         {/* Search Results */}
                         {searchResults.length > 0 && (
-                            <Paper sx={{ mt: 1, maxHeight: 200, overflow: 'auto', mb: 2 }}>
+                            <div className="mt-2 max-h-[200px] overflow-auto bg-card border border-border rounded-md mb-4">
                                 {searchResults.map((char) => (
-                                    <Box
+                                    <div
                                         key={char.name}
-                                        sx={{
-                                            p: 2,
-                                            cursor: 'pointer',
-                                            '&:hover': { bgcolor: 'action.hover' },
-                                            borderBottom: '1px solid',
-                                            borderColor: 'divider',
-                                            transition: 'background-color 0.2s ease'
-                                        }}
+                                        className="p-4 cursor-pointer hover:bg-accent border-b border-border transition-colors last:border-0"
                                         onClick={() => handleCharacterSelect(char)}
                                     >
-                                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <div className="flex items-center">
                                             {char.media?.assets?.length ? (
                                                 <img
                                                     src={char.media.assets[1].value}
                                                     alt={char.name}
-                                                    style={{ 
-                                                        width: 40, 
-                                                        height: 40, 
-                                                        borderRadius: '50%',
-                                                        marginRight: '1rem',
-                                                        objectFit: 'cover'
-                                                    }}
+                                                    className="w-10 h-10 rounded-full mr-4 object-cover"
                                                 />
                                             ) : (
-                                                <Box
-                                                    sx={{
-                                                        width: 40,
-                                                        height: 40,
-                                                        borderRadius: '50%',
-                                                        marginRight: '1rem',
-                                                        bgcolor: 'grey.300',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center'
-                                                    }}
-                                                >
-                                                    <Typography variant="caption" color="text.secondary">
+                                                <div className="w-10 h-10 rounded-full mr-4 bg-muted flex items-center justify-center">
+                                                    <span className="text-xs text-muted-foreground">
                                                         {char.name.charAt(0).toUpperCase()}
-                                                    </Typography>
-                                                </Box>
+                                                    </span>
+                                                </div>
                                             )}
-                                            <Box>
-                                                <Typography 
-                                                    variant="body1" 
-                                                    sx={{ 
-                                                        color: classColors[char.class] || '#ffffff',
-                                                        textTransform: 'capitalize',
-                                                        fontWeight: 'bold'
-                                                    }}
+                                            <div>
+                                                <p 
+                                                    className="text-sm font-bold capitalize"
+                                                    style={{ color: classColors[char.class] || '#ffffff' }}
                                                 >
                                                     {char.name}
-                                                </Typography>
-                                                <Typography variant="body2" color="text.secondary">
+                                                </p>
+                                                <p className="text-xs text-muted-foreground">
                                                     {char.class} • Level {char.level || '80'} • Item Level {char.itemLevel || '??'}
-                                                </Typography>
-                                            </Box>
-                                        </Box>
-                                    </Box>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 ))}
-                            </Paper>
+                            </div>
                         )}
 
                         {/* Character Not Found Warning */}
@@ -575,14 +530,14 @@ const SignUpForm = ({ open, onClose, onSubmit, loading, error, guildData }) => {
                          searchResults.length === 0 && 
                          !isSearching && 
                          !selectedCharacter && (
-                            <Alert severity="warning" sx={{ mt: 1, mb: 2 }}>
-                                <Typography variant="body2" sx={{ mb: 1 }}>
-                                    Character not found in guild data. You can still proceed with manual entry.
-                                </Typography>
-                                <Typography variant="caption" color="text.secondary">
-                                    Available characters: {guildData.slice(0, 10).map(c => c.name).join(', ')}
-                                    {guildData.length > 10 && ` ... and ${guildData.length - 10} more`}
-                                </Typography>
+                            <Alert variant="default" className="mt-2 border-amber-500/50 text-amber-500">
+                                <AlertDescription>
+                                    <p className="mb-1 text-sm">Character not found in guild data. You can still proceed with manual entry.</p>
+                                    <p className="text-xs opacity-80">
+                                        Available characters: {guildData.slice(0, 10).map(c => c.name).join(', ')}
+                                        {guildData.length > 10 && ` ... and ${guildData.length - 10} more`}
+                                    </p>
+                                </AlertDescription>
                             </Alert>
                         )}
 
@@ -590,94 +545,70 @@ const SignUpForm = ({ open, onClose, onSubmit, loading, error, guildData }) => {
                         {selectedCharacter && (
                             <CharacterPreview character={selectedCharacter} />
                         )}
-                    </Grid>
+                    </div>
 
                     {/* Season 3 Character Search */}
-                    <Grid item xs={12}>
-                        <Typography variant="h6" sx={{ mb: 2, color: 'primary.main' }}>
-                            Season 3 Character
-                        </Typography>
-                        <TextField
-                            fullWidth
-                            label="Season 3 Character Name"
-                            value={formData.season3CharacterName}
-                            onChange={(e) => handleSeason3NameChange(e.target.value)}
-                            error={!!validationErrors.season3CharacterName}
-                            helperText={validationErrors.season3CharacterName || "Start typing to search for your season character, then click on a character card to select"}
-                            InputProps={{
-                                endAdornment: isSeason3Searching && (
-                                    <CircularProgress size={20} />
-                                )
-                            }}
-                            sx={{ mb: 2 }}
-                        />
+                    <div className="space-y-3">
+                        <h3 className="text-md font-medium text-primary">Season Character</h3>
+                        <div className="space-y-2 relative">
+                            <Label htmlFor="season3CharacterName">Season Character Name</Label>
+                            <div className="relative">
+                                <Input
+                                    id="season3CharacterName"
+                                    value={formData.season3CharacterName}
+                                    onChange={(e) => handleSeason3NameChange(e.target.value)}
+                                    aria-invalid={!!validationErrors.season3CharacterName}
+                                    className="pr-8"
+                                />
+                                {isSeason3Searching && (
+                                    <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                                        <Spinner className="w-4 h-4" />
+                                    </div>
+                                )}
+                            </div>
+                            <p className={`text-xs ${validationErrors.season3CharacterName ? 'text-destructive' : 'text-muted-foreground'}`}>
+                                {validationErrors.season3CharacterName || "Start typing to search for your season character, then click on a character card to select"}
+                            </p>
+                        </div>
                         
                         {/* Season 3 Search Results */}
                         {season3SearchResults.length > 0 && (
-                            <Paper sx={{ mt: 1, maxHeight: 200, overflow: 'auto', mb: 2 }}>
+                            <div className="mt-2 max-h-[200px] overflow-auto bg-card border border-border rounded-md mb-4">
                                 {season3SearchResults.map((char) => (
-                                    <Box
+                                    <div
                                         key={char.name}
-                                        sx={{
-                                            p: 2,
-                                            cursor: 'pointer',
-                                            '&:hover': { bgcolor: 'action.hover' },
-                                            borderBottom: '1px solid',
-                                            borderColor: 'divider',
-                                            transition: 'background-color 0.2s ease'
-                                        }}
+                                        className="p-4 cursor-pointer hover:bg-accent border-b border-border transition-colors last:border-0"
                                         onClick={() => handleSeason3CharacterSelect(char)}
                                     >
-                                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <div className="flex items-center">
                                             {char.media?.assets?.length ? (
                                                 <img
                                                     src={char.media.assets[1].value}
                                                     alt={char.name}
-                                                    style={{ 
-                                                        width: 40, 
-                                                        height: 40, 
-                                                        borderRadius: '50%',
-                                                        marginRight: '1rem',
-                                                        objectFit: 'cover'
-                                                    }}
+                                                    className="w-10 h-10 rounded-full mr-4 object-cover"
                                                 />
                                             ) : (
-                                                <Box
-                                                    sx={{
-                                                        width: 40,
-                                                        height: 40,
-                                                        borderRadius: '50%',
-                                                        marginRight: '1rem',
-                                                        bgcolor: 'grey.300',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center'
-                                                    }}
-                                                >
-                                                    <Typography variant="caption" color="text.secondary">
+                                                <div className="w-10 h-10 rounded-full mr-4 bg-muted flex items-center justify-center">
+                                                    <span className="text-xs text-muted-foreground">
                                                         {char.name.charAt(0).toUpperCase()}
-                                                    </Typography>
-                                                </Box>
+                                                    </span>
+                                                </div>
                                             )}
-                                            <Box>
-                                                <Typography 
-                                                    variant="body1" 
-                                                    sx={{ 
-                                                        color: classColors[char.class] || '#ffffff',
-                                                        textTransform: 'capitalize',
-                                                        fontWeight: 'bold'
-                                                    }}
+                                            <div>
+                                                <p 
+                                                    className="text-sm font-bold capitalize"
+                                                    style={{ color: classColors[char.class] || '#ffffff' }}
                                                 >
                                                     {char.name}
-                                                </Typography>
-                                                <Typography variant="body2" color="text.secondary">
+                                                </p>
+                                                <p className="text-xs text-muted-foreground">
                                                     {char.class} • Level {char.level || '80'} • Item Level {char.itemLevel || '??'}
-                                                </Typography>
-                                            </Box>
-                                        </Box>
-                                    </Box>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 ))}
-                            </Paper>
+                            </div>
                         )}
 
                         {/* Season 3 Character Not Found - Show Placeholder Form */}
@@ -687,187 +618,154 @@ const SignUpForm = ({ open, onClose, onSubmit, loading, error, guildData }) => {
                         {selectedSeason3Character && (
                             <CharacterPreview character={selectedSeason3Character} isSeason3={true} />
                         )}
-                    </Grid>
+                    </div>
 
                     {/* Character Class - Only show if not in placeholder form */}
                     {!showSeason3Placeholder && (
-                        <Grid item xs={12}>
-                            <FormControl fullWidth error={!!validationErrors.characterClass}>
-                                <InputLabel>Character Class</InputLabel>
-                                <Select
-                                    value={formData.characterClass}
-                                    onChange={(e) => handleInputChange('characterClass', e.target.value)}
-                                    label="Character Class"
-                                >
+                        <div className="space-y-2">
+                            <Label className={validationErrors.characterClass ? 'text-destructive' : ''}>
+                                Character Class
+                            </Label>
+                            <Select
+                                value={formData.characterClass}
+                                onValueChange={(value) => handleInputChange('characterClass', value)}
+                            >
+                                <SelectTrigger aria-invalid={!!validationErrors.characterClass}>
+                                    <SelectValue placeholder="Select class" />
+                                </SelectTrigger>
+                                <SelectContent>
                                     {Object.keys(classSpecs).map((className) => (
-                                        <MenuItem key={className} value={className}>
+                                        <SelectItem key={className} value={className}>
                                             {className}
-                                        </MenuItem>
+                                        </SelectItem>
                                     ))}
-                                </Select>
-                                {validationErrors.characterClass && (
-                                    <Typography variant="caption" color="error">
-                                        {validationErrors.characterClass}
-                                    </Typography>
-                                )}
-                            </FormControl>
-                        </Grid>
+                                </SelectContent>
+                            </Select>
+                            {validationErrors.characterClass && (
+                                <p className="text-xs text-destructive">{validationErrors.characterClass}</p>
+                            )}
+                        </div>
                     )}
 
                     {/* Main Spec - Only show if not in placeholder form */}
                     {!showSeason3Placeholder && (
-                        <Grid item xs={12}>
-                            <FormControl fullWidth error={!!validationErrors.mainSpec}>
-                                <InputLabel>Main Spec</InputLabel>
-                                <Select
-                                    value={formData.mainSpec}
-                                    onChange={(e) => handleInputChange('mainSpec', e.target.value)}
-                                    label="Main Spec"
-                                    disabled={!formData.characterClass}
-                                >
+                        <div className="space-y-2">
+                            <Label className={validationErrors.mainSpec ? 'text-destructive' : ''}>
+                                Main Spec
+                            </Label>
+                            <Select
+                                value={formData.mainSpec}
+                                onValueChange={(value) => handleInputChange('mainSpec', value)}
+                                disabled={!formData.characterClass}
+                            >
+                                <SelectTrigger aria-invalid={!!validationErrors.mainSpec}>
+                                    <SelectValue placeholder="Select main spec" />
+                                </SelectTrigger>
+                                <SelectContent>
                                     {getAvailableSpecs(formData.characterClass).map((spec) => (
-                                        <MenuItem key={spec} value={spec}>
+                                        <SelectItem key={spec} value={spec}>
                                             {spec} ({getRoleFromSpec(spec)})
-                                        </MenuItem>
+                                        </SelectItem>
                                     ))}
-                                </Select>
-                                {validationErrors.mainSpec && (
-                                    <Typography variant="caption" color="error">
-                                        {validationErrors.mainSpec}
-                                    </Typography>
-                                )}
-                            </FormControl>
-                        </Grid>
+                                </SelectContent>
+                            </Select>
+                            {validationErrors.mainSpec && (
+                                <p className="text-xs text-destructive">{validationErrors.mainSpec}</p>
+                            )}
+                        </div>
                     )}
 
                     {/* Off Spec - Only show if not in placeholder form */}
                     {!showSeason3Placeholder && (
-                        <Grid item xs={12}>
-                            <FormControl fullWidth>
-                                <InputLabel>Off Spec (Optional)</InputLabel>
-                                <Select
-                                    value={formData.offSpec}
-                                    onChange={(e) => handleInputChange('offSpec', e.target.value)}
-                                    label="Off Spec (Optional)"
-                                    disabled={!formData.characterClass}
-                                >
-                                    <MenuItem value="">None</MenuItem>
+                        <div className="space-y-2">
+                            <Label>Off Spec (Optional)</Label>
+                            <Select
+                                value={formData.offSpec}
+                                onValueChange={(value) => handleInputChange('offSpec', value)}
+                                disabled={!formData.characterClass}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select off spec" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="none">None</SelectItem>
                                     {getAvailableSpecs(formData.characterClass).map((spec) => (
-                                        <MenuItem key={spec} value={spec}>
+                                        <SelectItem key={spec} value={spec}>
                                             {spec} ({getRoleFromSpec(spec)})
-                                        </MenuItem>
+                                        </SelectItem>
                                     ))}
-                                </Select>
-                            </FormControl>
-                        </Grid>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     )}
 
                     {/* Season 3 Goal */}
-                    <Grid item xs={12}>
-                        <FormControl fullWidth error={!!validationErrors.season3Goal}>
-                            <InputLabel>Season 3 Goal</InputLabel>
-                            <Select
-                                value={formData.season3Goal}
-                                onChange={(e) => handleInputChange('season3Goal', e.target.value)}
-                                label="Season 3 Goal"
-                            >
-                                <MenuItem value="AOTC">AOTC (Ahead of the Curve)</MenuItem>
-                                <MenuItem value="CE">CE (Cutting Edge)</MenuItem>
-                                <MenuItem value="Social">Social Raiding</MenuItem>
-                            </Select>
-                            {validationErrors.season3Goal && (
-                                <Typography variant="caption" color="error">
-                                    {validationErrors.season3Goal}
-                                </Typography>
-                            )}
-                        </FormControl>
-                    </Grid>
+                    <div className="space-y-2">
+                        <Label className={validationErrors.season3Goal ? 'text-destructive' : ''}>
+                            Season Goal
+                        </Label>
+                        <Select
+                            value={formData.season3Goal}
+                            onValueChange={(value) => handleInputChange('season3Goal', value)}
+                        >
+                            <SelectTrigger aria-invalid={!!validationErrors.season3Goal}>
+                                <SelectValue placeholder="Select goal" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="AOTC">AOTC (Ahead of the Curve)</SelectItem>
+                                <SelectItem value="CE">CE (Cutting Edge)</SelectItem>
+                                <SelectItem value="Social">Social Raiding</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        {validationErrors.season3Goal && (
+                            <p className="text-xs text-destructive">{validationErrors.season3Goal}</p>
+                        )}
+                    </div>
 
                     {/* Switches */}
-                    <Grid item xs={12}>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <FormControlLabel
-                                control={
-                                    <Switch
-                                        checked={formData.returningToRaid}
-                                        onChange={(e) => handleInputChange('returningToRaid', e.target.checked)}
-                                    />
-                                }
-                                label="Returning to raid in Season 3"
+                    <div className="flex flex-col gap-4 mt-2">
+                        <div className="flex items-center space-x-2">
+                            <Switch
+                                id="returningToRaid"
+                                checked={formData.returningToRaid}
+                                onCheckedChange={(checked) => handleInputChange('returningToRaid', checked)}
                             />
-                            <FormControlLabel
-                                control={
-                                    <Switch
-                                        checked={formData.wantToPushKeys}
-                                        onChange={(e) => handleInputChange('wantToPushKeys', e.target.checked)}
-                                    />
-                                }
-                                label="Want to push keys in Season 3"
+                            <Label htmlFor="returningToRaid">Returning to raid in Season</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Switch
+                                id="wantToPushKeys"
+                                checked={formData.wantToPushKeys}
+                                onCheckedChange={(checked) => handleInputChange('wantToPushKeys', checked)}
                             />
-                        </Box>
-                    </Grid>
-                </Grid>
+                            <Label htmlFor="wantToPushKeys">Want to push keys in Season</Label>
+                        </div>
+                    </div>
+                </div>
+
                 {error && (
-                    <Alert severity="error" sx={{ mt: 3 }}>
-                        {error}
+                    <Alert variant="destructive" className="mt-4">
+                        <AlertDescription>{error}</AlertDescription>
                     </Alert>
                 )}
-            </DialogContent>
-            <DialogActions sx={{ p: 3, gap: 2 }}>
-                <Button 
-                    onClick={handleClose} 
-                    disabled={loading}
-                    variant="contained"
-                    color="secondary"
-                    sx={{
-                        px: 3,
-                        py: 1.5,
-                        fontSize: '0.95rem',
-                        fontWeight: 500,
-                        borderRadius: 0.5,
-                        textTransform: 'none',
-                        backgroundColor: '#2a4a4f',
-                        color: '#ffffff',
-                        '&:hover': {
-                            backgroundColor: '#3a5a5f',
-                            transform: 'translateY(-1px)',
-                        },
-                        transition: 'all 0.3s ease'
-                    }}
-                >
-                    Cancel
-                </Button>
-                <Button 
-                    onClick={handleSubmit} 
-                    variant="contained"
-                    color="primary"
-                    disabled={loading}
-                    startIcon={loading ? <CircularProgress size={20} /> : <AddIcon />}
-                    sx={{
-                        px: 3,
-                        py: 1.5,
-                        fontSize: '0.95rem',
-                        fontWeight: 600,
-                        borderRadius: 0.5,
-                        textTransform: 'none',
-                        backgroundColor: '#153034',
-                        color: '#ffffff',
 
-                        '&:hover': {
-                            backgroundColor: '#1a3d42',
-                            transform: 'translateY(-1px)'
-                        },
-                        '&:disabled': {
-                            backgroundColor: '#0f1f22',
-                            color: '#a0a0a0',
-                            transform: 'none'
-                        },
-                        transition: 'all 0.3s ease'
-                    }}
-                >
-                    {loading ? 'Submitting...' : 'Sign Up'}
-                </Button>
-            </DialogActions>
+                <DialogFooter className="gap-2 sm:gap-0 mt-6">
+                    <Button 
+                        variant="outline" 
+                        onClick={handleClose} 
+                        disabled={loading}
+                    >
+                        Cancel
+                    </Button>
+                    <Button 
+                        onClick={handleSubmit} 
+                        disabled={loading}
+                    >
+                        {loading ? <Spinner className="mr-2 h-4 w-4" /> : <PlusIcon className="mr-2 h-4 w-4" />}
+                        {loading ? 'Submitting...' : 'Sign Up'}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
         </Dialog>
     )
 }

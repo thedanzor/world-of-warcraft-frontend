@@ -52,22 +52,12 @@ import React, { useMemo } from 'react'
 // Config
 import config from '@/app.config.js'
 
-// Material Components
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import Grid from '@mui/material/Grid'
-import Alert from '@mui/material/Alert'
-import CircularProgress from '@mui/material/CircularProgress'
-
-// Icons
-import GroupIcon from '@mui/icons-material/Group'
-import BuildIcon from '@mui/icons-material/Build'
-import LockIcon from '@mui/icons-material/Lock'
-import StarIcon from '@mui/icons-material/Star'
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents'
+// Shadcn & Lucide
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Spinner } from '@/components/ui/spinner'
+import { Users, Wrench, Lock, Star, Trophy } from 'lucide-react'
 
 // Components
-import './scss/dashboard.scss'
 import AuditBlock from '@/core/modules/auditBlock'
 import useAuditData from '@/core/hooks/useAuditData'
 import getPreviousWednesdayAt1AM from '@/core/utils/currentLockout'
@@ -94,20 +84,20 @@ const Dashboard = ({ guildData }) => {
     // Handle loading and error states
     if (!guildData) {
         return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-                <CircularProgress />
-            </Box>
+            <div className="flex justify-center items-center h-[50vh]">
+                <Spinner />
+            </div>
         )
     }
 
     if (guildData.error) {
         return (
-            <Box sx={{ p: 3 }}>
-                <Alert severity="error">
-                    <Typography variant="h6">Failed to load guild data</Typography>
-                    <Typography variant="body2">{guildData.error}</Typography>
+            <div className="p-6">
+                <Alert variant="destructive">
+                    <AlertTitle className="text-md">Failed to load guild data</AlertTitle>
+                    <AlertDescription className="text-sm">{guildData.error}</AlertDescription>
                 </Alert>
-            </Box>
+            </div>
         )
     }
 
@@ -182,104 +172,70 @@ const Dashboard = ({ guildData }) => {
     }
 
     return (
-        <section className="dashboard">
-            <Box>
-                <div className="logoHolder">
-                    <Typography
-                        variant="h2"
-                        component="h2"
-                        className="logoHolder-title"
-                    >
-                        Dashboard
-                    </Typography>
-                    <Typography
-                        variant="p"
-                        component="p"
-                        color="text.secondary"
-                        className="logoHolder-description"
-                    >
-                        Guild Overview and Statistics
-                    </Typography>
-                </div>
+        <section className="space-y-6">
+            <div className="flex flex-col gap-2">
+                <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+                <p className="text-muted-foreground">
+                    Guild Overview and Statistics
+                </p>
+            </div>
 
-                {/* Stats Cards */}
-                <Grid container spacing={2} className="stats-cards">
-                    <Grid item xs={12} sm={6} md={2.4}>
-                        <StatCard
-                            title="Total Characters"
-                            value={data.totalMembers}
-                            description="Active guild characters"
-                            icon={GroupIcon}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={2.4}>
-                        <StatCard
-                            title="Missing Enchants"
-                            value={data.missingEnchants}
-                            description="Players need attention"
-                            icon={BuildIcon}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={2.4}>
-                        <StatCard
-                            title="Raid Locked"
-                            value={data.raidLocked}
-                            description="Players with lockouts"
-                            icon={LockIcon}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={2.4}>
-                        <StatCard
-                            title="M+ Score"
-                            value={Math.round(data.avgTopMplus)}
-                            description="Average of top 5"
-                            icon={StarIcon}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={2.4}>
-                        <StatCard
-                            title="PvP Rating"
-                            value={Math.round(data.avgTopPvp)}
-                            description="Average of top 5"
-                            icon={EmojiEventsIcon}
-                        />
-                    </Grid>
-                </Grid>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+                <StatCard
+                    title="Total Characters"
+                    value={data.totalMembers}
+                    description="Active guild characters"
+                    icon={Users}
+                />
+                <StatCard
+                    title="Missing Enchants"
+                    value={data.missingEnchants}
+                    description="Players need attention"
+                    icon={Wrench}
+                />
+                <StatCard
+                    title="Raid Locked"
+                    value={data.raidLocked}
+                    description="Players with lockouts"
+                    icon={Lock}
+                />
+                <StatCard
+                    title="M+ Score"
+                    value={Math.round(data.avgTopMplus)}
+                    description="Average of top 5"
+                    icon={Star}
+                />
+                <StatCard
+                    title="PvP Rating"
+                    value={Math.round(data.avgTopPvp)}
+                    description="Average of top 5"
+                    icon={Trophy}
+                />
+            </div>
 
-                {/* Top Players Tables */}
-                <Grid container spacing={2} className="top-players">
-                    <Grid item xs={12} md={6}>
-                        <TopPlayersTable
-                            data={data.topMplus}
-                            title="Top Mythic+ Players"
-                            scoreKey="score"
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <TopPlayersTable
-                            data={data.topPvp}
-                            title="Top PvP Players"
-                            scoreKey="pvp"
-                        />
-                    </Grid>
-                </Grid>
+            {/* Top Players Tables */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <TopPlayersTable
+                    data={data.topMplus}
+                    title="Top Mythic+ Players"
+                    scoreKey="score"
+                />
+                <TopPlayersTable
+                    data={data.topPvp}
+                    title="Top PvP Players"
+                    scoreKey="pvp"
+                />
+            </div>
 
-                {/* Missing Enchants Table */}
-                <Typography
-                    variant="h2"
-                    component="h2"
-                    className="missing-enchants-title"
-                >
-                    Missing Enchants
-                </Typography>
+            {/* Missing Enchants Table */}
+            <div className="space-y-4">
+                <h2 className="text-2xl font-bold tracking-tight">Missing Enchants</h2>
                 <AuditBlock
                     data={{ all: data.missingEnchantsPlayers }}
                     name="all"
                 />
-
-                {/* Role Distribution */}
-                {/* <RoleDistribution tanks={data.tanks} healers={data.healers} dps={data.dps} /> */}
-            </Box>
+            </div>
         </section>
     )
 }

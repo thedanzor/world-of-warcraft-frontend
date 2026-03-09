@@ -1,6 +1,5 @@
 import Image from 'next/image'
 
-import './scss/logo.scss'
 
 // Media
 import full from '@/public/design/logo_screen.png'

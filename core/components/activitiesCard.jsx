@@ -2,7 +2,6 @@ import Image from 'next/image'
 
 import { P, CardTitle } from '@/core/components/typography'
 
-import './scss/activitiesCard.scss'
 
 const Card = ({ title, text, icon }) => {
     return (

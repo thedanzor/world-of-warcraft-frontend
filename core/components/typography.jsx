@@ -1,12 +1,11 @@
 'use client'
 
-import { telex, systemui } from '@/app/fonts'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/components/ui/button'
 
-import './scss/typo.scss'
-
-export const SocialText = ({ children }) => {
+export const SocialText = ({ children, className }) => {
     return (
-        <span className={`${telex.className} socialText`}>{children}</span>
+        <span className={cn("text-sm text-muted-foreground", className)}>{children}</span>
     )
 }
 
@@ -15,18 +14,19 @@ export const MultiColorHeadingH1 = ({
     floatingText,
     highlightText,
     goFancy,
+    className
 }) => {
     return (
-        <h1 className={`${telex.className} primaryTitle`}>
+        <h1 className={cn("scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl", className)}>
             <span>
                 {highlightText && (
-                    <span className={` ${goFancy ? 'goFancy' : ''}`}>
+                    <span className={cn(goFancy ? 'text-primary' : 'text-primary')}>
                         {' '}
                         {highlightText}{' '}
                     </span>
                 )}
                 {children}
-                {floatingText && <div>{floatingText}</div>}
+                {floatingText && <div className="text-xl font-medium text-muted-foreground mt-2">{floatingText}</div>}
             </span>
         </h1>
     )
@@ -41,7 +41,7 @@ export const P = ({
     return (
         <p
             onClick={onClick}
-            className={`${systemui.className} pstyling ${className}`}
+            className={cn("leading-7 [&:not(:first-child)]:mt-6", className)}
             style={style}
         >
             {children}
@@ -58,7 +58,7 @@ export const Span = ({
     return (
         <span
             onClick={onClick}
-            className={`${systemui.className} span ${className}`}
+            className={cn(className)}
             style={style}
         >
             {children}
@@ -66,11 +66,26 @@ export const Span = ({
     )
 }
 
-export const Button = ({ children, variant = 'primaryButton' }) => {
+const mapVariant = (v) => {
+    switch (v) {
+        case 'secondaryButton': return 'secondary';
+        case 'errorButton': return 'destructive';
+        case 'warningButton': return 'destructive';
+        case 'infoButton': return 'secondary';
+        case 'successButton': return 'default';
+        case 'primaryButton':
+        default: return 'default';
+    }
+}
+
+export const Button = ({ children, variant = 'primaryButton', className }) => {
     return (
-        <span className={`${telex.className} ${variant}`}>{children}</span>
+        <span className={cn(buttonVariants({ variant: mapVariant(variant) }), className)}>
+            {children}
+        </span>
     )
 }
+
 export const ButtonEle = ({
     children,
     variant = 'primaryButton',
@@ -79,7 +94,7 @@ export const ButtonEle = ({
 }) => {
     return (
         <span
-            className={`${telex.className} ${variant} ${className}`}
+            className={cn(buttonVariants({ variant: mapVariant(variant) }), 'cursor-pointer', className)}
             onClick={onClick}
         >
             {children}
@@ -91,26 +106,28 @@ export const CardTitle = ({ children, className = '', onClick = () => {} }) => {
     return (
         <h3
             onClick={onClick}
-            className={`${telex.className} cardTitle ${className}`}
+            className={cn("text-2xl font-semibold leading-none tracking-tight", className)}
         >
             {children}
         </h3>
     )
 }
 
-export const OrElement = ({}) => {
-    return <div className={`${telex.className} orElement`}>or</div>
+export const OrElement = ({ className }) => {
+    return <div className={cn("text-sm font-medium text-muted-foreground my-4 text-center", className)}>or</div>
 }
 
-export const H3 = ({ children }) => {
+export const H3 = ({ children, className }) => {
     return (
-        <h3 className={`${telex.className} sectionHeading`}>{children}</h3>
+        <h3 className={cn("scroll-m-20 text-2xl font-semibold tracking-tight", className)}>
+            {children}
+        </h3>
     )
 }
 
-export const H4 = ({ children }) => {
+export const H4 = ({ children, className }) => {
     return (
-        <h4 className={`${telex.className} sectionSubHeading`}>
+        <h4 className={cn("scroll-m-20 text-xl font-semibold tracking-tight", className)}>
             {children}
         </h4>
     )

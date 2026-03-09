@@ -1,79 +1,67 @@
 import React from 'react'
-import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
-import ShieldIcon from '@mui/icons-material/Shield'
-import ContentCutIcon from '@mui/icons-material/ContentCut'
-import HealingIcon from '@mui/icons-material/Healing'
-import ColorLensIcon from '@mui/icons-material/ColorLens'
-import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh'
-import BoltIcon from '@mui/icons-material/Bolt'
-import GppMaybeIcon from '@mui/icons-material/GppMaybe'
-import SelfImprovementIcon from '@mui/icons-material/SelfImprovement'
-import PsychologyIcon from '@mui/icons-material/Psychology'
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
-import RoleStatCard from './RoleStatCard'
+import {
+    Flame, Shield, Scissors, Cross, Eye, Wand2,
+    Zap, Skull, User, Brain, HelpCircle, CheckCircle, XCircle
+} from 'lucide-react'
+
+const BUFF_ICON_MAP = {
+    intellect: Flame, attackPower: Shield, physicalDamage: Scissors,
+    stamina: Cross, devotionAura: Shield, magicDamage: Eye,
+    versatility: Wand2, bloodlust: Zap, combatRes: Skull,
+    movementSpeed: User, portalAndCookies: Brain, massDispel: Cross,
+    innervate: Wand2, deathGrip: Skull, blessings: Shield,
+    rallyingCry: Shield, darkness: Eye, skyfuryWindfury: Zap,
+    bossDamageReduction: Scissors, spellwarding: Shield,
+}
+
+const formatBuffName = (buff) =>
+    buff.split(/(?=[A-Z])/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
 
 const RaidBuffsSection = ({ stats }) => {
-    // Check if raidBuffs exists, if not, don't render this section
-    if (!stats.raidBuffs) {
-        return null;
-    }
+    if (!stats.raidBuffs) return null
 
-    // Helper function to get the appropriate icon for each buff
-    const getBuffIcon = (buff) => {
-        const buffIconMap = {
-            intellect: LocalFireDepartmentIcon,
-            attackPower: ShieldIcon,
-            physicalDamage: ContentCutIcon,
-            stamina: HealingIcon,
-            devotionAura: ShieldIcon,
-            magicDamage: ColorLensIcon,
-            versatility: AutoFixHighIcon,
-            bloodlust: BoltIcon,
-            combatRes: GppMaybeIcon,
-            movementSpeed: SelfImprovementIcon,
-            portalAndCookies: PsychologyIcon,
-            massDispel: HealingIcon,
-            innervate: AutoFixHighIcon,
-            deathGrip: GppMaybeIcon,
-            blessings: ShieldIcon,
-            rallyingCry: ShieldIcon,
-            darkness: ColorLensIcon,
-            skyfuryWindfury: BoltIcon,
-            bossDamageReduction: ContentCutIcon,
-            spellwarding: ShieldIcon,
-        }
-        return buffIconMap[buff] || HelpOutlineIcon
-    }
-
-    // Helper function to format buff names for display
-    const formatBuffName = (buff) => {
-        return buff
-            .split(/(?=[A-Z])/)
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ')
-    }
+    const entries = Object.entries(stats.raidBuffs)
+    const covered = entries.filter(([, v]) => v > 0).length
+    const total = entries.length
 
     return (
-        <>
-            <Typography variant="h2" sx={{ fontSize: '1.5rem', my: 3 }}>
-                Raid Buffs & Utilities
-            </Typography>
-            <Grid container spacing={2} sx={{ mb: 4 }}>
-                {Object.entries(stats.raidBuffs).map(([buff, count]) => (
-                    <Grid item xs={12} sm={6} md={3} key={buff}>
-                        <RoleStatCard
-                            title={formatBuffName(buff)}
-                            count={count || 0}
-                            description={count > 0 ? '(Has buff)' : 'Missing'}
-                            icon={getBuffIcon(buff)}
-                        />
-                    </Grid>
-                ))}
-            </Grid>
-        </>
+        <div className="space-y-4">
+            <div className="flex items-baseline justify-between">
+                <div>
+                    <h3 className="text-lg font-semibold tracking-tight">Raid Buffs &amp; Utilities</h3>
+                    <p className="text-sm text-muted-foreground mt-0.5">Buff coverage from signed-up players</p>
+                </div>
+                <span className="text-sm font-semibold text-muted-foreground">
+                    {covered}/{total} covered
+                </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5">
+                {entries.map(([buff, count]) => {
+                    const Icon = BUFF_ICON_MAP[buff] || HelpCircle
+                    const hasBuff = count > 0
+                    return (
+                        <div
+                            key={buff}
+                            className={`flex items-center gap-2.5 rounded-lg border p-3 ${
+                                hasBuff
+                                    ? 'border-emerald-500/20 bg-emerald-500/5'
+                                    : 'border-border/40 bg-muted/20 opacity-50'
+                            }`}
+                        >
+                            <Icon className={`w-4 h-4 shrink-0 ${hasBuff ? 'text-emerald-400' : 'text-muted-foreground'}`} />
+                            <div className="min-w-0 flex-1">
+                                <p className="text-xs font-medium truncate">{formatBuffName(buff)}</p>
+                                <p className={`text-xs ${hasBuff ? 'text-emerald-400' : 'text-muted-foreground'}`}>
+                                    {hasBuff ? `×${count}` : 'Missing'}
+                                </p>
+                            </div>
+                        </div>
+                    )
+                })}
+            </div>
+        </div>
     )
 }
 
-export default RaidBuffsSection 
+export default RaidBuffsSection

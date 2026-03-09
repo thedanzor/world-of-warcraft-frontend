@@ -6,34 +6,33 @@
  */
 
 import { useState, useEffect } from 'react';
+import { Trash2, RefreshCw, Search, Loader2, X } from 'lucide-react';
 import {
-  Box,
-  Typography,
-  Paper,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
+  TableHeader,
   TableRow,
-  Button,
-  Alert,
-  CircularProgress,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Chip,
-  IconButton,
-  Tooltip,
-  TextField,
-} from '@mui/material';
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
-  Delete as DeleteIcon,
-  Refresh as RefreshIcon,
-  Search as SearchIcon,
-} from '@mui/icons-material';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { Input } from '@/components/ui/input';
 
 export default function SeasonSignupsPage() {
   const [signups, setSignups] = useState([]);
@@ -145,8 +144,8 @@ export default function SeasonSignupsPage() {
   const filteredSignups = signups.filter(signup => {
     if (!searchTerm) return true;
     const search = searchTerm.toLowerCase();
-    const seasonCharName = signup.seasonCharacterName || signup.season3CharacterName || ''
-    const seasonGoal = signup.seasonGoal || signup.season3Goal || ''
+    const seasonCharName = signup.seasonCharacterName || signup.season3CharacterName || '';
+    const seasonGoal = signup.seasonGoal || signup.season3Goal || '';
     return (
       signup.currentCharacterName?.toLowerCase().includes(search) ||
       seasonCharName.toLowerCase().includes(search) ||
@@ -158,176 +157,202 @@ export default function SeasonSignupsPage() {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-        <CircularProgress />
-      </Box>
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
     );
   }
 
   return (
-    <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h5" component="h2">
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-semibold tracking-tight">
           Season Signups Management
-        </Typography>
+        </h2>
         <Button
-          variant="outlined"
-          startIcon={<RefreshIcon />}
+          variant="outline"
           onClick={fetchSignups}
           disabled={loading}
         >
+          {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
           Refresh
         </Button>
-      </Box>
+      </div>
 
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>
-          {error}
-        </Alert>
+        <div className="mb-4 relative">
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="absolute top-2 right-2 h-6 w-6" 
+            onClick={() => setError('')}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
       )}
 
       {success && (
-        <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess('')}>
-          {success}
-        </Alert>
+        <div className="mb-4 relative">
+          <Alert className="border-green-500 text-green-700 bg-green-50 dark:bg-green-950 dark:text-green-400">
+            <AlertDescription>{success}</AlertDescription>
+          </Alert>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="absolute top-2 right-2 h-6 w-6 text-green-700 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300" 
+            onClick={() => setSuccess('')}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
       )}
 
-      <Paper elevation={2} sx={{ p: 2, mb: 3 }}>
-        <TextField
-          fullWidth
-          placeholder="Search by character name, class, spec, or goal..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            startAdornment: <SearchIcon sx={{ mr: 1, color: 'text.secondary' }} />,
-          }}
-        />
-      </Paper>
+      <div className="bg-card text-card-foreground p-4 mb-6 rounded-lg border shadow-sm">
+        <div className="relative">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <Input
+            className="pl-9"
+            placeholder="Search by character name, class, spec, or goal..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+      </div>
 
-      <Paper elevation={2}>
-        <TableContainer>
+      <div className="bg-card text-card-foreground rounded-lg border shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
           <Table>
-            <TableHead>
+            <TableHeader>
               <TableRow>
-                <TableCell>Current Character</TableCell>
-                <TableCell>Season Character</TableCell>
-                <TableCell>Class</TableCell>
-                <TableCell>Main Spec</TableCell>
-                <TableCell>Season Goal</TableCell>
-                <TableCell>Signed Up</TableCell>
-                <TableCell align="right">Actions</TableCell>
+                <TableHead>Current Character</TableHead>
+                <TableHead>Season Character</TableHead>
+                <TableHead>Class</TableHead>
+                <TableHead>Main Spec</TableHead>
+                <TableHead>Season Goal</TableHead>
+                <TableHead>Signed Up</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
-            </TableHead>
+            </TableHeader>
             <TableBody>
               {filteredSignups.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
-                    <Typography variant="body2" color="text.secondary">
-                      {searchTerm ? 'No signups match your search.' : 'No signups found.'}
-                    </Typography>
+                  <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+                    {searchTerm ? 'No signups match your search.' : 'No signups found.'}
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredSignups.map((signup) => (
-                  <TableRow key={signup._id} hover>
-                    <TableCell>{signup.currentCharacterName || '-'}</TableCell>
-                    <TableCell>
-                      {signup.seasonCharacterName || signup.season3CharacterName || '-'}
-                    </TableCell>
-                    <TableCell>
-                      <Chip 
-                        label={signup.characterClass || '-'} 
-                        size="small" 
-                        color="primary" 
-                        variant="outlined"
-                      />
-                    </TableCell>
-                    <TableCell>{signup.mainSpec || '-'}</TableCell>
-                    <TableCell>
-                      <Chip 
-                        label={signup.seasonGoal || signup.season3Goal || '-'} 
-                        size="small" 
-                        color={
-                          (signup.seasonGoal || signup.season3Goal) === 'CE' ? 'error' :
-                          (signup.seasonGoal || signup.season3Goal) === 'AOTC' ? 'warning' :
-                          'default'
-                        }
-                        variant="outlined"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      {signup.timestamp 
-                        ? new Date(signup.timestamp).toLocaleDateString()
-                        : '-'}
-                    </TableCell>
-                    <TableCell align="right">
-                      <Tooltip title="Delete signup">
-                        <IconButton
-                          size="small"
-                          color="error"
-                          onClick={() => handleDeleteClick(signup)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </TableRow>
-                ))
+                filteredSignups.map((signup) => {
+                  const goal = signup.seasonGoal || signup.season3Goal || '';
+                  const goalVariant = goal === 'CE' ? 'destructive' : goal === 'AOTC' ? 'default' : 'secondary';
+                  
+                  return (
+                    <TableRow key={signup._id}>
+                      <TableCell>{signup.currentCharacterName || '-'}</TableCell>
+                      <TableCell>
+                        {signup.seasonCharacterName || signup.season3CharacterName || '-'}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">
+                          {signup.characterClass || '-'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{signup.mainSpec || '-'}</TableCell>
+                      <TableCell>
+                        <Badge variant={goalVariant}>
+                          {goal || '-'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {signup.timestamp 
+                          ? new Date(signup.timestamp).toLocaleDateString()
+                          : '-'}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                onClick={() => handleDeleteClick(signup)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Delete signup</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               )}
             </TableBody>
           </Table>
-        </TableContainer>
+        </div>
         {filteredSignups.length > 0 && (
-          <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
-            <Typography variant="body2" color="text.secondary">
-              Showing {filteredSignups.length} of {signups.length} signup{signups.length !== 1 ? 's' : ''}
-            </Typography>
-          </Box>
+          <div className="p-4 border-t text-sm text-muted-foreground">
+            Showing {filteredSignups.length} of {signups.length} signup{signups.length !== 1 ? 's' : ''}
+          </div>
         )}
-      </Paper>
+      </div>
 
       {/* Delete Confirmation Dialog */}
       <Dialog
         open={deleteDialogOpen}
-        onClose={() => {
-          if (!deleting) {
+        onOpenChange={(open) => {
+          if (!open && !deleting) {
             setDeleteDialogOpen(false);
             setSignupToDelete(null);
           }
         }}
-        maxWidth="sm"
-        fullWidth
       >
-        <DialogTitle>Delete Signup</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete the signup for{' '}
-            <strong>{signupToDelete?.seasonCharacterName || signupToDelete?.season3CharacterName || signupToDelete?.currentCharacterName}</strong>?
-            This action cannot be undone.
-          </DialogContentText>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Delete Signup</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete the signup for{' '}
+              <strong className="text-foreground">
+                {signupToDelete?.seasonCharacterName || signupToDelete?.season3CharacterName || signupToDelete?.currentCharacterName}
+              </strong>?
+              This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button 
+              variant="outline"
+              onClick={() => {
+                setDeleteDialogOpen(false);
+                setSignupToDelete(null);
+              }}
+              disabled={deleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteConfirm}
+              disabled={deleting}
+            >
+              {deleting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                'Delete'
+              )}
+            </Button>
+          </DialogFooter>
         </DialogContent>
-        <DialogActions>
-          <Button 
-            onClick={() => {
-              setDeleteDialogOpen(false);
-              setSignupToDelete(null);
-            }}
-            disabled={deleting}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleDeleteConfirm}
-            color="error"
-            variant="contained"
-            disabled={deleting}
-            startIcon={deleting ? <CircularProgress size={20} /> : <DeleteIcon />}
-          >
-            {deleting ? 'Deleting...' : 'Delete'}
-          </Button>
-        </DialogActions>
       </Dialog>
-    </Box>
+    </div>
   );
 }
-

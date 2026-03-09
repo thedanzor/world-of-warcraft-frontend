@@ -1,4 +1,3 @@
-import './scss/button.scss'
 
 import { Button, ButtonEle } from '@/core/components/typography'
 

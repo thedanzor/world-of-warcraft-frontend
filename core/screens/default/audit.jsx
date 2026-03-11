@@ -74,6 +74,7 @@ import { P } from '@/core/components/typography'
 import getPreviousWednesdayAt1AM from '@/core/utils/currentLockout'
 import { buildInitialClassList } from '@/tools/guildFetcher/utils'
 import useAuditData from '@/core/hooks/useAuditData'
+import { getCharacterRole } from '@/core/utils/roleFromSpec'
 import config from '@/app.config.js'
 
 // Styles
@@ -155,13 +156,13 @@ const GuildAudit = ({ auditable, initialData }) => {
             (item) => MAIN_RANKS.includes(item.guildRank)
         )
         const tankData = filteredData.filter(
-            (item) => item.metaData?.role === 'tank'
+            (item) => getCharacterRole(item, config) === 'tank'
         )
         const healerData = filteredData.filter(
-            (item) => item.metaData?.role === 'healer'
+            (item) => getCharacterRole(item, config) === 'healer'
         )
         const dpsData = filteredData.filter(
-            (item) => item.metaData?.role === 'dps'
+            (item) => getCharacterRole(item, config) === 'dps'
         )
 
         return {

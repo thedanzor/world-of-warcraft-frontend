@@ -72,6 +72,7 @@ import { Trash2 } from 'lucide-react'
 
 // Internal utilities and config
 import { calculateRaidBuffs } from '@/core/utils/raidBuffs'
+import { getCharacterRole } from '@/core/utils/roleFromSpec'
 import config from '@/app.config.js'
 
 // Internal components
@@ -98,8 +99,7 @@ const RosterPlannerContent = ({ guildData }) => {
         ).map(char => ({
             ...char,
             // Add role information based on spec
-            primary_role: config.TANKS.includes(char.spec) ? 'tank' : 
-                         config.HEALERS.includes(char.spec) ? 'healer' : 'dps',
+            primary_role: getCharacterRole(char, config),
             secondary_role: 'None'
         }))
     }, [guildData])

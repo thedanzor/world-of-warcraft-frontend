@@ -9,6 +9,7 @@ import {
     Users as SocialIcon,
 } from 'lucide-react'
 import CharacterCard from '@/core/components/CharacterCard'
+import { getCharacterRole } from '@/core/utils/roleFromSpec'
 import config from '@/app.config.js'
 
 const ROLE_TYPES = [
@@ -26,8 +27,7 @@ const RosterDisplay = ({ roster, guildData, error }) => {
         guildData.forEach(char => {
             map[char.name] = {
                 ...char,
-                primary_role: config.TANKS.includes(char.spec) ? 'tank' :
-                    config.HEALERS.includes(char.spec) ? 'healer' : 'dps',
+                primary_role: getCharacterRole(char, config),
             }
         })
         return map

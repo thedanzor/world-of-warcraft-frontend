@@ -10,6 +10,8 @@ import {
     Flame, Zap, Skull, User, Brain, Eye, Wand2, Scissors, Cross, HelpCircle,
 } from 'lucide-react'
 import { calculateRaidBuffs } from '@/core/utils/raidBuffs'
+import { getCharacterRole } from '@/core/utils/roleFromSpec'
+import config from '@/app.config.js'
 
 /* ─── colour map ──────────────────────────────────────────────── */
 const CLASS_COLORS = {
@@ -116,10 +118,10 @@ const AuditAnalytics = ({ players }) => {
     const stats = useMemo(() => {
         if (!players?.length) return null
 
-        /* roles */
-        const tanks   = players.filter(p => p.metaData?.role === 'tank').length
-        const healers = players.filter(p => p.metaData?.role === 'healer').length
-        const dps     = players.filter(p => p.metaData?.role === 'dps').length
+        /* roles – use getCharacterRole so specs like "Guardian Druid"/"Mistweaver Monk" match */
+        const tanks   = players.filter(p => getCharacterRole(p, config) === 'tank').length
+        const healers = players.filter(p => getCharacterRole(p, config) === 'healer').length
+        const dps     = players.filter(p => getCharacterRole(p, config) === 'dps').length
 
         /* enchants */
         const missingEnchants = players.filter(p => p.missingEnchants?.length > 0).length
@@ -148,7 +150,7 @@ const AuditAnalytics = ({ players }) => {
 
         /* raid buffs */
         const raidBuffs = calculateRaidBuffs(
-            players.map(p => ({ metaData: { class: p.class, primary_role: p.metaData?.role } }))
+            players.map(p => ({ metaData: { class: p.class, primary_role: getCharacterRole(p, config) } }))
         )
 
         return { tanks, healers, dps, missingEnchants, hasEnchants, anyLocked, unlocked, classData, raidBuffs, total: players.length }

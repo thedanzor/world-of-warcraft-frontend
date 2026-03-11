@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import config from '@/app.config.js';
+import { getCharacterRole } from '@/core/utils/roleFromSpec';
 
 export function useClientSideFiltering(data = []) {
     const [filters, setFilters] = useState({
@@ -36,15 +37,12 @@ export function useClientSideFiltering(data = []) {
                 return false;
             }
 
-            // Spec filter
+            // Spec filter using centralized role resolver (handles role/spec shape differences)
             if (filters.specFilter !== 'all') {
-                const isTank = config.TANKS.includes(character.spec);
-                const isHealer = config.HEALERS.includes(character.spec);
-                const isDps = !isTank && !isHealer;
-
-                if (filters.specFilter === 'tanks' && !isTank) return false;
-                if (filters.specFilter === 'healers' && !isHealer) return false;
-                if (filters.specFilter === 'dps' && !isDps) return false;
+                const role = getCharacterRole(character, config);
+                if (filters.specFilter === 'tanks' && role !== 'tank') return false;
+                if (filters.specFilter === 'healers' && role !== 'healer') return false;
+                if (filters.specFilter === 'dps' && role !== 'dps') return false;
             }
 
             // Item level filter
@@ -119,9 +117,9 @@ export function useClientSideFiltering(data = []) {
         const altData = allData.filter(char => config.ALT_RANKS.includes(char.guildRank));
         const mainData = allData.filter(char => config.MAIN_RANKS.includes(char.guildRank));
         
-        const tankData = allData.filter(char => config.TANKS.includes(char.spec));
-        const healerData = allData.filter(char => config.HEALERS.includes(char.spec));
-        const dpsData = allData.filter(char => !config.TANKS.includes(char.spec) && !config.HEALERS.includes(char.spec));
+        const tankData = allData.filter(char => getCharacterRole(char, config) === 'tank');
+        const healerData = allData.filter(char => getCharacterRole(char, config) === 'healer');
+        const dpsData = allData.filter(char => getCharacterRole(char, config) === 'dps');
 
         return {
             all: allData.length,

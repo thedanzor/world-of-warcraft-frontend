@@ -1,10 +1,9 @@
 import config from '@/app.config.js'
+import { getCharacterRole } from '@/core/utils/roleFromSpec'
 
 const {
     API_PARAM_REQUIREMENTGS,
     DIFFICULTY,
-    TANKS,
-    HEALERS,
     MAIN_RANKS,
     ALT_RANKS,
     GUILLD_RANKS
@@ -112,12 +111,7 @@ const filterSearch = (
     const handleQuery = query.toLowerCase()
     const handledName = character.name.toLowerCase()
 
-    // Use the role from metaData if available, otherwise determine from spec
-    const role = character.metaData?.role || (() => {
-        const isTank = TANKS.indexOf(character.spec) > -1
-        const isHealer = HEALERS.indexOf(character.spec) > -1
-        return isTank ? 'tank' : isHealer ? 'healer' : 'dps'
-    })()
+    const role = getCharacterRole(character, config)
 
     // List of scenarios to check for
     const guildRankIndex = character.guildRank // guildRank is already the index

@@ -20,6 +20,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { api } from '@/lib/api';
 import config from '@/app.config.js';
+import { getCharacterRole } from '@/core/utils/roleFromSpec';
 import CharacterCard from '@/core/components/CharacterCard';
 import { calculateRaidBuffs } from '@/core/utils/raidBuffs';
 import BuffSummary from '@/core/components/BuffSummary';
@@ -180,8 +181,7 @@ export default function RosterBuilderPage() {
       .filter(char => config.MAIN_RANKS.includes(char.guildRank))
       .map(char => ({
         ...char,
-        primary_role: config.TANKS.includes(char.spec) ? 'tank' : 
-                     config.HEALERS.includes(char.spec) ? 'healer' : 'dps',
+        primary_role: getCharacterRole(char, config),
       }))
       .filter(char => {
         if (!searchQuery) return true;
@@ -226,9 +226,7 @@ export default function RosterBuilderPage() {
         ...char,
         metaData: {
           class: char.class,
-          primary_role: char.primary_role || 
-            (config.TANKS.includes(char.spec) ? 'tank' : 
-             config.HEALERS.includes(char.spec) ? 'healer' : 'dps')
+          primary_role: char.primary_role || getCharacterRole(char, config)
         }
       }));
   }, [roster, mainCharacters]);

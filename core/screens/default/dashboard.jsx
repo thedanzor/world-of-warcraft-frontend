@@ -51,6 +51,7 @@ import React, { useMemo } from 'react'
 
 // Config
 import config from '@/app.config.js'
+import { getCharacterRole } from '@/core/utils/roleFromSpec'
 
 // Shadcn & Lucide
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -125,7 +126,20 @@ const Dashboard = ({ guildData }) => {
         const missingEnchants = guildData.missingEnchants || { all: 0, mains: 0, alts: 0 };
         const topPvp = guildData.topPvp || [];
         const topPve = guildData.topPve || [];
-        const roleCounts = guildData.roleCounts || { tanks: 0, healers: 0, dps: 0 };
+
+        // Derive role counts from current roster using spec/role helper instead of backend snapshot
+        const roleCounts = allPlayers.reduce(
+            (acc, player) => {
+                console.log('player', player, isDataLoaded)
+                const role = getCharacterRole(player, config)
+                console.log('role', role, isDataLoaded)
+                if (role === 'tank') acc.tanks += 1
+                else if (role === 'healer') acc.healers += 1
+                else acc.dps += 1
+                return acc
+            },
+            { tanks: 0, healers: 0, dps: 0 }
+        )
 
         // Calculate averages from top players
         const avgTopMplus = topPve.length > 0 

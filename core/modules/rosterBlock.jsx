@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { P } from '@/core/components/typography'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import Link from 'next/link'
 
 import config from '@/app.config.js'
 
@@ -177,17 +178,31 @@ const AuditBlock = ({ data, name }) => {
                                         {item.itemLevel}
                                     </TableCell>
                                     <TableCell style={{ width: 240 }}>
-                                        <div
-                                            className={`name ${item.class}`}
-                                        >
-                                            <P className="font-medium">{item.name}</P>
-                                        </div>
-                                        <div className="classandspec">
-                                            <P className="spec text-sm text-muted-foreground">
-                                                {item.spec}{' '}
-                                                {item.class}
-                                            </P>
-                                        </div>
+                                        {item.server ? (
+                                            <Link href={`/member/${item.server}/${item.name}`} className="no-underline block group">
+                                                <div className={`name ${item.class}`}>
+                                                    <P className="font-medium transition-opacity group-hover:opacity-70">{item.name}</P>
+                                                </div>
+                                                <div className="classandspec">
+                                                    <P className="spec text-sm text-muted-foreground">
+                                                        {item.spec}{' '}
+                                                        {item.class}
+                                                    </P>
+                                                </div>
+                                            </Link>
+                                        ) : (
+                                            <>
+                                                <div className={`name ${item.class}`}>
+                                                    <P className="font-medium">{item.name}</P>
+                                                </div>
+                                                <div className="classandspec">
+                                                    <P className="spec text-sm text-muted-foreground">
+                                                        {item.spec}{' '}
+                                                        {item.class}
+                                                    </P>
+                                                </div>
+                                            </>
+                                        )}
                                     </TableCell>
                                     <TableCell>
                                         {item?.next_season_class ? (

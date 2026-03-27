@@ -79,9 +79,9 @@ export default function InstallPage() {
     TANKS: ['Blood', 'Vengeance', 'Guardian', 'Brewmaster', 'Protection'],
     HEALERS: ['Preservation', 'Mistweaver', 'Holy', 'Discipline', 'Restoration'],
     DIFFICULTY: ['Mythic', 'Heroic', 'Normal'],
-    SEASON_START_DATE: '2025-08-01',
-    CURRENT_RAID: 'Manaforge Omega',
-    CURRENT_MPLUS_SEASON: 15,
+    SEASON_START_DATE: '2026-02-25',
+    CURRENT_EXPANSION: 'Midnight',
+    CURRENT_MPLUS_SEASON: 16,
     GUILLD_RANKS: [
       'Guild Lead',
       'Officer',
@@ -95,19 +95,19 @@ export default function InstallPage() {
       'New Recruit'
     ],
     CURRENT_SEASON_TIER_SETS: [
-      'Hollow Sentinel\'s Wake ',
-      'Charhound\'s Vicious Hunt',
-      'Ornaments of the Mother Eagle',
-      'Spellweaver\'s Immaculate Design',
-      'Midnight Herald\'s Pledge',
-      'Augur\'s Ephemeral Plumage ',
-      'Crash of Fallen Storms',
-      'Vows of the Lucent Battalion',
-      'Eulogy to a Dying Star ',
-      'Shroud of the Sudden Eclipse',
-      'Howls of Channeled Fury ',
-      'Inquisitor\'s Feast of Madness',
-      'Chains of the Living Weapon'
+      "Relentless Rider's Lament",
+      "Devouring Reaver's Sheathe",
+      "Sprouts of the Luminous Bloom",
+      "Livery of the Black Talon",
+      "Primal Sentry's Camouflage",
+      "Voidbreaker's Accordance",
+      "Way of Ra-den's Chosen",
+      "Luminating Verdict's Vestments",
+      "Blind Oath's Burden",
+      "Motley of the Grim Jest",
+      "Mantle of the Primal Core",
+      "Reign of the Abyssal Immolator",
+      "Rage of the Night Ender"
     ]
   });
 
@@ -814,382 +814,329 @@ export default function InstallPage() {
     }
   };
 
+  // ── Shared sub-components ─────────────────────────────────────
+
+  const FormSection = ({ title, description, children }) => (
+    <div className="rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden">
+      <div className="px-6 py-4 border-b border-border/40 bg-muted/20">
+        <p className="text-sm font-semibold tracking-tight">{title}</p>
+        {description && <p className="text-xs text-muted-foreground mt-0.5">{description}</p>}
+      </div>
+      <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {children}
+      </div>
+    </div>
+  );
+
+  const Field = ({ label, hint, required: req, span2, children }) => (
+    <div className={`space-y-1.5 ${span2 ? 'sm:col-span-2' : ''}`}>
+      <Label className="text-sm font-medium">
+        {label} {req && <span className="text-destructive">*</span>}
+      </Label>
+      {children}
+      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+    </div>
+  );
+
+  const StepIndicator = () => (
+    <div className="flex items-center justify-center mb-8 select-none">
+      {steps.map((label, index) => (
+        <div key={label} className="flex items-center">
+          <div className="flex flex-col items-center gap-1.5">
+            <div className={`
+              flex items-center justify-center w-9 h-9 rounded-full text-sm font-bold border-2 transition-all
+              ${activeStep > index
+                ? 'border-primary bg-primary text-primary-foreground shadow-[0_0_12px_hsl(var(--primary)/0.4)]'
+                : activeStep === index
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-border text-muted-foreground'}
+            `}>
+              {activeStep > index ? <CheckCircle2 className="w-5 h-5" /> : index + 1}
+            </div>
+            <span className={`text-xs font-medium leading-none text-center max-w-[72px] ${activeStep >= index ? 'text-foreground' : 'text-muted-foreground'}`}>
+              {label}
+            </span>
+          </div>
+          {index < steps.length - 1 && (
+            <div className={`w-16 sm:w-24 h-px mx-3 mb-5 transition-all ${activeStep > index ? 'bg-primary' : 'bg-border'}`} />
+          )}
+        </div>
+      ))}
+    </div>
+  );
+
+  const ErrorAlert = ({ error: err, errorDetails: ed }) => {
+    if (!err) return null;
+    return (
+      <Alert variant="destructive" className="relative">
+        <AlertCircle className="h-4 w-4" />
+        <Button
+          variant="ghost" size="icon"
+          className="absolute top-2 right-2 h-6 w-6 rounded-md hover:bg-destructive/20"
+          onClick={() => { setError(''); setErrorDetails(null); }}
+        ><span className="sr-only">Close</span>&times;</Button>
+        <AlertTitle className="font-semibold pr-6">{err}</AlertTitle>
+        {ed && (
+          <AlertDescription className="mt-2 space-y-2 text-sm">
+            {ed.details && ed.details !== err && <p className="opacity-90">{ed.details}</p>}
+            {ed.suggestion && (
+              <div className="p-2.5 bg-yellow-500/10 border-l-2 border-yellow-500 rounded">
+                <p className="font-semibold text-yellow-400 text-xs mb-1">Suggestion</p>
+                <p className="opacity-90">{ed.suggestion}</p>
+              </div>
+            )}
+            {ed.error === 'GUILD_NOT_FOUND' && (
+              <ul className="list-disc pl-4 space-y-0.5 opacity-80">
+                <li>Use lowercase slugs with hyphens, not spaces</li>
+                <li>Verify the guild name and realm match exactly</li>
+              </ul>
+            )}
+            {ed.error === 'AUTH_ERROR' && (
+              <ul className="list-disc pl-4 space-y-0.5 opacity-80">
+                <li>Verify your Battle.net Client ID and Secret</li>
+                <li>Ensure no leading/trailing spaces were copied</li>
+              </ul>
+            )}
+          </AlertDescription>
+        )}
+      </Alert>
+    );
+  };
+
+  // ── Loading screen ──────────────────────────────────────────
+
   if (checkingStatus) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Spinner className="w-8 h-8" />
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background">
+        <img src="/images/logo-without-text.png" alt="Logo" className="h-12 w-12 opacity-60 animate-pulse" />
+        <Spinner className="w-6 h-6 text-muted-foreground" />
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen relative overflow-hidden bg-background text-foreground">
-      <div className="container max-w-5xl mx-auto py-8 relative z-10">
-        <div className={`p-8 rounded-xl ${activeStep === 1 ? 'bg-transparent shadow-none' : 'bg-card text-card-foreground shadow-lg border border-border'}`}>
-        
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold tracking-tight">
-            {hasAdmin && !isAuthenticated ? 'Admin Login' : 'Application Installation'}
-          </h1>
-          {hasAdmin && isAuthenticated && (
-            <div className="flex gap-4">
-              <Button variant="outline" size="sm" onClick={handleLogout}>
-                Logout
-              </Button>
-              <Button variant="destructive" size="sm" onClick={handleOpenResetDialog}>
-                Reset Database
-              </Button>
+  // ── Login screen ────────────────────────────────────────────
+
+  if (hasAdmin && !isAuthenticated) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 gap-8">
+        <div className="flex items-center gap-3">
+          <img src="/images/logo-without-text.png" alt="Logo" className="h-10 w-10 opacity-70" />
+          <div>
+            <p className="text-lg font-bold tracking-tight leading-none">Guild Audit</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Setup &amp; Installation</p>
+          </div>
+        </div>
+
+        <div className="w-full max-w-sm rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden">
+          <div className="px-6 py-5 border-b border-border/40 bg-muted/20">
+            <p className="font-semibold text-sm">Admin Login Required</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Enter your credentials to access the setup page</p>
+          </div>
+
+          {loginError && (
+            <div className="px-6 pt-4">
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{loginError}</AlertDescription>
+              </Alert>
             </div>
           )}
+
+          <form onSubmit={handleLogin} className="p-6 space-y-4">
+            <div className="space-y-1.5">
+              <Label className="text-sm font-medium">Username <span className="text-destructive">*</span></Label>
+              <Input value={loginCredentials.username} onChange={(e) => setLoginCredentials(prev => ({ ...prev, username: e.target.value }))} required disabled={loginLoading} autoFocus />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-sm font-medium">Password <span className="text-destructive">*</span></Label>
+              <Input type="password" value={loginCredentials.password} onChange={(e) => setLoginCredentials(prev => ({ ...prev, password: e.target.value }))} required disabled={loginLoading} />
+            </div>
+            <Button type="submit" className="w-full" disabled={loginLoading || !loginCredentials.username || !loginCredentials.password}>
+              {loginLoading && <Spinner className="mr-2 h-4 w-4" />}
+              {loginLoading ? 'Signing in…' : 'Sign In'}
+            </Button>
+          </form>
         </div>
-        
-        <p className="text-muted-foreground text-center mb-8">
-          {hasAdmin && !isAuthenticated 
-            ? 'Please login with your admin credentials to access the installation page'
-            : 'Configure your World of Warcraft guild audit application'}
+
+        <p className="text-xs text-muted-foreground">
+          Need a fresh start?{' '}
+          <button className="underline hover:text-foreground transition-colors" onClick={handleOpenResetDialog}>Reset the database</button>
         </p>
 
-        {(!hasAdmin || isAuthenticated) && (
-          <div className="flex items-center justify-center gap-2 sm:gap-4 mb-10 overflow-x-auto py-2">
-            {steps.map((label, index) => (
-              <div key={label} className="flex items-center shrink-0">
-                <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 text-sm font-bold ${activeStep === index ? 'border-primary bg-primary text-primary-foreground' : activeStep > index ? 'border-primary bg-primary text-primary-foreground' : 'border-muted text-muted-foreground'}`}>
-                  {activeStep > index ? <CheckCircle2 className="w-5 h-5" /> : index + 1}
-                </div>
-                <span className={`ml-2 text-sm font-medium ${activeStep >= index ? 'text-foreground' : 'text-muted-foreground'}`}>{label}</span>
-                {index < steps.length - 1 && (
-                  <div className={`w-8 sm:w-12 h-px mx-2 sm:mx-4 ${activeStep > index ? 'bg-primary' : 'bg-muted'}`} />
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {(!hasAdmin || isAuthenticated) && isInstalled && activeStep === 0 && !hasAdmin && (
-          <Alert className="mb-6 border-yellow-500/50 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400">
-            <AlertTriangle className="h-4 w-4 stroke-current" />
-            <AlertTitle>⚠️ Installation Incomplete - You Can Update Settings</AlertTitle>
-            <AlertDescription>
-              <p className="mb-2">Settings exist but the admin account was not created. This means installation was interrupted.</p>
-              <p className="font-semibold text-green-600 dark:text-green-400">✓ You can update your settings below without any confirmation. Just click "Save Settings & Validate" to continue.</p>
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {(!hasAdmin || isAuthenticated) && isInstalled && activeStep === 0 && hasAdmin && (
-          <Alert className="mb-6 border-yellow-500/50 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="flex gap-3">
-              <AlertTriangle className="h-5 w-5 stroke-current mt-0.5 shrink-0" />
-              <div>
-                <AlertTitle className="text-base font-semibold">Application Already Installed</AlertTitle>
-                <AlertDescription>
-                  <p className="mb-2">Settings already exist in the database. You can overwrite them with new values below. This will replace all existing configuration including API keys.</p>
-                  <p className="font-semibold text-destructive">Need a fresh start? Click "Reset Database" to wipe all data collections and admin account while preserving your app settings.</p>
-                </AlertDescription>
-              </div>
-            </div>
-            <Button variant="destructive" size="sm" onClick={handleOpenResetDialog} className="shrink-0">
-              Reset Database
-            </Button>
-          </Alert>
-        )}
-
-        {(!hasAdmin || isAuthenticated) && error && (
-          <Alert variant="destructive" className="mb-6 relative">
-            <AlertCircle className="h-4 w-4" />
-            <Button 
-              variant="ghost" 
-              size="icon"
-              className="absolute top-2 right-2 h-6 w-6 rounded-md hover:bg-destructive/20 text-destructive-foreground/80 hover:text-destructive-foreground"
-              onClick={() => {
-                setError('');
-                setErrorDetails(null);
-              }}
-            >
-              <span className="sr-only">Close</span>
-              &times;
-            </Button>
-            <AlertTitle className="font-semibold">{error}</AlertTitle>
-            {errorDetails && (
-              <AlertDescription className="mt-2 space-y-3">
-                {errorDetails.details && errorDetails.details !== error && (
-                  <p className="opacity-90">{errorDetails.details}</p>
-                )}
-                {errorDetails.suggestion && (
-                  <div className="p-3 bg-yellow-500/10 border-l-4 border-yellow-500 rounded-md">
-                    <p className="font-semibold text-yellow-600 dark:text-yellow-400 mb-1">💡 Suggestion:</p>
-                    <p className="opacity-90">{errorDetails.suggestion}</p>
-                  </div>
-                )}
-                {errorDetails.error === 'GUILD_NOT_FOUND' && (
-                  <div>
-                    <p className="font-semibold mb-1">Common issues:</p>
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li>Guild name and realm name are case-sensitive</li>
-                      <li>Use the guild name slug (lowercase, spaces replaced with hyphens)</li>
-                      <li>Use the realm slug (lowercase, spaces replaced with hyphens)</li>
-                      <li>Verify the guild exists on the specified realm and region</li>
-                    </ul>
-                  </div>
-                )}
-                {errorDetails.error === 'AUTH_ERROR' && (
-                  <div>
-                    <p className="font-semibold mb-1">How to fix:</p>
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li>Verify your Battle.net API Client ID is correct</li>
-                      <li>Verify your Battle.net API Client Secret is correct</li>
-                      <li>Check that your API key hasn't expired or been revoked</li>
-                      <li>Ensure you copied the full Client ID and Secret without extra spaces</li>
-                    </ul>
-                  </div>
-                )}
-              </AlertDescription>
-            )}
-          </Alert>
-        )}
-
-        {(!hasAdmin || isAuthenticated) && success && (
-          <Alert className="mb-6 border-green-500/50 bg-green-500/10 text-green-700 dark:text-green-400 relative">
-            <CheckCircle2 className="h-4 w-4 stroke-current" />
-            <Button 
-              variant="ghost" 
-              size="icon"
-              className="absolute top-2 right-2 h-6 w-6 rounded-md hover:bg-green-500/20 text-green-700/80 hover:text-green-700 dark:text-green-400/80 dark:hover:text-green-400"
-              onClick={() => setSuccess('')}
-            >
-              <span className="sr-only">Close</span>
-              &times;
-            </Button>
-            <AlertTitle className="font-semibold">{success}</AlertTitle>
-          </Alert>
-        )}
-
-        {/* Overwrite Confirmation Dialog */}
-        <Dialog open={showOverwriteDialog} onOpenChange={setShowOverwriteDialog}>
-          <DialogContent>
+        {/* Reset dialog */}
+        <Dialog open={showResetDialog} onOpenChange={(open) => { if (!open && !resetLoading) { setShowResetDialog(false); setResetError(''); setResetSuccess(''); setResetCredentials({ username: '', password: '' }); } }}>
+          <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <AlertTriangle className="text-yellow-500 h-5 w-5" />
-                Overwrite Existing Settings?
-              </DialogTitle>
-              <DialogDescription className="pt-4 space-y-4">
-                <p>The application has already been installed with existing settings. Overwriting will:</p>
-                <ul className="list-disc pl-5 space-y-1 text-left">
-                  <li>Replace all current configuration settings</li>
-                  <li>Update Battle.net API credentials</li>
-                  <li>Update guild information and requirements</li>
-                  <li>Clear the configuration cache</li>
-                </ul>
-                <p className="font-semibold text-yellow-600 dark:text-yellow-500">This action cannot be undone. Are you sure you want to continue?</p>
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowOverwriteDialog(false)}>Cancel</Button>
-              <Button variant="destructive" className="bg-yellow-600 hover:bg-yellow-700 text-white" onClick={async () => {
-                setShowOverwriteDialog(false);
-                await submitAppSettings(true);
-              }}>
-                Overwrite Settings
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        {/* Reset Database Dialog */}
-        <Dialog open={showResetDialog} onOpenChange={(open) => {
-          if (!open && !resetLoading) {
-            setShowResetDialog(false);
-            setResetError('');
-            setResetSuccess('');
-            setResetCredentials({ username: '', password: '' });
-          }
-        }}>
-          <DialogContent className="sm:max-w-[600px]">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 text-destructive">
-                <AlertTriangle className="h-5 w-5" />
-                Reset Database
-              </DialogTitle>
+              <DialogTitle className="flex items-center gap-2 text-destructive"><AlertTriangle className="h-4 w-4" />Reset Database</DialogTitle>
               <DialogDescription asChild>
-                <div className="pt-4 space-y-4 text-left">
-                  <p className="font-semibold text-destructive">⚠️ DANGER: This action will permanently delete all data!</p>
-                  <p>This will wipe all guild data, member information, season stats, and error logs from the database.</p>
-                  
+                <div className="space-y-3 pt-2 text-left text-sm">
+                  <p className="font-semibold text-destructive">This will permanently delete all guild data and the admin account.</p>
                   {resetInfo && (
-                    <div className="p-4 bg-destructive/10 rounded-md border border-destructive/20">
-                      <p className="font-semibold mb-2 text-foreground">Collections to be deleted:</p>
-                      <ul className="list-disc pl-5 space-y-1 mb-4">
-                        {resetInfo.collectionsToReset.map((collection) => (
-                          <li key={collection}>
-                            <span>{collection} ({resetInfo.counts[collection] || 0} documents)</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <p className="font-semibold text-green-600 dark:text-green-500">✓ Preserved: {resetInfo.collectionsToPreserve.join(', ')}</p>
+                    <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 space-y-1">
+                      <p className="font-medium text-xs text-muted-foreground uppercase tracking-wider mb-2">Collections to be deleted</p>
+                      {resetInfo.collectionsToReset.map(c => (
+                        <div key={c} className="flex justify-between text-xs"><span>{c}</span><span className="text-muted-foreground">{resetInfo.counts[c] || 0} docs</span></div>
+                      ))}
+                      <p className="text-xs text-green-500 mt-2 pt-2 border-t border-border/30">✓ Preserved: {resetInfo.collectionsToPreserve.join(', ')}</p>
                     </div>
                   )}
-                  
-                  <p className="font-semibold text-green-600 dark:text-green-500">✓ Preserved: App Settings & Configuration</p>
-                  <p className="font-semibold text-destructive">✗ Admin account will also be deleted</p>
-                  <p className="text-muted-foreground">After reset, you will need to recreate your admin account and can then re-run the installation process to fetch fresh guild data.</p>
+                  <p className="text-muted-foreground text-xs">App settings are preserved — you'll need to recreate your admin account after reset.</p>
                 </div>
               </DialogDescription>
             </DialogHeader>
-
-            {resetError && (
-              <Alert variant="destructive" className="mt-4">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>{resetError}</AlertTitle>
-              </Alert>
-            )}
-
-            {resetSuccess && (
-              <Alert className="mt-4 border-green-500 text-green-600">
-                <CheckCircle2 className="h-4 w-4" />
-                <AlertTitle>{resetSuccess}</AlertTitle>
-              </Alert>
-            )}
-
+            {resetError && <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertDescription>{resetError}</AlertDescription></Alert>}
+            {resetSuccess && <Alert className="border-green-500/30 bg-green-500/5 text-green-500"><CheckCircle2 className="h-4 w-4" /><AlertTitle>{resetSuccess}</AlertTitle></Alert>}
             {!resetSuccess && (
-              <form onSubmit={handleResetDatabase} className="space-y-4 mt-4">
-                <p className="font-semibold text-destructive">Enter admin credentials to confirm:</p>
-                <div className="space-y-2">
-                  <Label>Admin Username <span className="text-destructive">*</span></Label>
-                  <Input
-                    value={resetCredentials.username}
-                    onChange={(e) => setResetCredentials(prev => ({ ...prev, username: e.target.value }))}
-                    required
-                    disabled={resetLoading}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Admin Password <span className="text-destructive">*</span></Label>
-                  <Input
-                    type="password"
-                    value={resetCredentials.password}
-                    onChange={(e) => setResetCredentials(prev => ({ ...prev, password: e.target.value }))}
-                    required
-                    disabled={resetLoading}
-                  />
-                </div>
-                <DialogFooter className="pt-4">
-                  <Button type="button" variant="outline" onClick={() => {
-                    setShowResetDialog(false);
-                    setResetError('');
-                    setResetCredentials({ username: '', password: '' });
-                  }} disabled={resetLoading}>
-                    Cancel
-                  </Button>
-                  <Button type="submit" variant="destructive" disabled={resetLoading || !resetCredentials.username || !resetCredentials.password}>
-                    {resetLoading && <Spinner className="mr-2" />}
-                    {resetLoading ? 'Resetting...' : 'Reset Database'}
-                  </Button>
+              <form onSubmit={handleResetDatabase} className="space-y-3 mt-2">
+                <p className="text-xs font-medium text-destructive">Confirm with admin credentials:</p>
+                <div className="space-y-1.5"><Label className="text-xs">Username</Label><Input value={resetCredentials.username} onChange={(e) => setResetCredentials(prev => ({ ...prev, username: e.target.value }))} required disabled={resetLoading} /></div>
+                <div className="space-y-1.5"><Label className="text-xs">Password</Label><Input type="password" value={resetCredentials.password} onChange={(e) => setResetCredentials(prev => ({ ...prev, password: e.target.value }))} required disabled={resetLoading} /></div>
+                <DialogFooter className="pt-2">
+                  <Button type="button" variant="outline" onClick={() => setShowResetDialog(false)} disabled={resetLoading}>Cancel</Button>
+                  <Button type="submit" variant="destructive" disabled={resetLoading || !resetCredentials.username || !resetCredentials.password}>{resetLoading && <Spinner className="mr-2 h-3.5 w-3.5" />}{resetLoading ? 'Resetting…' : 'Reset Database'}</Button>
                 </DialogFooter>
               </form>
             )}
           </DialogContent>
         </Dialog>
+      </div>
+    );
+  }
 
-        {/* Login Form - Show when admin exists but user is not authenticated */}
-        {hasAdmin && !isAuthenticated && (
-          <div className="max-w-md mx-auto p-6 bg-card text-card-foreground rounded-lg shadow border border-border">
-            <h2 className="text-xl font-semibold mb-2">Admin Login Required</h2>
-            <p className="text-muted-foreground mb-6">This page is protected. Please enter your admin credentials to continue.</p>
-            
-            {loginError && (
-              <Alert variant="destructive" className="mb-6">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>{loginError}</AlertTitle>
-              </Alert>
-            )}
-            
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label>Username <span className="text-destructive">*</span></Label>
-                <Input
-                  value={loginCredentials.username}
-                  onChange={(e) => setLoginCredentials(prev => ({ ...prev, username: e.target.value }))}
-                  required
-                  disabled={loginLoading}
-                  autoFocus
-                />
+  // ── Main install UI ─────────────────────────────────────────
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Dialogs */}
+      <Dialog open={showOverwriteDialog} onOpenChange={setShowOverwriteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><AlertTriangle className="text-amber-400 h-4 w-4" />Overwrite Existing Settings?</DialogTitle>
+            <DialogDescription asChild>
+              <div className="space-y-3 pt-2 text-sm text-left">
+                <p>This will replace all current configuration including API keys and guild settings.</p>
+                <p className="font-semibold text-amber-400">This action cannot be undone.</p>
               </div>
-              <div className="space-y-2">
-                <Label>Password <span className="text-destructive">*</span></Label>
-                <Input
-                  type="password"
-                  value={loginCredentials.password}
-                  onChange={(e) => setLoginCredentials(prev => ({ ...prev, password: e.target.value }))}
-                  required
-                  disabled={loginLoading}
-                />
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowOverwriteDialog(false)}>Cancel</Button>
+            <Button className="bg-amber-600 hover:bg-amber-700 text-white" onClick={async () => { setShowOverwriteDialog(false); await submitAppSettings(true); }}>Overwrite Settings</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showResetDialog} onOpenChange={(open) => { if (!open && !resetLoading) { setShowResetDialog(false); setResetError(''); setResetSuccess(''); setResetCredentials({ username: '', password: '' }); } }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-destructive"><AlertTriangle className="h-4 w-4" />Reset Database</DialogTitle>
+            <DialogDescription asChild>
+              <div className="space-y-3 pt-2 text-left text-sm">
+                <p className="font-semibold text-destructive">This will permanently delete all guild data and the admin account.</p>
+                {resetInfo && (
+                  <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 space-y-1">
+                    <p className="font-medium text-xs text-muted-foreground uppercase tracking-wider mb-2">Collections to be deleted</p>
+                    {resetInfo.collectionsToReset.map(c => (
+                      <div key={c} className="flex justify-between text-xs"><span>{c}</span><span className="text-muted-foreground">{resetInfo.counts[c] || 0} docs</span></div>
+                    ))}
+                    <p className="text-xs text-green-500 mt-2 pt-2 border-t border-border/30">✓ Preserved: {resetInfo.collectionsToPreserve.join(', ')}</p>
+                  </div>
+                )}
+                <p className="text-muted-foreground text-xs">App settings are preserved — you'll need to recreate your admin account.</p>
               </div>
-              <Button type="submit" className="w-full" disabled={loginLoading || !loginCredentials.username || !loginCredentials.password}>
-                {loginLoading && <Spinner className="mr-2" />}
-                {loginLoading ? 'Logging in...' : 'Login'}
-              </Button>
+            </DialogDescription>
+          </DialogHeader>
+          {resetError && <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertDescription>{resetError}</AlertDescription></Alert>}
+          {resetSuccess && <Alert className="border-green-500/30 bg-green-500/5 text-green-500"><CheckCircle2 className="h-4 w-4" /><AlertTitle>{resetSuccess}</AlertTitle></Alert>}
+          {!resetSuccess && (
+            <form onSubmit={handleResetDatabase} className="space-y-3 mt-2">
+              <p className="text-xs font-medium text-destructive">Confirm with admin credentials:</p>
+              <div className="space-y-1.5"><Label className="text-xs">Username</Label><Input value={resetCredentials.username} onChange={(e) => setResetCredentials(prev => ({ ...prev, username: e.target.value }))} required disabled={resetLoading} /></div>
+              <div className="space-y-1.5"><Label className="text-xs">Password</Label><Input type="password" value={resetCredentials.password} onChange={(e) => setResetCredentials(prev => ({ ...prev, password: e.target.value }))} required disabled={resetLoading} /></div>
+              <DialogFooter className="pt-2">
+                <Button type="button" variant="outline" onClick={() => setShowResetDialog(false)} disabled={resetLoading}>Cancel</Button>
+                <Button type="submit" variant="destructive" disabled={resetLoading || !resetCredentials.username || !resetCredentials.password}>{resetLoading && <Spinner className="mr-2 h-3.5 w-3.5" />}{resetLoading ? 'Resetting…' : 'Reset Database'}</Button>
+              </DialogFooter>
             </form>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <div className="max-w-2xl mx-auto px-4 py-10 space-y-8">
+        {/* Branding header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img src="/images/logo-without-text.png" alt="Logo" className="h-9 w-9 opacity-80" />
+            <div>
+              <p className="text-base font-bold tracking-tight leading-none">Guild Audit</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Setup Wizard</p>
+            </div>
           </div>
+          {isAuthenticated && (
+            <div className="flex gap-2">
+              <Button variant="ghost" size="sm" onClick={handleLogout}>Logout</Button>
+              <Button variant="outline" size="sm" onClick={handleOpenResetDialog} className="text-destructive border-destructive/30 hover:bg-destructive/10">Reset DB</Button>
+            </div>
+          )}
+        </div>
+
+        {/* Step indicator */}
+        <StepIndicator />
+
+        {/* Status alerts */}
+        {activeStep === 0 && isInstalled && !hasAdmin && (
+          <Alert className="border-amber-500/30 bg-amber-500/5">
+            <AlertTriangle className="h-4 w-4 text-amber-400" />
+            <AlertTitle className="text-amber-400">Installation Incomplete</AlertTitle>
+            <AlertDescription className="text-amber-400/80 text-sm">
+              Settings were saved but no admin account was created. Update the settings below and continue.
+            </AlertDescription>
+          </Alert>
         )}
 
-        {/* Installation Interface - Show only when no admin exists OR user is authenticated */}
-        {(!hasAdmin || isAuthenticated) && activeStep === 0 && (
-          <form onSubmit={handleAppSettingsSubmit}>
-            <h2 className="text-xl font-semibold mt-4 mb-4">Battle.net API Configuration</h2>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-              <div className="col-span-1 sm:col-span-2 space-y-2">
-                <Label>Battle.net API Key <span className="text-destructive">*</span></Label>
-                <Input
-                  type="password"
-                  value={appSettings.API_BATTLENET_KEY}
-                  onChange={(e) => handleAppSettingsChange('API_BATTLENET_KEY', e.target.value)}
-                  required
-                />
-                <p className="text-xs text-muted-foreground">Your Battle.net API Client ID</p>
-              </div>
-              
-              <div className="col-span-1 sm:col-span-2 space-y-2">
-                <Label>Battle.net API Secret <span className="text-destructive">*</span></Label>
-                <Input
-                  type="password"
-                  value={appSettings.API_BATTLENET_SECRET}
-                  onChange={(e) => handleAppSettingsChange('API_BATTLENET_SECRET', e.target.value)}
-                  required
-                />
-                <p className="text-xs text-muted-foreground">Your Battle.net API Client Secret</p>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Guild Name <span className="text-destructive">*</span></Label>
-                <Input
-                  value={appSettings.GUILD_NAME}
-                  onChange={(e) => handleAppSettingsChange('GUILD_NAME', e.target.value)}
-                  required
-                />
-                <p className="text-xs text-muted-foreground">Guild name slug (e.g., time-and-tide)</p>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Guild Realm <span className="text-destructive">*</span></Label>
-                <Input
-                  value={appSettings.GUILD_REALM}
-                  onChange={(e) => handleAppSettingsChange('GUILD_REALM', e.target.value)}
-                  required
-                />
-                <p className="text-xs text-muted-foreground">Realm slug (e.g., ravencrest)</p>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Region <span className="text-destructive">*</span></Label>
-                <Select
-                  value={appSettings.REGION}
-                  onValueChange={(value) => handleAppSettingsChange('REGION', value)}
-                  required
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Region" />
-                  </SelectTrigger>
+        {activeStep === 0 && isInstalled && hasAdmin && (
+          <Alert className="border-amber-500/30 bg-amber-500/5">
+            <AlertTriangle className="h-4 w-4 text-amber-400" />
+            <AlertTitle className="text-amber-400">Already Installed</AlertTitle>
+            <AlertDescription className="text-amber-400/80 text-sm">
+              Settings already exist. Changes here will overwrite all current configuration including API keys.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <ErrorAlert error={error} errorDetails={errorDetails} />
+
+        {success && (
+          <Alert className="border-green-500/30 bg-green-500/5 text-green-500 relative">
+            <CheckCircle2 className="h-4 w-4" />
+            <Button variant="ghost" size="icon" className="absolute top-1.5 right-2 h-6 w-6" onClick={() => setSuccess('')}>&times;</Button>
+            <AlertTitle className="font-semibold">{success}</AlertTitle>
+          </Alert>
+        )}
+
+        {/* ── Step 0: App Settings ──────────────────────────────── */}
+        {activeStep === 0 && (
+          <form onSubmit={handleAppSettingsSubmit} className="space-y-5">
+
+            <FormSection title="Battle.net API Access" description="Your Battle.net developer credentials — never shared or exposed publicly.">
+              <Field label="Client ID" required span2 hint="Your Battle.net API Client ID">
+                <Input type="password" value={appSettings.API_BATTLENET_KEY} onChange={(e) => handleAppSettingsChange('API_BATTLENET_KEY', e.target.value)} required placeholder="••••••••••••••••" />
+              </Field>
+              <Field label="Client Secret" required span2 hint="Your Battle.net API Client Secret">
+                <Input type="password" value={appSettings.API_BATTLENET_SECRET} onChange={(e) => handleAppSettingsChange('API_BATTLENET_SECRET', e.target.value)} required placeholder="••••••••••••••••" />
+              </Field>
+            </FormSection>
+
+            <FormSection title="Guild Identity" description="Which guild to track and what region it lives in.">
+              <Field label="Guild Name" required hint="Lowercase slug, e.g. time-and-tide">
+                <Input value={appSettings.GUILD_NAME} onChange={(e) => handleAppSettingsChange('GUILD_NAME', e.target.value)} required placeholder="time-and-tide" />
+              </Field>
+              <Field label="Realm" required hint="Realm slug, e.g. sylvanas">
+                <Input value={appSettings.GUILD_REALM} onChange={(e) => handleAppSettingsChange('GUILD_REALM', e.target.value)} required placeholder="sylvanas" />
+              </Field>
+              <Field label="Region" required>
+                <Select value={appSettings.REGION} onValueChange={(v) => handleAppSettingsChange('REGION', v)}>
+                  <SelectTrigger><SelectValue placeholder="Select Region" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="eu">Europe (EU)</SelectItem>
                     <SelectItem value="us">United States (US)</SelectItem>
@@ -1197,456 +1144,257 @@ export default function InstallPage() {
                     <SelectItem value="tw">Taiwan (TW)</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>API Parameters <span className="text-destructive">*</span></Label>
-                <Input
-                  value={appSettings.API_PARAM_REQUIREMENTGS}
-                  onChange={(e) => handleAppSettingsChange('API_PARAM_REQUIREMENTGS', e.target.value)}
-                  required
-                />
-                <p className="text-xs text-muted-foreground">e.g., namespace=profile-eu&locale=en_US</p>
-              </div>
-            </div>
+              </Field>
+              <Field label="API Parameters" required hint="namespace=profile-eu&locale=en_US">
+                <Input value={appSettings.API_PARAM_REQUIREMENTGS} onChange={(e) => handleAppSettingsChange('API_PARAM_REQUIREMENTGS', e.target.value)} required />
+              </Field>
+            </FormSection>
 
-            <h2 className="text-xl font-semibold mb-4">Guild Configuration</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-              <div className="space-y-2">
-                <Label>Level Requirement <span className="text-destructive">*</span></Label>
-                <Input
-                  type="number"
-                  value={appSettings.LEVEL_REQUIREMENT}
-                  onChange={(e) => handleAppSettingsChange('LEVEL_REQUIREMENT', parseInt(e.target.value) || 0)}
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Item Level Requirement <span className="text-destructive">*</span></Label>
-                <Input
-                  type="number"
-                  value={appSettings.ITEM_LEVEL_REQUIREMENT}
-                  onChange={(e) => handleAppSettingsChange('ITEM_LEVEL_REQUIREMENT', parseInt(e.target.value) || 0)}
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Min Check Cap <span className="text-destructive">*</span></Label>
-                <Input
-                  type="number"
-                  value={appSettings.MIN_CHECK_CAP}
-                  onChange={(e) => handleAppSettingsChange('MIN_CHECK_CAP', parseInt(e.target.value) || 0)}
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Max Check Cap <span className="text-destructive">*</span></Label>
-                <Input
-                  type="number"
-                  value={appSettings.MAX_CHECK_CAP}
-                  onChange={(e) => handleAppSettingsChange('MAX_CHECK_CAP', parseInt(e.target.value) || 0)}
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Min Tier Item Level <span className="text-destructive">*</span></Label>
-                <Input
-                  type="number"
-                  value={appSettings.MIN_TIER_ITEMLEVEL}
-                  onChange={(e) => handleAppSettingsChange('MIN_TIER_ITEMLEVEL', parseInt(e.target.value) || 0)}
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Season Start Date <span className="text-destructive">*</span></Label>
-                <Input
-                  type="date"
-                  value={appSettings.SEASON_START_DATE}
-                  onChange={(e) => handleAppSettingsChange('SEASON_START_DATE', e.target.value)}
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Current Raid <span className="text-destructive">*</span></Label>
-                <Input
-                  value={appSettings.CURRENT_RAID}
-                  onChange={(e) => handleAppSettingsChange('CURRENT_RAID', e.target.value)}
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Current M+ Season <span className="text-destructive">*</span></Label>
-                <Input
-                  type="number"
-                  value={appSettings.CURRENT_MPLUS_SEASON}
-                  onChange={(e) => handleAppSettingsChange('CURRENT_MPLUS_SEASON', parseInt(e.target.value) || 0)}
-                  required
-                />
-              </div>
-            </div>
-
-            <h2 className="text-xl font-semibold mb-4">Advanced Configuration</h2>
-            <div className="grid grid-cols-1 gap-4 mb-8">
-              <div className="space-y-2">
-                <Label>Guild Rank Requirement <span className="text-destructive">*</span></Label>
-                <Input
-                  value={Array.isArray(appSettings.GUILD_RANK_REQUIREMENT) ? appSettings.GUILD_RANK_REQUIREMENT.join(',') : ''}
-                  onChange={(e) => {
-                    const values = e.target.value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
-                    handleAppSettingsChange('GUILD_RANK_REQUIREMENT', values);
-                  }}
-                  required
-                />
-                <p className="text-xs text-muted-foreground">Comma-separated guild rank IDs (e.g., 0,1,2,3,4,5,6,7,8,9,10)</p>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Main Ranks <span className="text-destructive">*</span></Label>
-                <Input
-                  value={Array.isArray(appSettings.MAIN_RANKS) ? appSettings.MAIN_RANKS.join(',') : ''}
-                  onChange={(e) => {
-                    const values = e.target.value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
-                    handleAppSettingsChange('MAIN_RANKS', values);
-                  }}
-                  required
-                />
-                <p className="text-xs text-muted-foreground">Comma-separated rank IDs considered as mains (e.g., 0,1,2,3,4,5,6,7)</p>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Alt Ranks <span className="text-destructive">*</span></Label>
-                <Input
-                  value={Array.isArray(appSettings.ALT_RANKS) ? appSettings.ALT_RANKS.join(',') : ''}
-                  onChange={(e) => {
-                    const values = e.target.value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
-                    handleAppSettingsChange('ALT_RANKS', values);
-                  }}
-                  required
-                />
-                <p className="text-xs text-muted-foreground">Comma-separated rank IDs considered as alts (e.g., 8,9,10)</p>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Tank Specializations <span className="text-destructive">*</span></Label>
-                <Input
-                  value={Array.isArray(appSettings.TANKS) ? appSettings.TANKS.join(', ') : ''}
-                  onChange={(e) => {
-                    const values = e.target.value.split(',').map(v => v.trim()).filter(v => v);
-                    handleAppSettingsChange('TANKS', values);
-                  }}
-                  required
-                />
-                <p className="text-xs text-muted-foreground">Comma-separated tank spec names (e.g., Blood, Vengeance, Guardian, Brewmaster, Protection)</p>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Healer Specializations <span className="text-destructive">*</span></Label>
-                <Input
-                  value={Array.isArray(appSettings.HEALERS) ? appSettings.HEALERS.join(', ') : ''}
-                  onChange={(e) => {
-                    const values = e.target.value.split(',').map(v => v.trim()).filter(v => v);
-                    handleAppSettingsChange('HEALERS', values);
-                  }}
-                  required
-                />
-                <p className="text-xs text-muted-foreground">Comma-separated healer spec names (e.g., Preservation, Mistweaver, Holy, Discipline, Restoration)</p>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Enchantable Pieces <span className="text-destructive">*</span></Label>
-                <Input
-                  value={Array.isArray(appSettings.ENCHANTABLE_PIECES) ? appSettings.ENCHANTABLE_PIECES.join(', ') : ''}
-                  onChange={(e) => {
-                    const values = e.target.value.split(',').map(v => v.trim()).filter(v => v);
-                    handleAppSettingsChange('ENCHANTABLE_PIECES', values);
-                  }}
-                  required
-                />
-                <p className="text-xs text-muted-foreground">Comma-separated slot names (e.g., WRIST, LEGS, FEET, CHEST, MAIN_HAND, FINGER_1, FINGER_2)</p>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Difficulty Modes <span className="text-destructive">*</span></Label>
-                <Input
-                  value={Array.isArray(appSettings.DIFFICULTY) ? appSettings.DIFFICULTY.join(', ') : ''}
-                  onChange={(e) => {
-                    const values = e.target.value.split(',').map(v => v.trim()).filter(v => v);
-                    handleAppSettingsChange('DIFFICULTY', values);
-                  }}
-                  required
-                />
-                <p className="text-xs text-muted-foreground">Comma-separated difficulty names (e.g., Mythic, Heroic, Normal)</p>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Guild Rank Names <span className="text-destructive">*</span></Label>
+            <FormSection title="Season &amp; Content" description="Current game season configuration for raids and Mythic+.">
+              <Field label="Season Start Date" required>
+                <Input type="date" value={appSettings.SEASON_START_DATE} onChange={(e) => handleAppSettingsChange('SEASON_START_DATE', e.target.value)} required />
+              </Field>
+              <Field label="Current Expansion" required hint="All raids in this expansion are tracked automatically">
+                <Input value={appSettings.CURRENT_EXPANSION} onChange={(e) => handleAppSettingsChange('CURRENT_EXPANSION', e.target.value)} required placeholder="Midnight" />
+              </Field>
+              <Field label="M+ Season ID" required hint="Numeric ID for the current Mythic+ season">
+                <Input type="number" value={appSettings.CURRENT_MPLUS_SEASON} onChange={(e) => handleAppSettingsChange('CURRENT_MPLUS_SEASON', parseInt(e.target.value) || 0)} required />
+              </Field>
+              <Field label="Current Season Tier Sets" required span2 hint="One set name per line — used to identify tier items on characters">
                 <Textarea
-                  rows={4}
-                  value={Array.isArray(appSettings.GUILLD_RANKS) ? appSettings.GUILLD_RANKS.join(',\n') : ''}
-                  onChange={(e) => {
-                    const values = e.target.value.split(/[,\n]/).map(v => v.trim()).filter(v => v);
-                    handleAppSettingsChange('GUILLD_RANKS', values);
-                  }}
+                  rows={5}
+                  value={Array.isArray(appSettings.CURRENT_SEASON_TIER_SETS) ? appSettings.CURRENT_SEASON_TIER_SETS.join('\n') : ''}
+                  onChange={(e) => { const v = e.target.value.split(/[\n,]/).map(x => x.trim()).filter(Boolean); handleAppSettingsChange('CURRENT_SEASON_TIER_SETS', v); }}
                   required
+                  placeholder={"Set name 1\nSet name 2"}
                 />
-                <p className="text-xs text-muted-foreground">One rank name per line or comma-separated (e.g., Guild Lead, Officer, Member, Alt)</p>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Current Season Tier Sets <span className="text-destructive">*</span></Label>
-                <Textarea
-                  rows={6}
-                  value={Array.isArray(appSettings.CURRENT_SEASON_TIER_SETS) ? appSettings.CURRENT_SEASON_TIER_SETS.join(',\n') : ''}
-                  onChange={(e) => {
-                    const values = e.target.value.split(/[,\n]/).map(v => v.trim()).filter(v => v);
-                    handleAppSettingsChange('CURRENT_SEASON_TIER_SETS', values);
-                  }}
-                  required
-                />
-                <p className="text-xs text-muted-foreground">One tier set name per line or comma-separated</p>
-              </div>
-            </div>
+              </Field>
+            </FormSection>
 
-            {validationResult && validationResult.isValid && (
-              <Alert className="mb-6 border-green-500/50 bg-green-500/10 text-green-700 dark:text-green-400">
-                <CheckCircle2 className="h-4 w-4 stroke-current" />
-                <AlertTitle className="mb-0 flex items-center">
-                  API credentials validated successfully! Found {validationResult.guildMembers} guild members.
-                </AlertTitle>
+            <FormSection title="Item Level Requirements" description="Thresholds used to flag characters as audit-ready.">
+              <Field label="Level Requirement" required><Input type="number" value={appSettings.LEVEL_REQUIREMENT} onChange={(e) => handleAppSettingsChange('LEVEL_REQUIREMENT', parseInt(e.target.value) || 0)} required /></Field>
+              <Field label="Item Level Requirement" required><Input type="number" value={appSettings.ITEM_LEVEL_REQUIREMENT} onChange={(e) => handleAppSettingsChange('ITEM_LEVEL_REQUIREMENT', parseInt(e.target.value) || 0)} required /></Field>
+              <Field label="Min Audit Cap" required hint="Lower bound of the audit iLvL slider"><Input type="number" value={appSettings.MIN_CHECK_CAP} onChange={(e) => handleAppSettingsChange('MIN_CHECK_CAP', parseInt(e.target.value) || 0)} required /></Field>
+              <Field label="Max Audit Cap" required hint="Upper bound of the audit iLvL slider"><Input type="number" value={appSettings.MAX_CHECK_CAP} onChange={(e) => handleAppSettingsChange('MAX_CHECK_CAP', parseInt(e.target.value) || 0)} required /></Field>
+              <Field label="Min Tier Item Level" required hint="Minimum iLvL for a tier piece to count"><Input type="number" value={appSettings.MIN_TIER_ITEMLEVEL} onChange={(e) => handleAppSettingsChange('MIN_TIER_ITEMLEVEL', parseInt(e.target.value) || 0)} required /></Field>
+            </FormSection>
+
+            <FormSection title="Roles &amp; Gear Checks" description="Spec lists for role detection and slots that require enchants.">
+              <Field label="Tank Specializations" required span2 hint="Comma-separated spec names, e.g. Blood, Guardian">
+                <Input value={Array.isArray(appSettings.TANKS) ? appSettings.TANKS.join(', ') : ''} onChange={(e) => handleAppSettingsChange('TANKS', e.target.value.split(',').map(v => v.trim()).filter(Boolean))} required />
+              </Field>
+              <Field label="Healer Specializations" required span2 hint="Comma-separated spec names, e.g. Holy, Restoration">
+                <Input value={Array.isArray(appSettings.HEALERS) ? appSettings.HEALERS.join(', ') : ''} onChange={(e) => handleAppSettingsChange('HEALERS', e.target.value.split(',').map(v => v.trim()).filter(Boolean))} required />
+              </Field>
+              <Field label="Enchantable Slots" required span2 hint="Slot names that are flagged as missing enchants, e.g. WRIST, CHEST">
+                <Input value={Array.isArray(appSettings.ENCHANTABLE_PIECES) ? appSettings.ENCHANTABLE_PIECES.join(', ') : ''} onChange={(e) => handleAppSettingsChange('ENCHANTABLE_PIECES', e.target.value.split(',').map(v => v.trim()).filter(Boolean))} required />
+              </Field>
+              <Field label="Tracked Difficulties" required hint="Comma-separated, e.g. Mythic, Heroic, Normal">
+                <Input value={Array.isArray(appSettings.DIFFICULTY) ? appSettings.DIFFICULTY.join(', ') : ''} onChange={(e) => handleAppSettingsChange('DIFFICULTY', e.target.value.split(',').map(v => v.trim()).filter(Boolean))} required />
+              </Field>
+            </FormSection>
+
+            <FormSection title="Guild Ranks" description="Rank structure used to classify mains, alts, and role distribution.">
+              <Field label="All Tracked Ranks" required hint="Comma-separated rank IDs, e.g. 0,1,2,3,4,5,6,7,8,9,10">
+                <Input value={Array.isArray(appSettings.GUILD_RANK_REQUIREMENT) ? appSettings.GUILD_RANK_REQUIREMENT.join(',') : ''} onChange={(e) => handleAppSettingsChange('GUILD_RANK_REQUIREMENT', e.target.value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v)))} required />
+              </Field>
+              <Field label="Main Ranks" required hint="Rank IDs counted as mains, e.g. 0,1,2,3">
+                <Input value={Array.isArray(appSettings.MAIN_RANKS) ? appSettings.MAIN_RANKS.join(',') : ''} onChange={(e) => handleAppSettingsChange('MAIN_RANKS', e.target.value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v)))} required />
+              </Field>
+              <Field label="Alt Ranks" required hint="Rank IDs counted as alts, e.g. 8,9,10">
+                <Input value={Array.isArray(appSettings.ALT_RANKS) ? appSettings.ALT_RANKS.join(',') : ''} onChange={(e) => handleAppSettingsChange('ALT_RANKS', e.target.value.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v)))} required />
+              </Field>
+              <div className="sm:col-span-2" />
+              <Field label="Rank Names" required span2 hint="One name per line in ascending rank order (rank 0 first)">
+                <Textarea
+                  rows={5}
+                  value={Array.isArray(appSettings.GUILLD_RANKS) ? appSettings.GUILLD_RANKS.join('\n') : ''}
+                  onChange={(e) => handleAppSettingsChange('GUILLD_RANKS', e.target.value.split(/[\n,]/).map(v => v.trim()).filter(Boolean))}
+                  required placeholder={"Guild Lead\nOfficer\nMember\nAlt"}
+                />
+              </Field>
+            </FormSection>
+
+            {validationResult?.isValid && (
+              <Alert className="border-green-500/30 bg-green-500/5 text-green-500">
+                <CheckCircle2 className="h-4 w-4" />
+                <AlertTitle>Validated — found {validationResult.guildMembers} eligible guild members</AlertTitle>
               </Alert>
             )}
 
-            <div className="flex justify-end gap-4 mt-6">
-              {isInstalled && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
-                    fetch(`${API_BASE_URL}/api/install`)
-                      .then(res => res.json())
-                      .then(data => {
-                        if (data.suggestedStep !== undefined) {
-                          setActiveStep(data.suggestedStep);
-                        } else if (data.hasGuildData && !data.hasAdmin) {
-                          setActiveStep(2);
-                        } else if (!data.hasGuildData) {
-                          setActiveStep(1);
-                        } else {
-                          setActiveStep(2);
-                        }
-                      })
-                      .catch(err => {
-                        console.error('Error checking status:', err);
-                        setActiveStep(1);
-                      });
-                  }}
-                >
-                  Skip to Next Step
+            <div className="flex items-center justify-between pt-2">
+              {isInstalled ? (
+                <Button type="button" variant="ghost" size="sm" className="text-muted-foreground" onClick={() => {
+                  const base = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+                  fetch(`${base}/api/install`).then(r => r.json()).then(d => {
+                    if (d.suggestedStep !== undefined) setActiveStep(d.suggestedStep);
+                    else setActiveStep(d.hasGuildData ? 2 : 1);
+                  }).catch(() => setActiveStep(1));
+                }}>
+                  Skip to next step →
                 </Button>
-              )}
-              <Button type="submit" disabled={loading}>
-                {loading && <Spinner className="mr-2" />}
-                {loading ? 'Validating & Saving...' : isInstalled ? 'Update Settings & Validate' : 'Save Settings & Validate'}
+              ) : <div />}
+              <Button type="submit" disabled={loading} className="min-w-[180px]">
+                {loading && <Spinner className="mr-2 h-4 w-4" />}
+                {loading ? 'Validating…' : isInstalled ? 'Update & Validate' : 'Save & Validate'}
               </Button>
             </div>
           </form>
         )}
 
+        {/* ── Step 1: Fetching Guild Data ───────────────────────── */}
         {activeStep === 1 && (
-          <div>
-            <div className="flex justify-end mb-4">
-              <Button
-                variant="outline"
-                className="border-white/30 text-white hover:bg-white/10"
-                onClick={() => setActiveStep(2)}
-              >
-                Skip Guild Fetch
-              </Button>
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold tracking-tight">Fetching Guild Data</h2>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  {fetchingGuild ? 'Pulling data from the Battle.net API…' : 'Start the guild sync or skip to the next step.'}
+                </p>
+              </div>
+              <Button variant="outline" size="sm" onClick={() => setActiveStep(2)}>Skip</Button>
             </div>
-            
-            <div className="flex flex-col gap-8 min-h-[70vh]">
-              <h2 className="text-3xl font-bold text-white drop-shadow-md mb-2">
-                Fetching Guild Data
-              </h2>
 
-              {error && activeStep === 1 && (
-                <Alert variant="destructive" className="mb-4">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertTitle className="font-semibold flex items-center justify-between">
-                    <span>{error}</span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-8"
-                      onClick={() => {
-                        setActiveStep(0);
-                        setError('');
-                        setErrorDetails(null);
-                      }}
-                    >
-                      Go Back to Fix
-                    </Button>
-                  </AlertTitle>
-                  {errorDetails && errorDetails.suggestion && (
-                    <AlertDescription className="mt-2">
-                      {errorDetails.suggestion}
-                    </AlertDescription>
-                  )}
-                </Alert>
-              )}
+            {error && activeStep === 1 && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle className="flex items-center justify-between pr-4">
+                  <span>{error}</span>
+                  <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => { setActiveStep(0); setError(''); setErrorDetails(null); }}>← Fix Settings</Button>
+                </AlertTitle>
+                {errorDetails?.suggestion && <AlertDescription className="mt-1 text-sm">{errorDetails.suggestion}</AlertDescription>}
+              </Alert>
+            )}
 
-              {!fetchingGuild && !fetchProgress && (
-                <div className="mb-4">
-                  {hasGuildData && (
-                    <Alert className="mb-4 border-green-500/50 bg-green-500/10 text-green-700 dark:text-green-400">
-                      <CheckCircle2 className="h-4 w-4" />
-                      <AlertTitle>Guild data already exists in the database. You can skip this step or fetch fresh data.</AlertTitle>
-                    </Alert>
-                  )}
-                  <Button onClick={fetchGuildData} disabled={loading} className="mb-4">
-                    Start Guild Fetch
-                  </Button>
-                  <p className="text-sm text-muted-foreground">
-                    {hasGuildData 
-                      ? 'Guild data exists. Click to fetch fresh data, or skip to proceed to admin account creation.'
-                      : 'Click the button above to start fetching guild data, or skip this step to proceed to admin account creation.'}
-                  </p>
+            {hasGuildData && !fetchingGuild && !fetchProgress && (
+              <Alert className="border-green-500/30 bg-green-500/5 text-green-500">
+                <CheckCircle2 className="h-4 w-4" />
+                <AlertDescription>Guild data already exists. You can re-fetch to refresh it, or skip to the next step.</AlertDescription>
+              </Alert>
+            )}
+
+            {!fetchingGuild && !fetchProgress && (
+              <div className="rounded-xl border border-border/50 bg-card p-6 flex flex-col items-center gap-4 text-center shadow-sm">
+                <div className="p-3 rounded-full bg-primary/10 border border-primary/20">
+                  <Spinner className="h-5 w-5 text-primary opacity-0" />
                 </div>
-              )}
+                <div>
+                  <p className="font-semibold">Ready to fetch guild data</p>
+                  <p className="text-sm text-muted-foreground mt-1">This will pull profile, equipment, raid, M+, and PvP data for every eligible member.</p>
+                </div>
+                <Button onClick={fetchGuildData} disabled={loading} className="min-w-[160px]">
+                  {loading && <Spinner className="mr-2 h-4 w-4" />}
+                  Start Guild Sync
+                </Button>
+              </div>
+            )}
 
-              {(fetchingGuild || fetchProgress) && (
-                <div className="w-full mb-4">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-xl font-semibold text-white">
-                      {fetchProgress || 'Initializing...'}
-                    </h3>
+            {(fetchingGuild || fetchProgress) && (
+              <div className="rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden">
+                <div className="p-5 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium truncate pr-4">{fetchProgress || 'Initialising…'}</p>
                     {totalMembers > 0 && (
-                      <span className="text-md font-semibold text-yellow-400">
-                        {totalProcessed} / {totalMembers}
-                      </span>
+                      <span className="text-sm font-bold tabular-nums text-primary shrink-0">{totalProcessed}/{totalMembers}</span>
                     )}
                   </div>
-                  
                   {totalMembers > 0 && (
-                    <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden relative">
+                    <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
                       <div
-                        className="h-full bg-gradient-to-r from-cyan-400 to-yellow-400 transition-all duration-300 ease-in-out shadow-[0_0_20px_rgba(255,215,0,0.5)]"
-                        style={{ width: `${(totalProcessed / totalMembers) * 100}%` }}
+                        className="h-full rounded-full bg-primary transition-all duration-500"
+                        style={{ width: `${Math.round((totalProcessed / totalMembers) * 100)}%` }}
                       />
                     </div>
                   )}
+                  {fetchProgress?.startsWith('Complete') && (
+                    <p className="text-xs text-green-500 flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5" />Advancing to admin setup…</p>
+                  )}
                 </div>
-              )}
 
-              {(fetchingGuild || newCharacters.length > 0) && (
-                <div className="w-full mt-4">
-                  <h3 className="text-xl font-semibold text-white mb-6">
-                    Recently Processed Characters
-                  </h3>
-                  
-                  <div className="flex gap-4 w-full overflow-hidden">
-                    {newCharacters.length > 0 ? (
-                      newCharacters.slice(-10).map((character, index) => (
-                        <CharacterCard
-                          key={`${character.name}-${character.server}-${index}`}
-                          character={character}
-                          index={index}
-                          total={newCharacters.slice(-10).length}
-                        />
-                      ))
-                    ) : (
-                      <div className="w-full flex items-center justify-center min-h-[200px] text-muted-foreground">
-                        <p>Characters will appear here as they are processed...</p>
-                      </div>
-                    )}
+                {newCharacters.length > 0 && (
+                  <div className="border-t border-border/40 p-5 space-y-3">
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Recently Processed</p>
+                    <div className="flex gap-3 overflow-hidden">
+                      {newCharacters.slice(-5).map((character, i) => (
+                        <CharacterCard key={`${character.name}-${character.server}-${i}`} character={character} index={i} total={Math.min(newCharacters.length, 5)} />
+                      ))}
+                      {newCharacters.length === 0 && (
+                        <p className="text-sm text-muted-foreground">Characters will appear here as they are processed…</p>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
-        {(!hasAdmin || isAuthenticated) && activeStep === 2 && (
-          <form onSubmit={handleAdminSubmit}>
-            <h2 className="text-xl font-semibold mt-4 mb-2">Create Admin Account</h2>
-            <p className="text-sm text-muted-foreground mb-6">
-              Create an admin account to manage the application. Password must be at least 12 characters with uppercase, lowercase, numbers, and special characters.
-            </p>
-            
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Username <span className="text-destructive">*</span></Label>
-                <Input
-                  value={adminSettings.username}
-                  onChange={(e) => handleAdminSettingsChange('username', e.target.value)}
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Password <span className="text-destructive">*</span></Label>
-                <Input
-                  type="password"
-                  value={adminSettings.password}
-                  onChange={(e) => handleAdminSettingsChange('password', e.target.value)}
-                  required
-                  className={passwordErrors.length > 0 ? 'border-destructive' : ''}
-                />
-                <p className="text-xs text-muted-foreground">
-                  {passwordErrors.length > 0 ? <span className="text-destructive">{passwordErrors[0]}</span> : 'Minimum 12 characters with uppercase, lowercase, numbers, and special characters'}
-                </p>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Confirm Password <span className="text-destructive">*</span></Label>
-                <Input
-                  type="password"
-                  value={adminSettings.confirmPassword}
-                  onChange={(e) => handleAdminSettingsChange('confirmPassword', e.target.value)}
-                  required
-                  className={adminSettings.password !== adminSettings.confirmPassword && adminSettings.confirmPassword.length > 0 ? 'border-destructive' : ''}
-                />
-                {adminSettings.password !== adminSettings.confirmPassword && adminSettings.confirmPassword.length > 0 && (
-                  <p className="text-xs text-destructive">Passwords do not match</p>
-                )}
+        {/* ── Step 2: Admin Account ─────────────────────────────── */}
+        {activeStep === 2 && (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-semibold tracking-tight">Create Admin Account</h2>
+              <p className="text-sm text-muted-foreground mt-0.5">Secure the application with an admin account. This is required to access settings and run upgrades.</p>
+            </div>
+
+            <ErrorAlert error={error} errorDetails={errorDetails} />
+            {success && (
+              <Alert className="border-green-500/30 bg-green-500/5 text-green-500">
+                <CheckCircle2 className="h-4 w-4" />
+                <AlertTitle>{success}</AlertTitle>
+                <AlertDescription className="text-green-500/80 text-sm">Redirecting to the dashboard…</AlertDescription>
+              </Alert>
+            )}
+
+            <form onSubmit={handleAdminSubmit}>
+              <div className="rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden">
+                <div className="px-6 py-4 border-b border-border/40 bg-muted/20">
+                  <p className="text-sm font-semibold">Admin Credentials</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Minimum 12 characters with uppercase, lowercase, numbers, and special characters</p>
+                </div>
+                <div className="p-6 space-y-4">
+                  <div className="space-y-1.5">
+                    <Label className="text-sm font-medium">Username <span className="text-destructive">*</span></Label>
+                    <Input value={adminSettings.username} onChange={(e) => handleAdminSettingsChange('username', e.target.value)} required />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-sm font-medium">Password <span className="text-destructive">*</span></Label>
+                    <Input type="password" value={adminSettings.password} onChange={(e) => handleAdminSettingsChange('password', e.target.value)} required className={passwordErrors.length > 0 ? 'border-destructive' : ''} />
+                    {passwordErrors.length > 0 && <p className="text-xs text-destructive">{passwordErrors[0]}</p>}
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-sm font-medium">Confirm Password <span className="text-destructive">*</span></Label>
+                    <Input type="password" value={adminSettings.confirmPassword} onChange={(e) => handleAdminSettingsChange('confirmPassword', e.target.value)} required className={adminSettings.password !== adminSettings.confirmPassword && adminSettings.confirmPassword.length > 0 ? 'border-destructive' : ''} />
+                    {adminSettings.password !== adminSettings.confirmPassword && adminSettings.confirmPassword.length > 0 && (
+                      <p className="text-xs text-destructive">Passwords do not match</p>
+                    )}
+                  </div>
+
+                  {passwordErrors.length > 1 && (
+                    <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3">
+                      <p className="text-xs font-semibold text-destructive mb-1.5">Password requirements not met:</p>
+                      <ul className="space-y-0.5">
+                        {passwordErrors.map((e, i) => <li key={i} className="text-xs text-destructive/80">• {e}</li>)}
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              {passwordErrors.length > 0 && (
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertTitle>Password requirements not met:</AlertTitle>
-                  <AlertDescription>
-                    <ul className="list-disc pl-5 mt-2 space-y-1">
-                      {passwordErrors.map((err, idx) => (
-                        <li key={idx}>{err}</li>
-                      ))}
-                    </ul>
-                  </AlertDescription>
-                </Alert>
-              )}
-              
-              <div className="flex justify-end gap-4 mt-6">
-                <Button type="button" variant="outline" onClick={() => setActiveStep(0)}>
-                  Back
-                </Button>
-                <Button type="submit" disabled={loading}>
-                  {loading && <Spinner className="mr-2" />}
-                  {loading ? 'Creating...' : 'Create Admin Account'}
+              <div className="flex items-center justify-between mt-5">
+                <Button type="button" variant="ghost" size="sm" className="text-muted-foreground" onClick={() => setActiveStep(0)}>← Back to Settings</Button>
+                <Button type="submit" disabled={loading} className="min-w-[180px]">
+                  {loading && <Spinner className="mr-2 h-4 w-4" />}
+                  {loading ? 'Creating…' : 'Create Admin Account'}
                 </Button>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         )}
-        
-        </div>
+
+        <p className="text-center text-xs text-muted-foreground pb-6">
+          &copy; 2025 Holybarryz (Scott Jones). All rights reserved.
+        </p>
       </div>
     </div>
   );

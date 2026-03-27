@@ -4,6 +4,61 @@ A modern, responsive web application for managing and displaying World of Warcra
 
 ---
 
+## Version 3.1 — Midnight Expansion & Setup Overhaul 🆕
+
+### Multi-Raid Lockout Tracking
+
+The frontend now fully supports tracking **multiple raids within the current expansion** simultaneously. All data is pulled dynamically from the new `lockStatus.raids` structure returned by the API.
+
+#### Audit Table — "Raid Locks" Column
+
+- The old single-string "locked" column is replaced with colour-coded difficulty badges per raid instance (e.g. **N 6/6**, **H 4/6** in Normal green / Heroic blue / Mythic purple)
+- Hovering a badge reveals a tooltip listing every locked boss name for that raid and difficulty
+- Falls back gracefully to the legacy `lockStatus.lockedTo` string for characters that haven't been re-synced yet
+
+#### Audit Analytics Dashboard
+
+- "Raid Lockout Status" section now shows a per-raid breakdown below the donut chart
+- Each active raid (Voidspire, Dreamrift, etc.) gets its own card with a total locked count and per-difficulty mini-bars
+- Fully dynamic — no raid names are hardcoded
+
+#### Member Profile — Raid Overview Card
+
+- New **"[Expansion] — Raid Progress"** card on the character detail page
+- Shows every raid in the current expansion with progress bars for LFR / Normal / Heroic / Mythic
+- Colour-coded fills (green → Normal, blue → Heroic, purple → Mythic, grey → LFR)
+- Hover a progress bar to see the list of killed bosses
+
+### Upgrade Page (`/upgrade`)
+
+New admin-only UI for running database migrations after an update:
+
+- Admin login form (Basic Auth stored in `sessionStorage`)
+- Migration status overview — total, pending, and up-to-date counts
+- Per-migration cards with name, description, status badge, and a **Run** button
+- **Run All Pending** button for one-click bulk migration
+- Real-time result output per migration with success / failure messaging
+- Link to the install page for monitoring background jobs
+
+### Setup Wizard Redesign (`/install`)
+
+The install page has been completely redesigned to match the application's dark card-based design system:
+
+- **Loading screen** — centred logo + subtle spinner instead of a bare spinner
+- **Login gate** — isolated full-page layout with a centred card, logo lockup, and "Reset the database" inline link
+- **Step indicator** — numbered circles above step labels connected by animated lines; completed steps show a check icon with a primary glow
+- **Sectioned settings form** — settings are now grouped into logical cards (API Access, Guild Identity, Season & Content, Item Level Requirements, Roles & Gear Checks, Guild Ranks) each with a header band and description
+- **Fetch step** — clean card with a labelled progress bar and compact 5-character preview strip; the "Start Guild Sync" state uses a proper call-to-action card
+- **Admin step** — tighter inline password validation with a collapsible requirements list
+- All dialogs (overwrite, reset) restyled to match the app's `rounded-xl border-border/50 bg-card` aesthetic
+
+### Config Key Migration
+
+- `CURRENT_RAID` renamed to `CURRENT_EXPANSION` in `app.config.js` and all UI forms
+- Settings page falls back to `settings.CURRENT_RAID` for existing installations without requiring a forced upgrade
+
+---
+
 ## Version 3.0 — The Visual Overhaul 🆕
 
 Version 3.0 is a complete redesign of the entire application. Every screen, component, and interaction has been revisited with a focus on clarity, consistency, and character. The application now feels like a proper dashboard product rather than a stitched-together set of pages.

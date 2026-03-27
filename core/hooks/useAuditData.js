@@ -45,33 +45,59 @@ const useAuditData = (data, filterProps) => {
             });
 
             const lockedOnlyArray = filterDataBaseOnFilters.filter(char => {
+                const hasRaidLockouts = char.lockStatus?.raids;
                 const hasLockouts = char.lockStatus?.lockedTo;
                 if (!hasLockouts) return false;
 
-                // Format the difficulty names and boss information
-                const lockoutInfo = Object.entries(hasLockouts)
-                    .filter(([_, status]) => status.completed > 0)
-                    .map(([difficulty, status]) => ({
-                        difficulty,
-                        completed: status.completed,
-                        total: status.total,
-                        encounters: status.encounters
-                    }));
+                const hasAnyLock = Object.values(hasLockouts).some(s => s.completed > 0);
+                if (!hasAnyLock) return false;
 
-                if (lockoutInfo.length === 0) return false;
+                // Use per-raid structure if available (new format)
+                if (hasRaidLockouts && Object.keys(hasRaidLockouts).length > 0) {
+                    // Compact display: "Voidspire N:6/6 H:4/6 | Dreamrift H:1/1"
+                    const diffOrder = ['LFR', 'Raid Finder', 'Normal', 'Heroic', 'Mythic'];
+                    const diffAbbr = { 'LFR': 'LFR', 'Raid Finder': 'LFR', 'Normal': 'N', 'Heroic': 'H', 'Mythic': 'M' };
 
-                // Create the display string (e.g., "Normal, Heroic")
-                char.lockedToString = lockoutInfo
-                    .map(info => info.difficulty)
-                    .join(', ');
+                    char.lockedToString = Object.entries(hasRaidLockouts)
+                        .map(([raidName, raidData]) => {
+                            const shortName = raidName.replace(/^The /, '');
+                            const diffs = diffOrder
+                                .filter(d => raidData.difficulties[d])
+                                .map(d => `${diffAbbr[d]}:${raidData.difficulties[d].completed}/${raidData.difficulties[d].total}`)
+                                .join(' ');
+                            return `${shortName}: ${diffs}`;
+                        })
+                        .join(' | ');
 
-                // Create the tooltip content with boss information
-                char.lockedTooltipString = lockoutInfo
-                    .map(info => (
-                        `${info.difficulty} (${info.completed}/${info.total})\n` +
-                        `Bosses:\n${info.encounters.map(boss => `• ${boss}`).join('\n')}`
-                    ))
-                    .join('\n\n');
+                    char.lockedTooltipString = Object.entries(hasRaidLockouts)
+                        .map(([raidName, raidData]) =>
+                            diffOrder
+                                .filter(d => raidData.difficulties[d])
+                                .map(d => {
+                                    const info = raidData.difficulties[d];
+                                    return (
+                                        `${raidName} — ${d} (${info.completed}/${info.total})\n` +
+                                        info.encounters.map(boss => `• ${boss}`).join('\n')
+                                    );
+                                })
+                                .join('\n\n')
+                        )
+                        .filter(Boolean)
+                        .join('\n\n');
+                } else {
+                    // Fallback for legacy data
+                    const lockoutInfo = Object.entries(hasLockouts)
+                        .filter(([_, status]) => status.completed > 0)
+                        .map(([difficulty, status]) => ({ difficulty, completed: status.completed, total: status.total, encounters: status.encounters }));
+
+                    char.lockedToString = lockoutInfo.map(info => info.difficulty).join(', ');
+                    char.lockedTooltipString = lockoutInfo
+                        .map(info => (
+                            `${info.difficulty} (${info.completed}/${info.total})\n` +
+                            `Bosses:\n${info.encounters.map(boss => `• ${boss}`).join('\n')}`
+                        ))
+                        .join('\n\n');
+                }
 
                 return true;
             });

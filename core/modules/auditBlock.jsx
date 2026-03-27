@@ -11,6 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
+import Link from 'next/link'
 
 import config from '@/app.config.js'
 
@@ -59,20 +60,30 @@ const processTierItems = (tierSets) => {
         )
     }
 
-    const { season1, season2 } = tierSets;
+    const { previous, current } = tierSets;
     
     return (
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <span className="cursor-help border-b border-dotted border-muted-foreground/50">{`${season1}/5 | ${season2}/5`}</span>
+                    <span className="cursor-help border-b border-dotted border-muted-foreground/50">{`${current}/5`}</span>
                 </TooltipTrigger>
                 <TooltipContent>
-                    <p>{`Season 1: ${season1}/5 | Season 2: ${season2}/5`}</p>
+                    <p>{`Current: ${current}/5${previous > 0 ? ` | Previous: ${previous}/5` : ''}`}</p>
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>
     )
+}
+
+const DIFF_ABBR = { 'LFR': 'LFR', 'Raid Finder': 'LFR', 'Normal': 'N', 'Heroic': 'H', 'Mythic': 'M' }
+const DIFF_ORDER = ['LFR', 'Raid Finder', 'Normal', 'Heroic', 'Mythic']
+const DIFF_COLOR = {
+    'LFR': 'text-slate-400',
+    'Raid Finder': 'text-slate-400',
+    'Normal': 'text-green-500',
+    'Heroic': 'text-blue-400',
+    'Mythic': 'text-purple-400',
 }
 
 const headCells = [
@@ -83,9 +94,76 @@ const headCells = [
     { id: 'score', label: 'M+ Score', sortable: true },
     { id: 'pvp', label: 'PvP Rating', sortable: true },
     { id: 'enchants', label: 'Missing Enchants', sortable: false },
-    { id: 'tier', label: 'Tier Sets (S2|S3)', sortable: false },
-    { id: 'locked', label: 'Locked', sortable: false },
+    { id: 'tier', label: 'Tier Set', sortable: false },
+    { id: 'locked', label: 'Raid Locks', sortable: false },
 ]
+
+const processRaidLocks = (lockStatus) => {
+    if (!lockStatus?.raids || Object.keys(lockStatus.raids).length === 0) {
+        if (!lockStatus?.lockedTo || Object.values(lockStatus.lockedTo).every(s => !s.completed)) {
+            return <span className="text-muted-foreground/50 text-xs">—</span>
+        }
+        // Legacy fallback
+        return (
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <span className="cursor-help border-b border-dotted border-muted-foreground/30 text-xs">
+                            {Object.entries(lockStatus.lockedTo)
+                                .filter(([_, s]) => s.completed > 0)
+                                .map(([d]) => DIFF_ABBR[d] || d)
+                                .join(', ')}
+                        </span>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs whitespace-pre-line p-2 text-sm">
+                        {Object.entries(lockStatus.lockedTo)
+                            .filter(([_, s]) => s.completed > 0)
+                            .map(([d, s]) => `${d} (${s.completed}/${s.total})\n${s.encounters?.map(b => `• ${b}`).join('\n') || ''}`)
+                            .join('\n\n')}
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+        )
+    }
+
+    return (
+        <div className="flex flex-col gap-1">
+            {Object.entries(lockStatus.raids).map(([raidName, raidData]) => {
+                const shortName = raidName.replace(/^The /, '')
+                const lockedDiffs = DIFF_ORDER.filter(d => raidData.difficulties[d])
+
+                if (lockedDiffs.length === 0) return null
+
+                return (
+                    <div key={raidName} className="flex items-center gap-1 flex-wrap">
+                        <span className="text-xs text-muted-foreground font-medium shrink-0">{shortName}:</span>
+                        {lockedDiffs.map(diff => {
+                            const info = raidData.difficulties[diff]
+                            const tooltipText = (
+                                `${raidName} — ${diff} (${info.completed}/${info.total})\n` +
+                                info.encounters.map(b => `• ${b}`).join('\n')
+                            )
+                            return (
+                                <TooltipProvider key={diff}>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <span className={`cursor-help text-xs font-bold px-1 py-0.5 rounded bg-muted/60 border border-border/50 ${DIFF_COLOR[diff] || 'text-foreground'}`}>
+                                                {DIFF_ABBR[diff] || diff} {info.completed}/{info.total}
+                                            </span>
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-xs whitespace-pre-line p-2 text-sm">
+                                            {tooltipText}
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                            )
+                        })}
+                    </div>
+                )
+            })}
+        </div>
+    )
+}
 
 function EnhancedTableHead({ order, orderBy, onRequestSort, officerList }) {
     const createSortHandler = (property) => (event) => {
@@ -300,12 +378,25 @@ const AuditBlock = ({ data, name, hideControls }) => {
                                         )}
                                     </TableCell>
                                     <TableCell style={{ width: 240 }}>
-                                        <div className={`font-bold text-${sanitizedClass}`}>
-                                            {capitalizedName}
-                                        </div>
-                                        <div className="text-xs text-muted-foreground font-medium mt-0.5">
-                                            {item.spec} {item.class}
-                                        </div>
+                                        {item.server ? (
+                                            <Link href={`/member/${item.server}/${item.name}`} className="no-underline block group">
+                                                <div className={`font-bold transition-opacity group-hover:opacity-70 text-${sanitizedClass}`}>
+                                                    {capitalizedName}
+                                                </div>
+                                                <div className="text-xs text-muted-foreground font-medium mt-0.5">
+                                                    {item.spec} {item.class}
+                                                </div>
+                                            </Link>
+                                        ) : (
+                                            <>
+                                                <div className={`font-bold text-${sanitizedClass}`}>
+                                                    {capitalizedName}
+                                                </div>
+                                                <div className="text-xs text-muted-foreground font-medium mt-0.5">
+                                                    {item.spec} {item.class}
+                                                </div>
+                                            </>
+                                        )}
                                     </TableCell>
                                     <TableCell className="text-muted-foreground">
                                         {GUILLD_RANKS[item.guildRank] || item.guildRank}
@@ -369,18 +460,7 @@ const AuditBlock = ({ data, name, hideControls }) => {
                                         {processTierItems(item.tierSets)}
                                     </TableCell>
                                     <TableCell className="text-muted-foreground">
-                                        <TooltipProvider>
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <span className="cursor-help border-b border-dotted border-muted-foreground/30">
-                                                        {item.lockedToString}
-                                                    </span>
-                                                </TooltipTrigger>
-                                                <TooltipContent className="max-w-none whitespace-pre-line p-2 text-sm">
-                                                    {item.lockedTooltipString}
-                                                </TooltipContent>
-                                            </Tooltip>
-                                        </TooltipProvider>
+                                        {processRaidLocks(item.lockStatus)}
                                     </TableCell>
                                 </TableRow>
                             )})}

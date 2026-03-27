@@ -404,11 +404,12 @@ export default function SettingsPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label>Current Raid</Label>
+            <Label>Current Expansion</Label>
             <Input
-              value={settings.CURRENT_RAID || ''}
-              onChange={(e) => handleSettingsChange('CURRENT_RAID', e.target.value)}
+              value={settings.CURRENT_EXPANSION || settings.CURRENT_RAID || ''}
+              onChange={(e) => handleSettingsChange('CURRENT_EXPANSION', e.target.value)}
             />
+            <p className="text-sm text-muted-foreground">Expansion name used for raid lockout tracking (e.g., Midnight). All raids in this expansion are tracked automatically.</p>
           </div>
           <div className="space-y-2">
             <Label>Current M+ Season</Label>

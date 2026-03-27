@@ -134,6 +134,22 @@ const AuditAnalytics = ({ players }) => {
         }).length
         const unlocked = players.length - anyLocked
 
+        /* per-raid lockout counts */
+        const raidLockCounts = {}
+        players.forEach(p => {
+            const raids = p.lockStatus?.raids
+            if (!raids) return
+            Object.entries(raids).forEach(([raidName, raidData]) => {
+                if (!raidLockCounts[raidName]) {
+                    raidLockCounts[raidName] = { total: 0, byDiff: {} }
+                }
+                raidLockCounts[raidName].total++
+                Object.keys(raidData.difficulties).forEach(diff => {
+                    raidLockCounts[raidName].byDiff[diff] = (raidLockCounts[raidName].byDiff[diff] || 0) + 1
+                })
+            })
+        })
+
         /* class counts */
         const classCounts = {}
         players.forEach(p => {
@@ -153,7 +169,7 @@ const AuditAnalytics = ({ players }) => {
             players.map(p => ({ metaData: { class: p.class, primary_role: getCharacterRole(p, config) } }))
         )
 
-        return { tanks, healers, dps, missingEnchants, hasEnchants, anyLocked, unlocked, classData, raidBuffs, total: players.length }
+        return { tanks, healers, dps, missingEnchants, hasEnchants, anyLocked, unlocked, raidLockCounts, classData, raidBuffs, total: players.length }
     }, [players])
 
     if (!stats) return null
@@ -210,7 +226,7 @@ const AuditAnalytics = ({ players }) => {
                 </Section>
 
                 {/* 3. Lockout status */}
-                <Section title="Raid Lockout Status" subtitle="Players locked to current raid vs. available">
+                <Section title="Raid Lockout Status" subtitle="Players locked to Midnight raids this week">
                     <DonutWithBars
                         chartData={lockPieData}
                         bars={[
@@ -218,6 +234,48 @@ const AuditAnalytics = ({ players }) => {
                             { label: 'Has Lockout', value: stats.anyLocked, color: '#f59e0b', icon: Lock },
                         ]}
                     />
+                    {/* Per-raid breakdown */}
+                    {Object.keys(stats.raidLockCounts).length > 0 && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 mt-2">
+                            {Object.entries(stats.raidLockCounts).map(([raidName, raidInfo]) => {
+                                const diffOrder = ['LFR', 'Raid Finder', 'Normal', 'Heroic', 'Mythic']
+                                const diffColor = {
+                                    'LFR': '#94a3b8', 'Raid Finder': '#94a3b8',
+                                    'Normal': '#22c55e', 'Heroic': '#60a5fa', 'Mythic': '#c084fc',
+                                }
+                                const diffAbbr = { 'LFR': 'LFR', 'Raid Finder': 'LFR', 'Normal': 'N', 'Heroic': 'H', 'Mythic': 'M' }
+                                const activeDiffs = diffOrder.filter(d => raidInfo.byDiff[d])
+                                const shortName = raidName.replace(/^The /, '')
+
+                                return (
+                                    <div key={raidName} className="rounded-xl border border-border/50 bg-card shadow-sm p-4 space-y-3">
+                                        <div className="flex items-center justify-between">
+                                            <p className="text-sm font-semibold truncate">{shortName}</p>
+                                            <span className="text-xl font-bold text-amber-400 shrink-0 ml-2">{raidInfo.total}</span>
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            {activeDiffs.map(diff => {
+                                                const count = raidInfo.byDiff[diff]
+                                                const pct = stats.total > 0 ? Math.round((count / stats.total) * 100) : 0
+                                                const color = diffColor[diff] || '#888'
+                                                return (
+                                                    <div key={diff} className="flex items-center gap-2">
+                                                        <span className="text-xs font-mono w-8 shrink-0" style={{ color }}>
+                                                            {diffAbbr[diff] || diff}
+                                                        </span>
+                                                        <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                                                            <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: color }} />
+                                                        </div>
+                                                        <span className="text-xs text-muted-foreground font-mono w-6 text-right shrink-0">{count}</span>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    )}
                 </Section>
 
                 {/* 4. Class distribution */}

@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import Link from 'next/link';
 import {
   Table,
   TableBody,
@@ -72,6 +73,8 @@ const SeasonsRosterTable = ({ signups, guildData, title, description }) => {
       return {
         avatar: guildChar?.media?.assets?.[0]?.value || null,
         charName: capitalizedName,
+        linkName: guildChar?.name || entry.currentCharacterName || null,
+        server: guildChar?.server || null,
         characterClass: entry.characterClass,
         mainSpec: entry.mainSpec,
         primaryRole,
@@ -128,15 +131,31 @@ const SeasonsRosterTable = ({ signups, guildData, title, description }) => {
                     )}
                   </TableCell>
                   <TableCell className="py-3">
-                    <div
-                      className="font-bold text-sm"
-                      style={{ color: classColors[row.characterClass] || 'currentColor' }}
-                    >
-                      {row.charName}
-                    </div>
-                    <div className="text-xs text-muted-foreground mt-0.5">
-                      {row.mainSpec} {row.characterClass}
-                    </div>
+                    {row.server && row.linkName ? (
+                      <Link href={`/member/${row.server}/${row.linkName}`} className="no-underline block group">
+                        <div
+                          className="font-bold text-sm transition-opacity group-hover:opacity-70"
+                          style={{ color: classColors[row.characterClass] || 'currentColor' }}
+                        >
+                          {row.charName}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-0.5">
+                          {row.mainSpec} {row.characterClass}
+                        </div>
+                      </Link>
+                    ) : (
+                      <>
+                        <div
+                          className="font-bold text-sm"
+                          style={{ color: classColors[row.characterClass] || 'currentColor' }}
+                        >
+                          {row.charName}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-0.5">
+                          {row.mainSpec} {row.characterClass}
+                        </div>
+                      </>
+                    )}
                   </TableCell>
                   <TableCell className="py-3">
                     <Badge variant="outline" className={`text-xs border ${ROLE_BADGE[row.primaryRole] || ''}`}>

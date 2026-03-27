@@ -94,6 +94,7 @@ const {
  * Provides filtering, analysis, and reporting for guild member data
  */
 const GuildAudit = ({ auditable, initialData }) => {
+    console.log('initialData', initialData)
     const [loading, isLoading] = React.useState(false)
     const [data, setData] = React.useState(initialData.data)
     const [query, setQuery] = React.useState('')

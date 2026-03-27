@@ -21,6 +21,97 @@ import { Spinner } from '@/components/ui/spinner';
 
 const steps = ['App Settings', 'Fetching Guild Data', 'Admin Account'];
 
+// ── Module-level sub-components (must live outside InstallPage so React
+//    doesn't treat them as new component types on every render, which would
+//    cause input fields to lose focus on each keystroke) ──────────────────
+
+const FormSection = ({ title, description, children }) => (
+  <div className="rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden">
+    <div className="px-6 py-4 border-b border-border/40 bg-muted/20">
+      <p className="text-sm font-semibold tracking-tight">{title}</p>
+      {description && <p className="text-xs text-muted-foreground mt-0.5">{description}</p>}
+    </div>
+    <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {children}
+    </div>
+  </div>
+);
+
+const Field = ({ label, hint, required: req, span2, children }) => (
+  <div className={`space-y-1.5 ${span2 ? 'sm:col-span-2' : ''}`}>
+    <Label className="text-sm font-medium">
+      {label} {req && <span className="text-destructive">*</span>}
+    </Label>
+    {children}
+    {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+  </div>
+);
+
+const StepIndicator = ({ activeStep }) => (
+  <div className="flex items-center justify-center mb-8 select-none">
+    {steps.map((label, index) => (
+      <div key={label} className="flex items-center">
+        <div className="flex flex-col items-center gap-1.5">
+          <div className={`
+            flex items-center justify-center w-9 h-9 rounded-full text-sm font-bold border-2 transition-all
+            ${activeStep > index
+              ? 'border-primary bg-primary text-primary-foreground shadow-[0_0_12px_hsl(var(--primary)/0.4)]'
+              : activeStep === index
+                ? 'border-primary bg-primary/10 text-primary'
+                : 'border-border text-muted-foreground'}
+          `}>
+            {activeStep > index ? <CheckCircle2 className="w-5 h-5" /> : index + 1}
+          </div>
+          <span className={`text-xs font-medium leading-none text-center max-w-[72px] ${activeStep >= index ? 'text-foreground' : 'text-muted-foreground'}`}>
+            {label}
+          </span>
+        </div>
+        {index < steps.length - 1 && (
+          <div className={`w-16 sm:w-24 h-px mx-3 mb-5 transition-all ${activeStep > index ? 'bg-primary' : 'bg-border'}`} />
+        )}
+      </div>
+    ))}
+  </div>
+);
+
+const ErrorAlert = ({ error: err, errorDetails: ed, onDismiss }) => {
+  if (!err) return null;
+  return (
+    <Alert variant="destructive" className="relative">
+      <AlertCircle className="h-4 w-4" />
+      <Button
+        variant="ghost" size="icon"
+        className="absolute top-2 right-2 h-6 w-6 rounded-md hover:bg-destructive/20"
+        onClick={onDismiss}
+      ><span className="sr-only">Close</span>&times;</Button>
+      <AlertTitle className="font-semibold pr-6">{err}</AlertTitle>
+      {ed && (
+        <AlertDescription className="mt-2 space-y-2 text-sm">
+          {ed.details && ed.details !== err && <p className="opacity-90">{ed.details}</p>}
+          {ed.suggestion && (
+            <div className="p-2.5 bg-yellow-500/10 border-l-2 border-yellow-500 rounded">
+              <p className="font-semibold text-yellow-400 text-xs mb-1">Suggestion</p>
+              <p className="opacity-90">{ed.suggestion}</p>
+            </div>
+          )}
+          {ed.error === 'GUILD_NOT_FOUND' && (
+            <ul className="list-disc pl-4 space-y-0.5 opacity-80">
+              <li>Use lowercase slugs with hyphens, not spaces</li>
+              <li>Verify the guild name and realm match exactly</li>
+            </ul>
+          )}
+          {ed.error === 'AUTH_ERROR' && (
+            <ul className="list-disc pl-4 space-y-0.5 opacity-80">
+              <li>Verify your Battle.net Client ID and Secret</li>
+              <li>Ensure no leading/trailing spaces were copied</li>
+            </ul>
+          )}
+        </AlertDescription>
+      )}
+    </Alert>
+  );
+};
+
 export default function InstallPage() {
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -814,101 +905,11 @@ export default function InstallPage() {
     }
   };
 
-  // ── Shared sub-components ─────────────────────────────────────
-
-  const FormSection = ({ title, description, children }) => (
-    <div className="rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden">
-      <div className="px-6 py-4 border-b border-border/40 bg-muted/20">
-        <p className="text-sm font-semibold tracking-tight">{title}</p>
-        {description && <p className="text-xs text-muted-foreground mt-0.5">{description}</p>}
-      </div>
-      <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {children}
-      </div>
-    </div>
-  );
-
-  const Field = ({ label, hint, required: req, span2, children }) => (
-    <div className={`space-y-1.5 ${span2 ? 'sm:col-span-2' : ''}`}>
-      <Label className="text-sm font-medium">
-        {label} {req && <span className="text-destructive">*</span>}
-      </Label>
-      {children}
-      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
-    </div>
-  );
-
-  const StepIndicator = () => (
-    <div className="flex items-center justify-center mb-8 select-none">
-      {steps.map((label, index) => (
-        <div key={label} className="flex items-center">
-          <div className="flex flex-col items-center gap-1.5">
-            <div className={`
-              flex items-center justify-center w-9 h-9 rounded-full text-sm font-bold border-2 transition-all
-              ${activeStep > index
-                ? 'border-primary bg-primary text-primary-foreground shadow-[0_0_12px_hsl(var(--primary)/0.4)]'
-                : activeStep === index
-                  ? 'border-primary bg-primary/10 text-primary'
-                  : 'border-border text-muted-foreground'}
-            `}>
-              {activeStep > index ? <CheckCircle2 className="w-5 h-5" /> : index + 1}
-            </div>
-            <span className={`text-xs font-medium leading-none text-center max-w-[72px] ${activeStep >= index ? 'text-foreground' : 'text-muted-foreground'}`}>
-              {label}
-            </span>
-          </div>
-          {index < steps.length - 1 && (
-            <div className={`w-16 sm:w-24 h-px mx-3 mb-5 transition-all ${activeStep > index ? 'bg-primary' : 'bg-border'}`} />
-          )}
-        </div>
-      ))}
-    </div>
-  );
-
-  const ErrorAlert = ({ error: err, errorDetails: ed }) => {
-    if (!err) return null;
-    return (
-      <Alert variant="destructive" className="relative">
-        <AlertCircle className="h-4 w-4" />
-        <Button
-          variant="ghost" size="icon"
-          className="absolute top-2 right-2 h-6 w-6 rounded-md hover:bg-destructive/20"
-          onClick={() => { setError(''); setErrorDetails(null); }}
-        ><span className="sr-only">Close</span>&times;</Button>
-        <AlertTitle className="font-semibold pr-6">{err}</AlertTitle>
-        {ed && (
-          <AlertDescription className="mt-2 space-y-2 text-sm">
-            {ed.details && ed.details !== err && <p className="opacity-90">{ed.details}</p>}
-            {ed.suggestion && (
-              <div className="p-2.5 bg-yellow-500/10 border-l-2 border-yellow-500 rounded">
-                <p className="font-semibold text-yellow-400 text-xs mb-1">Suggestion</p>
-                <p className="opacity-90">{ed.suggestion}</p>
-              </div>
-            )}
-            {ed.error === 'GUILD_NOT_FOUND' && (
-              <ul className="list-disc pl-4 space-y-0.5 opacity-80">
-                <li>Use lowercase slugs with hyphens, not spaces</li>
-                <li>Verify the guild name and realm match exactly</li>
-              </ul>
-            )}
-            {ed.error === 'AUTH_ERROR' && (
-              <ul className="list-disc pl-4 space-y-0.5 opacity-80">
-                <li>Verify your Battle.net Client ID and Secret</li>
-                <li>Ensure no leading/trailing spaces were copied</li>
-              </ul>
-            )}
-          </AlertDescription>
-        )}
-      </Alert>
-    );
-  };
-
   // ── Loading screen ──────────────────────────────────────────
 
   if (checkingStatus) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background">
-        <img src="/images/logo-without-text.png" alt="Logo" className="h-12 w-12 opacity-60 animate-pulse" />
         <Spinner className="w-6 h-6 text-muted-foreground" />
       </div>
     );
@@ -919,12 +920,9 @@ export default function InstallPage() {
   if (hasAdmin && !isAuthenticated) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 gap-8">
-        <div className="flex items-center gap-3">
-          <img src="/images/logo-without-text.png" alt="Logo" className="h-10 w-10 opacity-70" />
-          <div>
-            <p className="text-lg font-bold tracking-tight leading-none">Guild Audit</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Setup &amp; Installation</p>
-          </div>
+        <div>
+          <p className="text-lg font-bold tracking-tight leading-none text-center">Guild Audit</p>
+          <p className="text-xs text-muted-foreground mt-0.5 text-center">Setup &amp; Installation</p>
         </div>
 
         <div className="w-full max-w-sm rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden">
@@ -1065,12 +1063,9 @@ export default function InstallPage() {
       <div className="max-w-2xl mx-auto px-4 py-10 space-y-8">
         {/* Branding header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src="/images/logo-without-text.png" alt="Logo" className="h-9 w-9 opacity-80" />
-            <div>
-              <p className="text-base font-bold tracking-tight leading-none">Guild Audit</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Setup Wizard</p>
-            </div>
+          <div>
+            <p className="text-base font-bold tracking-tight leading-none">Guild Audit</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Setup Wizard</p>
           </div>
           {isAuthenticated && (
             <div className="flex gap-2">
@@ -1081,7 +1076,7 @@ export default function InstallPage() {
         </div>
 
         {/* Step indicator */}
-        <StepIndicator />
+        <StepIndicator activeStep={activeStep} />
 
         {/* Status alerts */}
         {activeStep === 0 && isInstalled && !hasAdmin && (
@@ -1104,7 +1099,7 @@ export default function InstallPage() {
           </Alert>
         )}
 
-        <ErrorAlert error={error} errorDetails={errorDetails} />
+        <ErrorAlert error={error} errorDetails={errorDetails} onDismiss={() => { setError(''); setErrorDetails(null); }} />
 
         {success && (
           <Alert className="border-green-500/30 bg-green-500/5 text-green-500 relative">
@@ -1337,7 +1332,7 @@ export default function InstallPage() {
               <p className="text-sm text-muted-foreground mt-0.5">Secure the application with an admin account. This is required to access settings and run upgrades.</p>
             </div>
 
-            <ErrorAlert error={error} errorDetails={errorDetails} />
+            <ErrorAlert error={error} errorDetails={errorDetails} onDismiss={() => { setError(''); setErrorDetails(null); }} />
             {success && (
               <Alert className="border-green-500/30 bg-green-500/5 text-green-500">
                 <CheckCircle2 className="h-4 w-4" />

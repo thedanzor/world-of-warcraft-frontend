@@ -76,9 +76,9 @@ const processTierItems = (tierSets) => {
     )
 }
 
-const DIFF_ABBR = { 'LFR': 'LFR', 'Raid Finder': 'LFR', 'Normal': 'N', 'Heroic': 'H', 'Mythic': 'M' }
-const DIFF_ORDER = ['LFR', 'Raid Finder', 'Normal', 'Heroic', 'Mythic']
-const DIFF_COLOR = {
+const DIFF_ABBR  = { 'LFR': 'LFR', 'Raid Finder': 'LFR', 'Normal': 'N', 'Heroic': 'H', 'Mythic': 'M' }
+const DIFF_INLINE = ['Normal', 'Heroic', 'Mythic']
+const DIFF_COLOR  = {
     'LFR': 'text-slate-400',
     'Raid Finder': 'text-slate-400',
     'Normal': 'text-green-500',
@@ -86,130 +86,114 @@ const DIFF_COLOR = {
     'Mythic': 'text-purple-400',
 }
 
-const headCells = [
-    { id: 'avatar', label: '', sortable: false, width: 120 },
-    { id: 'itemlevel', label: 'ILvL', sortable: true, width: 50 },
-    { id: 'name', label: 'Name & Spec', sortable: true, width: 240 },
-    { id: 'guildRank', label: 'Guild Rank', sortable: false },
-    { id: 'score', label: 'M+ Score', sortable: true },
-    { id: 'pvp', label: 'PvP Rating', sortable: true },
-    { id: 'enchants', label: 'Missing Enchants', sortable: false },
-    { id: 'tier', label: 'Tier Set', sortable: false },
-    { id: 'locked', label: 'Raid Locks', sortable: false },
+// Derive ordered list of unique raid names from a dataset
+const getRaidNames = (data) => {
+    const seen = new Map()
+    data.forEach(item => {
+        if (item.lockStatus?.raids) {
+            Object.keys(item.lockStatus.raids).forEach(r => seen.set(r, true))
+        }
+    })
+    return [...seen.keys()]
+}
+
+const staticHeadCells = [
+    { id: 'avatar',    label: '',                 sortable: false, width: 120 },
+    { id: 'itemlevel', label: 'ILvL',             sortable: true,  width: 50  },
+    { id: 'name',      label: 'Name & Spec',      sortable: true,  width: 240 },
+    { id: 'guildRank', label: 'Guild Rank',        sortable: false },
+    { id: 'score',     label: 'M+ Score',          sortable: true  },
+    { id: 'pvp',       label: 'PvP Rating',        sortable: true  },
+    { id: 'enchants',  label: 'Missing Enchants',  sortable: false },
+    { id: 'tier',      label: 'Tier Set',          sortable: false },
 ]
 
-const processRaidLocks = (lockStatus) => {
-    if (!lockStatus?.raids || Object.keys(lockStatus.raids).length === 0) {
-        if (!lockStatus?.lockedTo || Object.values(lockStatus.lockedTo).every(s => !s.completed)) {
-            return <span className="text-muted-foreground/50 text-xs">—</span>
-        }
-        // Legacy fallback
-        return (
-            <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <span className="cursor-help border-b border-dotted border-muted-foreground/30 text-xs">
-                            {Object.entries(lockStatus.lockedTo)
-                                .filter(([_, s]) => s.completed > 0)
-                                .map(([d]) => DIFF_ABBR[d] || d)
-                                .join(', ')}
-                        </span>
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs whitespace-pre-line p-2 text-sm">
-                        {Object.entries(lockStatus.lockedTo)
-                            .filter(([_, s]) => s.completed > 0)
-                            .map(([d, s]) => `${d} (${s.completed}/${s.total})\n${s.encounters?.map(b => `• ${b}`).join('\n') || ''}`)
-                            .join('\n\n')}
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
-        )
+// One cell per raid: shows N x/x · H x/x · M x/x on a single line with a tooltip
+const RaidCell = ({ lockStatus, raidName }) => {
+    const raidData = lockStatus?.raids?.[raidName]
+
+    const lockedDiffs = raidData
+        ? DIFF_INLINE.filter(d => raidData.difficulties?.[d]?.completed > 0)
+        : []
+
+    if (lockedDiffs.length === 0) {
+        return <span className="text-muted-foreground/30 text-xs select-none">—</span>
     }
 
     return (
-        <div className="flex flex-col gap-1">
-            {Object.entries(lockStatus.raids).map(([raidName, raidData]) => {
-                const shortName = raidName.replace(/^The /, '')
-                const lockedDiffs = DIFF_ORDER.filter(d => raidData.difficulties[d])
-
-                if (lockedDiffs.length === 0) return null
-
-                return (
-                    <div key={raidName} className="flex items-center gap-1 flex-wrap">
-                        <span className="text-xs text-muted-foreground font-medium shrink-0">{shortName}:</span>
-                        {lockedDiffs.map(diff => {
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1.5 cursor-help">
+                        {lockedDiffs.map((diff, i) => {
                             const info = raidData.difficulties[diff]
-                            const tooltipText = (
-                                `${raidName} — ${diff} (${info.completed}/${info.total})\n` +
-                                info.encounters.map(b => `• ${b}`).join('\n')
-                            )
                             return (
-                                <TooltipProvider key={diff}>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <span className={`cursor-help text-xs font-bold px-1 py-0.5 rounded bg-muted/60 border border-border/50 ${DIFF_COLOR[diff] || 'text-foreground'}`}>
-                                                {DIFF_ABBR[diff] || diff} {info.completed}/{info.total}
-                                            </span>
-                                        </TooltipTrigger>
-                                        <TooltipContent className="max-w-xs whitespace-pre-line p-2 text-sm">
-                                            {tooltipText}
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
+                                <span key={diff} className="flex items-center gap-1.5">
+                                    {i > 0 && (
+                                        <span className="text-muted-foreground/30 text-xs select-none">·</span>
+                                    )}
+                                    <span className={`text-xs font-semibold whitespace-nowrap ${DIFF_COLOR[diff]}`}>
+                                        {DIFF_ABBR[diff]} {info.completed}/{info.total}
+                                    </span>
+                                </span>
                             )
                         })}
                     </div>
-                )
-            })}
-        </div>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm p-3 space-y-3">
+                    {lockedDiffs.map(diff => {
+                        const info = raidData.difficulties[diff]
+                        return (
+                            <div key={diff}>
+                                <p className={`text-xs font-semibold mb-1 ${DIFF_COLOR[diff]}`}>
+                                    {diff} — {info.completed}/{info.total}
+                                </p>
+                                {info.encounters?.length > 0 && (
+                                    <p className="text-xs text-muted-foreground leading-relaxed">
+                                        {info.encounters.join(', ')}
+                                    </p>
+                                )}
+                            </div>
+                        )
+                    })}
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
     )
 }
 
-function EnhancedTableHead({ order, orderBy, onRequestSort, officerList }) {
+function EnhancedTableHead({ order, orderBy, onRequestSort, officerList, raidNames }) {
     const createSortHandler = (property) => (event) => {
         if (property !== 'avatar') {
             onRequestSort(event, property)
         }
     }
 
+    const hiddenInOfficerView = ['guildRank', 'enchants', 'tier', 'lastUpdated']
+
     return (
         <TableHeader>
-                            <TableRow className="hover:bg-transparent border-b border-border">
-                                {headCells.map((headCell) => {
-                                    if (
-                                        officerList &&
-                                        [
-                                            'guildRank',
-                                            'enchants',
-                                            'tier',
-                                            'locked',
-                                            'lastUpdated',
-                                        ].includes(headCell.id)
-                                    ) {
-                                        return null
-                                    }
-                                    return (
-                                        <TableHead
-                                            key={headCell.id}
-                                            style={{ width: headCell.width }}
-                                            className="text-muted-foreground font-medium text-sm"
-                                        >
-                                            {headCell.sortable ? (
-                                                <button
-                                                    onClick={createSortHandler(headCell.id)}
-                                                    className="flex items-center gap-1 hover:text-foreground transition-colors focus:outline-none"
-                                                >
+            <TableRow className="hover:bg-transparent border-b border-border">
+                {staticHeadCells.map((headCell) => {
+                    if (officerList && hiddenInOfficerView.includes(headCell.id)) return null
+                    return (
+                        <TableHead
+                            key={headCell.id}
+                            style={{ width: headCell.width }}
+                            className="text-muted-foreground font-medium text-sm"
+                        >
+                            {headCell.sortable ? (
+                                <button
+                                    onClick={createSortHandler(headCell.id)}
+                                    className="flex items-center gap-1 hover:text-foreground transition-colors focus:outline-none"
+                                >
                                     {headCell.label}
                                     {orderBy === headCell.id ? (
                                         <span className="flex flex-col">
-                                            {order === 'desc' ? (
-                                                <ChevronDown className="h-4 w-4" />
-                                            ) : (
-                                                <ChevronUp className="h-4 w-4" />
-                                            )}
+                                            {order === 'desc' ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
                                         </span>
                                     ) : (
-                                        <span className="w-4" /> // Placeholder for alignment
+                                        <span className="w-4" />
                                     )}
                                 </button>
                             ) : (
@@ -218,6 +202,15 @@ function EnhancedTableHead({ order, orderBy, onRequestSort, officerList }) {
                         </TableHead>
                     )
                 })}
+                {/* One column per raid, dynamically derived from the dataset */}
+                {!officerList && raidNames.map(raidName => (
+                    <TableHead
+                        key={raidName}
+                        className="text-muted-foreground font-medium text-sm whitespace-nowrap"
+                    >
+                        {raidName.replace(/^The /, '')}
+                    </TableHead>
+                ))}
             </TableRow>
         </TableHeader>
     )
@@ -305,6 +298,7 @@ const AuditBlock = ({ data, name, hideControls }) => {
     }
 
     const sortedData = renderData.sort(getComparator(order, orderBy))
+    const raidNames = getRaidNames(renderData)
 
     return (
         <div className="w-full mb-4 rounded-xl border border-border bg-card shadow-sm overflow-hidden">
@@ -314,6 +308,7 @@ const AuditBlock = ({ data, name, hideControls }) => {
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
+                        raidNames={raidNames}
                     />
                     <TableBody>
                         {sortedData
@@ -459,9 +454,11 @@ const AuditBlock = ({ data, name, hideControls }) => {
                                     <TableCell className="text-muted-foreground">
                                         {processTierItems(item.tierSets)}
                                     </TableCell>
-                                    <TableCell className="text-muted-foreground">
-                                        {processRaidLocks(item.lockStatus)}
-                                    </TableCell>
+                                    {raidNames.map(raidName => (
+                                        <TableCell key={raidName} className="text-muted-foreground">
+                                            <RaidCell lockStatus={item.lockStatus} raidName={raidName} />
+                                        </TableCell>
+                                    ))}
                                 </TableRow>
                             )})}
                     </TableBody>

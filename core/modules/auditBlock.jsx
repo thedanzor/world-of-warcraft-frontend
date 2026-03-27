@@ -60,16 +60,17 @@ const processTierItems = (tierSets) => {
         )
     }
 
-    const { previous, current } = tierSets;
+    const { previous, current, total } = tierSets;
+    const pieces = total ?? (current + previous);
     
     return (
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <span className="cursor-help border-b border-dotted border-muted-foreground/50">{`${current}/5`}</span>
+                    <span className="cursor-help border-b border-dotted border-muted-foreground/50">{`${pieces}/5`}</span>
                 </TooltipTrigger>
                 <TooltipContent>
-                    <p>{`Current: ${current}/5${previous > 0 ? ` | Previous: ${previous}/5` : ''}`}</p>
+                    <p>{`${pieces}/5 tier pieces equipped`}</p>
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>

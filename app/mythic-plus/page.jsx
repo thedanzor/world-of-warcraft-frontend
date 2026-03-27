@@ -49,6 +49,11 @@ async function getSeasonalStats() {
             cache: 'no-store'
         });
 
+        // 404 means no seasonal data has been generated yet — not an error
+        if (response.status === 404) {
+            return { success: false, data: null, error: null }
+        }
+
         if (!response.ok) {
             throw new Error(`Backend responded with status: ${response.status}`);
         }
@@ -76,6 +81,11 @@ async function getLeaderboardData(type = 'players', limit = 20) {
         const response = await fetch(`${BACKEND_URL}/api/seasonal-stats/leaderboard?type=${type}&limit=${limit}`, {
             cache: 'no-store'
         });
+
+        // 404 means no seasonal data has been generated yet — not an error
+        if (response.status === 404) {
+            return { success: false, data: null, error: null }
+        }
 
         if (!response.ok) {
             throw new Error(`Backend responded with status: ${response.status}`);

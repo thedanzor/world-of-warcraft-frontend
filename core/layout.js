@@ -30,7 +30,7 @@ export default function AuditLayout({ children }) {
         <SidebarProvider>
             <Nav />
             <SidebarInset>
-                <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border/40 bg-background/80 backdrop-blur-sm px-4 md:px-6 sticky top-0 z-10">
+                <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border/40 bg-background/80 backdrop-blur-sm px-4 md:px-6 sticky top-0 z-30">
                     <SidebarTrigger className="-ml-1 h-8 w-8" />
                     <Separator orientation="vertical" className="mr-2 h-4 opacity-50" />
                     <span className="text-xs font-medium text-muted-foreground/70 tracking-wider uppercase">Guild Audit</span>

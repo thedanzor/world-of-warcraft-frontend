@@ -50,7 +50,7 @@
 'use client'
 
 // React
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 // Shadcn components
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -70,11 +70,7 @@ import SeasonalStatistics from '@/core/modules/SeasonalStatistics'
  * with individual dungeon scores displayed as columns
  */
 const MPlus = ({ auditable, guildData, seasonalData }) => {
-    const [activeTab, setActiveTab] = useState(0)
-
-    const handleTabChange = (newValue) => {
-        setActiveTab(parseInt(newValue))
-    }
+    const [activeTab, setActiveTab] = useState('0')
 
     // Handle loading and error states
     if (!guildData) {
@@ -96,65 +92,20 @@ const MPlus = ({ auditable, guildData, seasonalData }) => {
         )
     }
 
-    const renderTabContent = () => {
-        switch (activeTab) {
-            case 0: // Weekly Recap
-                return (
-                    <MythicPlusBlock
-                        data={guildData}
-                        name="data"
-                    />
-                )
-            case 1: // Leaderboard
-                if (seasonalData?.errors?.players) {
-                    return (
-                        <Alert variant="destructive">
-                            <AlertTitle className="text-md">Failed to load leaderboard</AlertTitle>
-                            <AlertDescription className="text-sm">{seasonalData.errors.players}</AlertDescription>
-                        </Alert>
-                    )
-                }
-                return (
-                    <SeasonalLeaderboard 
-                        data={seasonalData?.stats} 
-                        leaderboardData={seasonalData?.leaderboard}
-                        guildData={guildData}
-                    />
-                )
-            case 2: // Statistics
-                if (seasonalData?.errors?.stats) {
-                    return (
-                        <Alert variant="destructive">
-                            <AlertTitle className="text-md">Failed to load statistics</AlertTitle>
-                            <AlertDescription className="text-sm">{seasonalData.errors.stats}</AlertDescription>
-                        </Alert>
-                    )
-                }
-                return (
-                    <SeasonalStatistics 
-                        data={seasonalData?.stats}
-                        guildData={guildData}
-                    />
-                )
-            default:
-                return null
-        }
-    }
-
     return (
         <section className="space-y-6">
             <div className="flex flex-col gap-1">
                 <h2 className="text-3xl font-bold tracking-tight">Mythic+</h2>
                 <p className="text-sm text-muted-foreground">
-                    {activeTab === 0
+                    {activeTab === '0'
                         ? 'Weekly reset performance based on current lockout period.'
                         : 'Seasonal statistics and leaderboards for the current Mythic+ season.'}
                 </p>
             </div>
 
             <Tabs
-                value={activeTab.toString()}
-                onValueChange={handleTabChange}
+                value={activeTab}
+                onValueChange={setActiveTab}
                 className="space-y-6"
             >
                 <TabsList>
@@ -163,8 +114,35 @@ const MPlus = ({ auditable, guildData, seasonalData }) => {
                     <TabsTrigger value="2">Statistics</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value={activeTab.toString()}>
-                    {renderTabContent()}
+                <TabsContent value="0">
+                    <MythicPlusBlock data={guildData} name="data" />
+                </TabsContent>
+                <TabsContent value="1">
+                    {seasonalData?.errors?.players ? (
+                        <Alert variant="destructive">
+                            <AlertTitle className="text-md">Failed to load leaderboard</AlertTitle>
+                            <AlertDescription className="text-sm">{seasonalData.errors.players}</AlertDescription>
+                        </Alert>
+                    ) : (
+                        <SeasonalLeaderboard
+                            data={seasonalData?.stats}
+                            leaderboardData={seasonalData?.leaderboard}
+                            guildData={guildData}
+                        />
+                    )}
+                </TabsContent>
+                <TabsContent value="2">
+                    {seasonalData?.errors?.stats ? (
+                        <Alert variant="destructive">
+                            <AlertTitle className="text-md">Failed to load statistics</AlertTitle>
+                            <AlertDescription className="text-sm">{seasonalData.errors.stats}</AlertDescription>
+                        </Alert>
+                    ) : (
+                        <SeasonalStatistics
+                            data={seasonalData?.stats}
+                            guildData={guildData}
+                        />
+                    )}
                 </TabsContent>
             </Tabs>
         </section>

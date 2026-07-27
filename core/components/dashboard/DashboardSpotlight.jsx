@@ -25,64 +25,68 @@ export default function DashboardSpotlight({ players = [] }) {
           <Link
             key={`${player.server}-${player.name}`}
             href={`/member/${player.server}/${player.name}`}
-            className="group relative overflow-hidden rounded-xl border border-white/[0.08] bg-[#0f1923] dashboard-spotlight-card"
+            className="group relative overflow-hidden rounded-xl border border-white/[0.08] bg-[#0f1923] dashboard-spotlight-card h-[220px]"
             style={{ animationDelay: `${index * 80}ms` }}
           >
             <div
-              className="absolute inset-0 opacity-40 group-hover:opacity-55 transition-opacity duration-500"
+              className="absolute inset-0 opacity-50 group-hover:opacity-65 transition-opacity duration-500"
               style={{
-                background: `radial-gradient(ellipse 80% 70% at 50% 100%, ${classColour}55 0%, transparent 70%)`,
+                background: `radial-gradient(ellipse 90% 85% at 50% 85%, ${classColour}55 0%, transparent 72%)`,
               }}
             />
-            <div className="relative p-4 flex flex-col min-h-[220px]">
-              <div className="flex-1 flex items-end justify-center pt-2 min-h-[140px]">
-                {images?.render ? (
+
+            {/* Character render — fills the card above the footer */}
+            <div className="absolute inset-x-0 top-0 bottom-[68px] flex items-end justify-center pointer-events-none px-1">
+              {images?.render ? (
+                <img
+                  src={images.render}
+                  alt={player.name}
+                  className="h-full w-full max-w-none object-contain object-bottom scale-[1.08] origin-bottom drop-shadow-[0_10px_28px_rgba(0,0,0,0.65)] group-hover:scale-[1.12] transition-transform duration-500"
+                />
+              ) : (
+                <img
+                  src="/images/logo-without-text.png"
+                  alt=""
+                  className="h-16 opacity-30 object-contain"
+                />
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="absolute inset-x-0 bottom-0 px-3 py-2.5 bg-gradient-to-t from-[#0f1923] via-[#0f1923]/95 to-transparent">
+              <div className="flex items-center gap-2 min-w-0">
+                {images?.inset && (
                   <img
-                    src={images.render}
-                    alt={player.name}
-                    className="max-h-[150px] w-auto object-contain object-bottom drop-shadow-[0_8px_24px_rgba(0,0,0,0.55)] group-hover:scale-[1.03] transition-transform duration-500"
-                  />
-                ) : (
-                  <img
-                    src="/images/logo-without-text.png"
+                    src={images.inset}
                     alt=""
-                    className="h-20 opacity-30"
+                    className="w-7 h-7 rounded-md border border-white/10 object-cover shrink-0"
                   />
                 )}
-              </div>
-              <div className="mt-3 space-y-1">
-                <div className="flex items-center gap-2">
-                  {images?.inset && (
-                    <img
-                      src={images.inset}
-                      alt=""
-                      className="w-8 h-8 rounded-md border border-white/10 object-cover"
-                    />
-                  )}
-                  <p className="font-bold text-sm capitalize truncate" style={{ color: classColour }}>
+                <div className="min-w-0 flex-1">
+                  <p className="font-bold text-sm capitalize truncate leading-tight" style={{ color: classColour }}>
                     {player.name}
                   </p>
+                  <p className="text-[0.65rem] text-muted-foreground truncate leading-tight">
+                    {player.spec} {player.class}
+                  </p>
                 </div>
-                <p className="text-[0.7rem] text-muted-foreground truncate">
-                  {player.spec} {player.class}
-                </p>
-                <div className="flex gap-3 text-[0.68rem] font-semibold pt-1">
-                  {player.raidScore > 0 && (
-                    <span style={{ color: raidScoreColour(player.raidScore) }}>
-                      Raid {Math.round(player.raidScore)}
-                    </span>
-                  )}
-                  {player.mplusScore > 0 && (
-                    <span style={{ color: mplusScoreColour(player.mplusScore) }}>
-                      M+ {Math.round(player.mplusScore)}
-                    </span>
-                  )}
-                  {player.mplus > 0 && !player.mplusScore && (
-                    <span style={{ color: mplusScoreColour(player.mplus) }}>
-                      {Math.round(player.mplus)} rating
-                    </span>
-                  )}
-                </div>
+              </div>
+              <div className="flex gap-3 text-[0.65rem] font-semibold pt-1">
+                {player.raidScore > 0 && (
+                  <span style={{ color: raidScoreColour(player.raidScore) }}>
+                    Raid {Math.round(player.raidScore)}
+                  </span>
+                )}
+                {player.mplusScore > 0 && (
+                  <span style={{ color: mplusScoreColour(player.mplusScore) }}>
+                    M+ {Math.round(player.mplusScore)}
+                  </span>
+                )}
+                {player.mplus > 0 && !player.mplusScore && (
+                  <span style={{ color: mplusScoreColour(player.mplus) }}>
+                    {Math.round(player.mplus)} rating
+                  </span>
+                )}
               </div>
             </div>
           </Link>

@@ -2,7 +2,6 @@
 
 import React, { useMemo, useEffect, useState } from 'react'
 import appConfig from '@/app.config.js'
-import { getCharacterRole } from '@/core/utils/roleFromSpec'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Spinner } from '@/components/ui/spinner'
 import {
@@ -17,7 +16,6 @@ import { PageShell, PageContent } from '@/core/components/PageShell'
 import GuildTopRanks from '@/core/components/GuildTopRanks'
 import TopPlayersTable from '@/core/components/TopPlayersTable'
 import DashboardSpotlight from '@/core/components/dashboard/DashboardSpotlight'
-import RolePulseChart from '@/core/components/dashboard/RolePulseChart'
 import AnimatedMetric from '@/core/components/dashboard/AnimatedMetric'
 import { useConfig } from '@/core/hooks/useConfig'
 import { colors } from '@/core/theme'
@@ -55,17 +53,6 @@ const Dashboard = ({ guildData, rankingsData }) => {
     const topPvp = Array.isArray(guildData?.topPvp) ? guildData.topPvp : []
     const topPve = Array.isArray(guildData?.topPve) ? guildData.topPve : []
 
-    const roleCounts = allPlayers.reduce(
-      (acc, player) => {
-        const role = getCharacterRole(player, appConfig)
-        if (role === 'tank') acc.tanks += 1
-        else if (role === 'healer') acc.healers += 1
-        else acc.dps += 1
-        return acc
-      },
-      { tanks: 0, healers: 0, dps: 0 }
-    )
-
     const avgTopMplus = topPve.length
       ? topPve.reduce((acc, p) => acc + (p.score || 0), 0) / topPve.length
       : 0
@@ -81,9 +68,6 @@ const Dashboard = ({ guildData, rankingsData }) => {
       avgTopPvp,
       topMplus: topPve,
       topPvp,
-      tanks: roleCounts.tanks,
-      healers: roleCounts.healers,
-      dps: roleCounts.dps,
     }
   }, [auditData, guildData, guildDataToUse])
 
@@ -159,12 +143,9 @@ const Dashboard = ({ guildData, rankingsData }) => {
           <DashboardSpotlight players={spotlightPlayers} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2 space-y-4">
-            <SectionHeading icon={Trophy} label="Guild Conquest" color={colors.warning} />
-            <GuildTopRanks compact />
-          </div>
-          <RolePulseChart tanks={data.tanks} healers={data.healers} dps={data.dps} />
+        <div className="space-y-4">
+          <SectionHeading icon={Trophy} label="Guild Conquest" color={colors.warning} />
+          <GuildTopRanks compact />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

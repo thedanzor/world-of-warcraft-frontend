@@ -529,6 +529,64 @@ export default function SettingsPage() {
       </div>
 
       <div className="p-6 bg-card text-card-foreground rounded-lg shadow-sm border">
+        <h3 className="text-md font-medium mb-1">Site &amp; SEO</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          Browser tab title, meta description, and social preview text shown to search engines and link shares.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2 col-span-1 md:col-span-2">
+            <Label>Site Name</Label>
+            <Input
+              value={settings.SITE_NAME || ''}
+              onChange={(e) => handleSettingsChange('SITE_NAME', e.target.value)}
+              placeholder="WoW Guild Audit Tool"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Short Name</Label>
+            <Input
+              value={settings.SITE_SHORT_NAME || ''}
+              onChange={(e) => handleSettingsChange('SITE_SHORT_NAME', e.target.value)}
+              placeholder="WoW Guild Audit"
+            />
+          </div>
+          <div className="space-y-2 col-span-1 md:col-span-2">
+            <Label>Meta Description</Label>
+            <Textarea
+              rows={3}
+              value={settings.SITE_DESCRIPTION || ''}
+              onChange={(e) => handleSettingsChange('SITE_DESCRIPTION', e.target.value)}
+            />
+          </div>
+          <div className="space-y-2 col-span-1 md:col-span-2">
+            <Label>Keywords</Label>
+            <Textarea
+              rows={2}
+              value={settings.SITE_KEYWORDS || ''}
+              onChange={(e) => handleSettingsChange('SITE_KEYWORDS', e.target.value)}
+            />
+            <p className="text-sm text-muted-foreground">Comma-separated keywords for search engines</p>
+          </div>
+          <div className="space-y-2">
+            <Label>Open Graph Image URL</Label>
+            <Input
+              value={settings.OG_IMAGE_URL || ''}
+              onChange={(e) => handleSettingsChange('OG_IMAGE_URL', e.target.value)}
+              placeholder="/images/og-image.jpg"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Twitter Image URL</Label>
+            <Input
+              value={settings.TWITTER_IMAGE_URL || ''}
+              onChange={(e) => handleSettingsChange('TWITTER_IMAGE_URL', e.target.value)}
+              placeholder="/images/twitter-image.jpg"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="p-6 bg-card text-card-foreground rounded-lg shadow-sm border">
         <h3 className="text-md font-medium mb-4">Guild Configuration</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -619,7 +677,7 @@ export default function SettingsPage() {
                 handleSettingsChange('GUILLD_RANKS', values);
               }}
             />
-            <p className="text-sm text-muted-foreground">One rank name per line or comma-separated</p>
+            <p className="text-sm text-muted-foreground">One rank name per line — index matches Battle.net rank number (0 = Guild Master)</p>
           </div>
           <div className="space-y-2 col-span-1 md:col-span-2">
             <Label>Current Season Tier Sets</Label>

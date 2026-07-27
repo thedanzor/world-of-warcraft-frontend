@@ -63,17 +63,27 @@ async function getGuildData() {
     }
 }
 
+async function getRankingsData() {
+    try {
+        return await api.getRankings()
+    } catch {
+        return null
+    }
+}
+
 /**
  * Home page component
- * Fetches data and renders the dashboard
  */
 export default async function Home() {
-    const guildData = await getGuildData()
+    const [guildData, rankingsData] = await Promise.all([
+        getGuildData(),
+        getRankingsData(),
+    ])
 
     return (
         <DynamicScreenLoader 
             screenName="dashboard"
-            props={{ guildData }}
+            props={{ guildData, rankingsData }}
         />
     )
 }

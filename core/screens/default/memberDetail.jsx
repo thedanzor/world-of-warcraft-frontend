@@ -553,60 +553,66 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
             />
 
             <PageContent className="space-y-6">
-            {/* Character Hero Card */}
-            <div className="rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden">
-                <div className="p-6">
-                    <div className="flex flex-col sm:flex-row gap-6 items-start">
-                        {/* Avatar */}
-                        <div className="relative shrink-0">
-                            {characterData?.media?.assets?.length ? (
+            {/* Character showcase */}
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0f1923] min-h-[280px] sm:min-h-[340px]">
+                <div
+                    className="absolute inset-0 opacity-30"
+                    style={{
+                        background: `radial-gradient(ellipse 70% 80% at 30% 100%, ${colors.accent}44 0%, transparent 65%)`,
+                    }}
+                />
+                <div className="relative flex flex-col lg:flex-row items-end gap-6 p-6 sm:p-8 min-h-[280px] sm:min-h-[340px]">
+                    <div className="flex-1 flex items-end justify-center lg:justify-start min-h-[200px] lg:min-h-[300px]">
+                        {characterData?.media?.assets?.length ? (
+                            <img
+                                src={
+                                    characterData.media.assets.find((a) => a.key === 'main-raw')?.value
+                                    || characterData.media.assets[0].value
+                                }
+                                alt={capitalizedName}
+                                className="max-h-[260px] sm:max-h-[320px] w-auto object-contain object-bottom drop-shadow-[0_12px_40px_rgba(0,0,0,0.6)]"
+                            />
+                        ) : (
+                            <img
+                                src="/images/logo-without-text.png"
+                                alt=""
+                                className="h-24 opacity-30"
+                            />
+                        )}
+                    </div>
+                    <div className="w-full lg:w-[320px] shrink-0 space-y-4">
+                        <div className="flex items-center gap-3">
+                            {characterData?.media?.assets?.length > 1 && (
                                 <img
-                                    src={characterData.media.assets[0].value}
-                                    alt={capitalizedName}
-                                    width={96}
-                                    height={96}
-                                    className={`rounded-xl border-2 shadow-lg object-cover border-${sanitizedClass || 'border'}`}
-                                />
-                            ) : (
-                                <img
-                                    src="/images/logo-without-text.png"
-                                    alt={capitalizedName}
-                                    width={96}
-                                    height={96}
-                                    className="rounded-xl border-2 border-border opacity-50 object-cover"
+                                    src={characterData.media.assets.find((a) => a.key === 'inset')?.value || characterData.media.assets[1]?.value}
+                                    alt=""
+                                    className="w-14 h-14 rounded-xl border-2 border-white/10 object-cover shadow-lg"
                                 />
                             )}
-                        </div>
-
-                        {/* Details */}
-                        <div className="flex-1 min-w-0">
-                            <div className="flex flex-wrap items-center gap-2 mb-3">
-                                <Badge variant="secondary">
-                                    Level {characterData?.metaData?.level || '80'}
-                                </Badge>
-                                <Badge variant="secondary" className="font-bold">
-                                    iLvL {characterData?.itemlevel?.equiped || 0}
-                                </Badge>
-                            </div>
-                            <p className="text-sm text-muted-foreground">
-                                Current M+ Rating:{' '}
-                                <span
-                                    className="font-bold text-base"
-                                    style={{ color: getScoreColor(characterData?.processedStats?.mythicPlusScore) }}
-                                >
-                                    {Math.round(characterData?.processedStats?.mythicPlusScore || 0)}
-                                </span>
-                            </p>
-                            <div className="mt-2">
-                                <EnrichmentScores
-                                    enrichment={characterData?.enrichment}
-                                    processedStats={characterData?.processedStats}
-                                />
+                            <div>
+                                <h2 className={`text-2xl font-bold capitalize text-${sanitizedClass}`}>
+                                    {capitalizedName}
+                                </h2>
+                                <p className="text-sm text-muted-foreground">
+                                    {characterData?.metaData?.spec} {characterData?.metaData?.class}
+                                </p>
+                                <p className="text-xs text-muted-foreground">{decodedRealm}</p>
                             </div>
                         </div>
+                        <div className="flex flex-wrap gap-2">
+                            <Badge variant="secondary">iLvl {characterData?.itemlevel?.equiped || 0}</Badge>
+                            <Badge variant="secondary">M+ {Math.round(characterData?.processedStats?.mythicPlusScore || 0)}</Badge>
+                        </div>
+                        <EnrichmentScores
+                            enrichment={characterData?.enrichment}
+                            processedStats={characterData?.processedStats}
+                        />
+                    </div>
+                </div>
+            </div>
 
-                        {/* Stat pills */}
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full sm:w-auto">
+            {/* Quick stats */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                             {[
                                 {
                                     label: 'Rating',
@@ -634,47 +640,44 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
                                     icon: Shield,
                                 },
                             ].map(({ label, value, color, sub, icon: Icon }) => (
-                                <div key={label} className="flex flex-col p-3 rounded-lg bg-muted/40 border border-border/30">
+                                <div key={label} className="audit-panel p-3">
                                     <p className="text-xs text-muted-foreground font-medium mb-1">{label}</p>
-                                    <p className="text-2xl font-bold" style={{ color }}>{value}</p>
+                                    <p className="text-2xl font-bold stat-number" style={{ color }}>{value}</p>
                                     {sub && <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>}
                                 </div>
                             ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Equipment Status strip */}
-                {characterData?.equipement && (
-                    <div className="border-t border-border/50 grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-border/50">
-                        {[
-                            {
-                                label: characterData.ready ? 'Enchants: Ready' : 'Enchants: Missing',
-                                sub: characterData.ready ? 'All enchants applied' : `${characterData.missingEnchants} missing enchant${characterData.missingEnchants !== 1 ? 's' : ''}`,
-                                ok: characterData.ready,
-                            },
-                            {
-                                label: characterData.hasTierSet ? 'Tier Set' : 'No Tier Set',
-                                sub: characterData.hasTierSet ? 'Tier pieces equipped' : 'No tier pieces found',
-                                ok: characterData.hasTierSet,
-                            },
-                            {
-                                label: characterData.isActiveInSeason2 ? 'Active This Season' : 'Inactive',
-                                sub: characterData.isActiveInSeason2 ? 'Active this season' : 'Inactive this season',
-                                ok: characterData.isActiveInSeason2,
-                            },
-                        ].map(({ label, sub, ok }) => (
-                            <div key={label} className="px-6 py-4 flex items-center gap-3">
-                                <div className={`w-2 h-2 rounded-full shrink-0 ${ok ? 'bg-green-500' : 'bg-destructive'}`} />
-                                <div>
-                                    <p className={`text-sm font-semibold ${ok ? 'text-green-500' : 'text-destructive'}`}>{label}</p>
-                                    <p className="text-xs text-muted-foreground">{sub}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
             </div>
+
+            {/* Equipment Status strip */}
+            {characterData?.equipement && (
+                <div className="audit-panel overflow-hidden grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-white/[0.06]">
+                    {[
+                        {
+                            label: characterData.ready ? 'Enchants: Ready' : 'Enchants: Missing',
+                            sub: characterData.ready ? 'All enchants applied' : `${characterData.missingEnchants} missing`,
+                            ok: characterData.ready,
+                        },
+                        {
+                            label: characterData.hasTierSet ? 'Tier Set' : 'No Tier Set',
+                            sub: characterData.hasTierSet ? 'Tier pieces equipped' : 'No tier pieces found',
+                            ok: characterData.hasTierSet,
+                        },
+                        {
+                            label: characterData.isActiveInSeason2 ? 'Active This Season' : 'Inactive',
+                            sub: characterData.isActiveInSeason2 ? 'Active this season' : 'Inactive this season',
+                            ok: characterData.isActiveInSeason2,
+                        },
+                    ].map(({ label, sub, ok }) => (
+                        <div key={label} className="px-6 py-4 flex items-center gap-3">
+                            <div className={`w-2 h-2 rounded-full shrink-0 ${ok ? 'bg-green-500' : 'bg-destructive'}`} />
+                            <div>
+                                <p className={`text-sm font-semibold ${ok ? 'text-green-500' : 'text-destructive'}`}>{label}</p>
+                                <p className="text-xs text-muted-foreground">{sub}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
 
             {/* Gear: Tier & Enchant Breakdown */}
             {characterData?.equipement && (

@@ -14,9 +14,10 @@ import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 
 import config from '@/app.config.js'
+import { useConfig } from '@/core/hooks/useConfig'
+import { getGuildRankLabel } from '@/core/utils/guildRanks'
 
 const {
-    GUILLD_RANKS,
     RESULTS_PAGINATION,
     MIN_TIER_ITEMLEVEL,
     SEASON_START_DATE,
@@ -246,6 +247,8 @@ const getStatDifference = (current, stats) => {
 }
 
 const AuditBlock = ({ data, name, hideControls }) => {
+    const { config: guildConfig } = useConfig()
+    const guildRanks = guildConfig?.GUILLD_RANKS || config.GUILLD_RANKS
     const [order, setOrder] = useState('desc')
     const [orderBy, setOrderBy] = useState('itemlevel')
     const [page, setPage] = useState(0)
@@ -395,7 +398,7 @@ const AuditBlock = ({ data, name, hideControls }) => {
                                         )}
                                     </TableCell>
                                     <TableCell className="text-muted-foreground">
-                                        {GUILLD_RANKS[item.guildRank] || item.guildRank}
+                                        {item.guildRankLabel || getGuildRankLabel(guildRanks, item.guildRank)}
                                     </TableCell>
                                     <TableCell className="text-muted-foreground">
                                         {item.stats ? (

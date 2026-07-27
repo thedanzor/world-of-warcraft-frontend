@@ -5,6 +5,7 @@
 
 import { api } from '@/lib/api'
 import DynamicScreenLoader from '@/core/dynamicScreenLoader'
+import { getServerConfig } from '@/lib/serverConfig'
 
 import { Public_Sans } from 'next/font/google'
 const publicSans = Public_Sans({
@@ -51,14 +52,16 @@ async function getMemberData(realm, character) {
 // Generate metadata for SEO
 export async function generateMetadata({ params }) {
     const { realm, character } = params;
+    const config = await getServerConfig()
     
     // Decode URL-encoded names for metadata
     const decodedCharacter = decodeURIComponent(character);
     const decodedRealm = decodeURIComponent(realm);
     
+    const siteName = config?.SITE_NAME || 'WoW Guild Audit Tool'
     return {
         title: `${decodedCharacter} — ${decodedRealm}`,
-        description: `Character profile for ${decodedCharacter} on ${decodedRealm}. Raid progress, Mythic+ scores, PvP ratings, and Warcraft Logs / Raider.io enrichment in WoW Guild Audit Tool.`,
+        description: `Character profile for ${decodedCharacter} on ${decodedRealm}. Raid progress, Mythic+ scores, PvP ratings, and enrichment data in ${siteName}.`,
         keywords: `World of Warcraft, WoW, ${decodedRealm}, ${decodedCharacter}, guild audit, mythic plus, raid readiness`,
     }
 }

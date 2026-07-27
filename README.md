@@ -4,6 +4,37 @@ A modern, responsive web application for managing and displaying World of Warcra
 
 ---
 
+---
+
+## Version 3.2 — Enrichment UI, Admin SEO & Dashboard Command Center 🆕
+
+### Database-managed guild ranks
+- Guild rank **labels** (`GUILLD_RANKS`) are read from AppSettings via `/api/config` across audit tables, top-player lists, and the API now returns `guildRankLabel` on each character
+- Settings panel: edit rank names by Battle.net index (one name per line)
+
+### Admin SEO & page titles
+- New **Site & SEO** section in Settings: site name, short name, meta description, keywords, OG/Twitter image URLs
+- Root layout loads metadata dynamically from the database (`generateMetadata` + `buildMetadataFromConfig`)
+- Character pages use configurable site name in titles
+
+### Audit workspace tabs
+- Top-level tabs: **Analytics**, **All Players**, **Missing Enchants**, **Lockouts** (with Normal/Heroic/Mythic sub-tabs)
+- Shared filter bar across all audit views
+
+### Dashboard command center
+- Animated metric cards, role composition pulse chart, and **Spotlight** character cards with full-body Battle.net renders
+- Guild Conquest rankings integrated; no longer a duplicate of the audit roster
+
+### Mythic+ & rankings data
+- **Raider.io Rankings** tab powered by `/api/rankings` enrichment (works when seasonal cache is empty)
+- **Statistics** tab from live roster + Battle.net M+ data
+- Optional **Season Cache** tab when legacy seasonal stats exist
+
+### Character profiles
+- Full-width hero banner with main-raw character render, inset portrait, enrichment scores, and quick stat grid
+
+---
+
 ## Version 3.1 — Midnight Expansion & Setup Overhaul 🆕
 
 ### Multi-Raid Lockout Tracking

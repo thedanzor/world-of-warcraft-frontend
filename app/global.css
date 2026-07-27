@@ -148,6 +148,32 @@
   display: none;
 }
 
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Dashboard v3 animations */
+@keyframes dashboardFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes dashboardPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.15); }
+  50% { box-shadow: 0 0 28px 4px rgba(59, 130, 246, 0.12); }
+}
+.dashboard-fade-in {
+  animation: dashboardFadeIn 0.55s ease-out both;
+}
+.dashboard-spotlight-card {
+  animation: dashboardFadeIn 0.6s ease-out both;
+}
+.dashboard-pulse-ring {
+  animation: dashboardPulse 3s ease-in-out infinite;
+}
+.dashboard-count-up {
+  animation: dashboardFadeIn 0.8s ease-out both;
+}
+
 .audit-panel {
   background: #0f1923;
   border: 1px solid rgba(255, 255, 255, 0.07);

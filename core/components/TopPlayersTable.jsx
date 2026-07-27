@@ -1,10 +1,16 @@
+'use client'
+
 import React from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import config from '@/app.config.js'
+import { useConfig } from '@/core/hooks/useConfig'
+import { getGuildRankLabel } from '@/core/utils/guildRanks'
 import getRatingColor from '@/core/utils/getRatingColor'
 import Link from 'next/link'
 
 const TopPlayersTable = ({ data, title, scoreKey }) => {
+    const { config: guildConfig } = useConfig()
+    const guildRanks = guildConfig?.GUILLD_RANKS || config.GUILLD_RANKS
     const rows = Array.isArray(data) ? data : []
     const getValue = (player) => {
         switch (scoreKey) {
@@ -84,7 +90,7 @@ const TopPlayersTable = ({ data, title, scoreKey }) => {
                                     </Link>
                                 </TableCell>
                                 <TableCell className="text-muted-foreground p-3">
-                                    {config.GUILLD_RANKS[player.guildRank] || player.guildRank || '-'}
+                                    {player.guildRankLabel || getGuildRankLabel(guildRanks, player.guildRank)}
                                 </TableCell>
                                 <TableCell className="p-3">
                                     <span

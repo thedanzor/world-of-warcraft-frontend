@@ -53,8 +53,15 @@ const data = {
         "Unknown",
         "Unknown",
         "Unknown",
-        "Unknown"
+        "Unknown",
+        "Recruit"
     ],
+    "SITE_NAME": "WoW Guild Audit Tool",
+    "SITE_SHORT_NAME": "WoW Guild Audit",
+    "SITE_DESCRIPTION": "Audit your World of Warcraft guild for raid readiness — track missing enchants, lockouts, Mythic+ rankings, and PvP standings. Integrates Battle.net, Raider.io, and Warcraft Logs.",
+    "SITE_KEYWORDS": "World of Warcraft, WoW, guild audit, raid readiness, missing enchants, mythic plus, Raider.io, Warcraft Logs, guild roster",
+    "OG_IMAGE_URL": "/images/og-image.jpg",
+    "TWITTER_IMAGE_URL": "/images/twitter-image.jpg",
     "RESULTS_PAGINATION": {
         "MAX_ITEMS": 20
     },

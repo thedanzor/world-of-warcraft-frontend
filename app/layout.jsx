@@ -4,9 +4,14 @@ import './global.css'
 import { nunitoSans } from '@/app/fonts'
 import { Theme } from "@radix-ui/themes";
 import BaseLayout from '@/core/layout'
-import seo from '@/core/seo'
+import { getServerConfig } from '@/lib/serverConfig'
+import { buildMetadataFromConfig } from '@/lib/buildMetadata'
 
-export const metadata = seo
+export async function generateMetadata() {
+  const config = await getServerConfig()
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+  return buildMetadataFromConfig(config, baseUrl)
+}
 
 export default function RootLayout({ children }) {
     return (

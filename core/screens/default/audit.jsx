@@ -123,6 +123,7 @@ const GuildAudit = ({ auditable, initialData }) => {
         getPreviousWednesdayAt1AM(Date.now())
     )
     const [showAdvancedFilters, setShowAdvancedFilters] = React.useState(true)
+    const [mainTab, setMainTab] = React.useState('analytics')
 
     const builtClassList = useMemo(() => buildInitialClassList(data), [data])
     const dataToUse = useAuditData(data, [
@@ -202,7 +203,24 @@ const GuildAudit = ({ auditable, initialData }) => {
                 badges={[{ label: 'Enchants & lockouts', icon: BarChart3, color: colors.accent }]}
             />
             <PageContent className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <Tabs value={mainTab} onValueChange={setMainTab} className="space-y-6">
+                <TabsList className="flex-wrap h-auto gap-1">
+                    <TabsTrigger value="analytics">Analytics</TabsTrigger>
+                    <TabsTrigger value="players" className="gap-2">
+                        All Players
+                        <Badge variant="secondary" className="text-xs px-1.5 py-0">{dataToUse?.all?.length || 0}</Badge>
+                    </TabsTrigger>
+                    <TabsTrigger value="enchants" className="gap-2">
+                        Missing Enchants
+                        <Badge variant="secondary" className="text-xs px-1.5 py-0">{dataToUse?.onlyMissingEnchants?.length || 0}</Badge>
+                    </TabsTrigger>
+                    <TabsTrigger value="lockouts" className="gap-2">
+                        Lockouts
+                        <Badge variant="secondary" className="text-xs px-1.5 py-0">{dataToUse?.locked?.length || 0}</Badge>
+                    </TabsTrigger>
+                </TabsList>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {/* Search */}
                 <div className="lg:col-span-4">
                     <div className="relative">
@@ -280,63 +298,68 @@ const GuildAudit = ({ auditable, initialData }) => {
                 </div>
             </div>
 
-            {/* Analytics */}
-            {!loading && !showSearchError && dataToUse?.all?.length > 0 && (
-                <AuditAnalytics players={dataToUse.all} />
-            )}
+            <TabsContent value="analytics">
+                {!loading && !showSearchError && dataToUse?.all?.length > 0 && (
+                    <AuditAnalytics players={dataToUse.all} />
+                )}
+                {!loading && showSearchError && (
+                    <div className="rounded-lg border border-border bg-card p-8 text-center">
+                        <p className="text-muted-foreground max-w-lg mx-auto">
+                            No characters match your filters. Adjust search or filter criteria.
+                        </p>
+                    </div>
+                )}
+            </TabsContent>
 
-            {/* Results */}
+            <TabsContent value="players">
             {!loading && showSearchError && (
                 <div className="rounded-lg border border-border bg-card p-8 text-center">
                     <p className="text-muted-foreground max-w-lg mx-auto">
-                        No characters found with that search query. The character may not be in the guild
-                        or too far behind in progression to be audited.
+                        No characters found with that search query.
                     </p>
                 </div>
             )}
-
             {!loading && !showSearchError && (
-                <div className="space-y-4">
-                    <Tabs value={activeTab} onValueChange={setActiveTab}>
-                        <div className="overflow-x-auto pb-px">
-                            <TabsList className="gap-1">
-                                <TabsTrigger value="all" className="gap-2">
-                                    All
-                                    <Badge variant="secondary" className="text-xs px-1.5 py-0 min-w-[1.5rem] justify-center">{dataToUse?.all?.length || 0}</Badge>
-                                </TabsTrigger>
-                                <TabsTrigger value="enchants" className="gap-2">
-                                    Missing Enchants
-                                    <Badge variant="secondary" className="text-xs px-1.5 py-0 min-w-[1.5rem] justify-center">{dataToUse?.onlyMissingEnchants?.length || 0}</Badge>
-                                </TabsTrigger>
-                                {dataToUse?.normalLocked?.length > 0 && (
-                                    <TabsTrigger value="lockedNormal" className="gap-2">
-                                        Locked Normal
-                                        <Badge variant="secondary" className="text-xs px-1.5 py-0 min-w-[1.5rem] justify-center">{dataToUse?.normalLocked?.length || 0}</Badge>
-                                    </TabsTrigger>
-                                )}
-                                {dataToUse?.heroicLocked?.length > 0 && (
-                                    <TabsTrigger value="lockedHeroic" className="gap-2">
-                                        Locked Heroic
-                                        <Badge variant="secondary" className="text-xs px-1.5 py-0 min-w-[1.5rem] justify-center">{dataToUse?.heroicLocked?.length || 0}</Badge>
-                                    </TabsTrigger>
-                                )}
-                                {dataToUse?.mythicLocked?.length > 0 && (
-                                    <TabsTrigger value="lockedMythic" className="gap-2">
-                                        Locked Mythic
-                                        <Badge variant="secondary" className="text-xs px-1.5 py-0 min-w-[1.5rem] justify-center">{dataToUse?.mythicLocked?.length || 0}</Badge>
-                                    </TabsTrigger>
-                                )}
-                            </TabsList>
-                        </div>
-
-                        <TabsContent value="all"><AuditBlock data={dataToUse} name="all" /></TabsContent>
-                        <TabsContent value="enchants"><AuditBlock data={dataToUse} name="onlyMissingEnchants" /></TabsContent>
-                        <TabsContent value="lockedNormal"><AuditBlock data={dataToUse} name="normalLocked" /></TabsContent>
-                        <TabsContent value="lockedHeroic"><AuditBlock data={dataToUse} name="heroicLocked" /></TabsContent>
-                        <TabsContent value="lockedMythic"><AuditBlock data={dataToUse} name="mythicLocked" /></TabsContent>
-                    </Tabs>
-                </div>
+                <AuditBlock data={dataToUse} name="all" />
             )}
+            </TabsContent>
+
+            <TabsContent value="enchants">
+            {!loading && !showSearchError && (
+                <AuditBlock data={dataToUse} name="onlyMissingEnchants" />
+            )}
+            </TabsContent>
+
+            <TabsContent value="lockouts" className="space-y-4">
+            {!loading && !showSearchError && (
+                <Tabs value={activeTab} onValueChange={setActiveTab}>
+                    <TabsList className="flex-wrap h-auto gap-1">
+                        {dataToUse?.normalLocked?.length > 0 && (
+                            <TabsTrigger value="lockedNormal" className="gap-2">
+                                Normal
+                                <Badge variant="secondary" className="text-xs px-1.5 py-0">{dataToUse?.normalLocked?.length || 0}</Badge>
+                            </TabsTrigger>
+                        )}
+                        {dataToUse?.heroicLocked?.length > 0 && (
+                            <TabsTrigger value="lockedHeroic" className="gap-2">
+                                Heroic
+                                <Badge variant="secondary" className="text-xs px-1.5 py-0">{dataToUse?.heroicLocked?.length || 0}</Badge>
+                            </TabsTrigger>
+                        )}
+                        {dataToUse?.mythicLocked?.length > 0 && (
+                            <TabsTrigger value="lockedMythic" className="gap-2">
+                                Mythic
+                                <Badge variant="secondary" className="text-xs px-1.5 py-0">{dataToUse?.mythicLocked?.length || 0}</Badge>
+                            </TabsTrigger>
+                        )}
+                    </TabsList>
+                    <TabsContent value="lockedNormal"><AuditBlock data={dataToUse} name="normalLocked" /></TabsContent>
+                    <TabsContent value="lockedHeroic"><AuditBlock data={dataToUse} name="heroicLocked" /></TabsContent>
+                    <TabsContent value="lockedMythic"><AuditBlock data={dataToUse} name="mythicLocked" /></TabsContent>
+                </Tabs>
+            )}
+            </TabsContent>
+            </Tabs>
             </PageContent>
         </PageShell>
     )

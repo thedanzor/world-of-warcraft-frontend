@@ -61,6 +61,10 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import MythicPlusBlock from '@/core/modules/MythicPlusBlock'
 import SeasonalLeaderboard from '@/core/modules/SeasonalLeaderboard'
 import SeasonalStatistics from '@/core/modules/SeasonalStatistics'
+import PageHero from '@/core/components/PageHero'
+import { PageShell, PageContent } from '@/core/components/PageShell'
+import { colors } from '@/core/theme'
+import { Key } from 'lucide-react'
 
 // Styles
 
@@ -93,16 +97,20 @@ const MPlus = ({ auditable, guildData, seasonalData }) => {
     }
 
     return (
-        <section className="space-y-6">
-            <div className="flex flex-col gap-1">
-                <h2 className="text-3xl font-bold tracking-tight">Mythic+</h2>
-                <p className="text-sm text-muted-foreground">
-                    {activeTab === '0'
-                        ? 'Weekly reset performance based on current lockout period.'
-                        : 'Seasonal statistics and leaderboards for the current Mythic+ season.'}
-                </p>
-            </div>
-
+        <PageShell>
+            <PageHero
+                chip="Mythic+ Season Analytics"
+                chipColor={colors.warning}
+                gradientColor={colors.warning}
+                title="M+ Rankings"
+                description={
+                    activeTab === '0'
+                        ? 'Weekly reset performance based on the current lockout period.'
+                        : 'Seasonal statistics and leaderboards for the current Mythic+ season.'
+                }
+                badges={[{ label: 'Keystone rankings', icon: Key, color: colors.warning }]}
+            />
+            <PageContent className="space-y-6">
             <Tabs
                 value={activeTab}
                 onValueChange={setActiveTab}
@@ -145,7 +153,8 @@ const MPlus = ({ auditable, guildData, seasonalData }) => {
                     )}
                 </TabsContent>
             </Tabs>
-        </section>
+            </PageContent>
+        </PageShell>
     )
 }
 

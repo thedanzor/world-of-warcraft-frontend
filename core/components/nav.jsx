@@ -12,7 +12,8 @@ import {
     UserCheck,
     Bug,
     Wrench,
-    Settings
+    Settings,
+    Shield,
 } from 'lucide-react'
 
 import {
@@ -67,7 +68,9 @@ export default function Nav() {
     const guildName = config?.GUILD_NAME 
         ? config.GUILD_NAME.replace(/-/g, ' ')
         : process.env.NEXT_PUBLIC_GUILD_NAME?.replace(/-/g, ' ') || 'Guild'
-    
+
+    const regionLabel = config?.REGION ? config.REGION.toUpperCase() : null
+    const realmLabel = config?.GUILD_REALM?.replace(/-/g, ' ') || null
     const seasonTitle = config?.SEASON_TITLE || menuConfig?.NAVIGATION?.SEASONS?.label || 'Current Season'
     
     const navigationItems = menuConfig?.NAVIGATION ? Object.entries(menuConfig.NAVIGATION).reduce((acc, [key, section]) => {
@@ -142,9 +145,25 @@ export default function Nav() {
     return (
         <>
             <Sidebar>
-                <SidebarHeader className="px-5 py-4 border-b border-white/[0.07]">
-                    <Link href="/" className="font-bold text-base tracking-tight truncate text-foreground hover:text-primary transition-colors capitalize" onClick={() => setOpenMobile(false)}>
-                        {guildName}
+                <SidebarHeader className="px-4 py-4 border-b border-white/[0.07]">
+                    <Link
+                        href="/"
+                        onClick={() => setOpenMobile(false)}
+                        className="flex items-center gap-3 min-w-0 group"
+                    >
+                        <div className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-primary/15 border border-primary/30 group-hover:border-primary/50 transition-colors">
+                            <Shield className="w-4 h-4 text-primary" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                            <p className="font-bold text-sm tracking-tight truncate text-foreground capitalize group-hover:text-primary transition-colors">
+                                {guildName}
+                            </p>
+                            {regionLabel && realmLabel && (
+                                <p className="text-[0.68rem] text-muted-foreground truncate mt-0.5">
+                                    {regionLabel} · {realmLabel}
+                                </p>
+                            )}
+                        </div>
                     </Link>
                 </SidebarHeader>
                 

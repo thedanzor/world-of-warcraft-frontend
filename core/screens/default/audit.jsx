@@ -68,12 +68,17 @@ import { Search, ChevronDown, ChevronUp } from 'lucide-react'
 // Internal components
 import AuditBlock from '@/core/modules/auditBlock'
 import AuditAnalytics from '@/core/components/AuditAnalytics'
+import PageHero from '@/core/components/PageHero'
+import { PageShell, PageContent } from '@/core/components/PageShell'
 import { P } from '@/core/components/typography'
+import { colors } from '@/core/theme'
+import { BarChart3 } from 'lucide-react'
 
 // Internal utilities and config
 import getPreviousWednesdayAt1AM from '@/core/utils/currentLockout'
 import { buildInitialClassList } from '@/tools/guildFetcher/utils'
 import useAuditData from '@/core/hooks/useAuditData'
+import { useConfig } from '@/core/hooks/useConfig'
 import { getCharacterRole } from '@/core/utils/roleFromSpec'
 import config from '@/app.config.js'
 
@@ -95,6 +100,8 @@ const {
  */
 const GuildAudit = ({ auditable, initialData }) => {
     console.log('initialData', initialData)
+    const { config } = useConfig()
+    const guildTitle = config?.GUILD_NAME?.replace(/-/g, ' ') || 'Raid readiness'
     const [loading, isLoading] = React.useState(false)
     const [data, setData] = React.useState(initialData.data)
     const [query, setQuery] = React.useState('')
@@ -185,15 +192,16 @@ const GuildAudit = ({ auditable, initialData }) => {
     }
 
     return (
-        <section className="space-y-6">
-            <div className="flex flex-col gap-1">
-                <h2 className="text-3xl font-bold tracking-tight">Audit</h2>
-                <p className="text-sm text-muted-foreground">
-                    Last audit ran {new Date(initialData.timestamp).toLocaleString()}
-                </p>
-            </div>
-
-            {/* Filters */}
+        <PageShell>
+            <PageHero
+                chip="Heroic Progression Audit"
+                chipColor={colors.accent}
+                gradientColor={colors.accent}
+                title={guildTitle}
+                description={`Raid readiness audit — enchants, lockouts, and compliance. Last audit ran ${new Date(initialData.timestamp).toLocaleString()}.`}
+                badges={[{ label: 'Enchants & lockouts', icon: BarChart3, color: colors.accent }]}
+            />
+            <PageContent className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {/* Search */}
                 <div className="lg:col-span-4">
@@ -329,7 +337,8 @@ const GuildAudit = ({ auditable, initialData }) => {
                     </Tabs>
                 </div>
             )}
-        </section>
+            </PageContent>
+        </PageShell>
     )
 }
 

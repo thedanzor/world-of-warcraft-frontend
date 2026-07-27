@@ -56,7 +56,17 @@ import { getCharacterRole } from '@/core/utils/roleFromSpec'
 // Shadcn & Lucide
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Spinner } from '@/components/ui/spinner'
-import { Users, Wrench, Lock, Star, Trophy } from 'lucide-react'
+import {
+    Users,
+    Wrench,
+    Lock,
+    Star,
+    Trophy,
+    BarChart,
+    Skull,
+    Key,
+    Database,
+} from 'lucide-react'
 
 // Components
 import AuditBlock from '@/core/modules/auditBlock'
@@ -66,11 +76,18 @@ import StatCard from '@/core/components/StatCard'
 import TopPlayersTable from '@/core/components/TopPlayersTable'
 import RoleDistribution from '@/core/components/RoleDistribution'
 import GuildTopRanks from '@/core/components/GuildTopRanks'
+import PageHero from '@/core/components/PageHero'
+import SectionHeading from '@/core/components/SectionHeading'
+import { PageShell, PageContent } from '@/core/components/PageShell'
+import { useConfig } from '@/core/hooks/useConfig'
+import { colors } from '@/core/theme'
 
 
 // Dashboard
 const Dashboard = ({ guildData }) => {
     const [isDataLoaded, setIsDataLoaded] = React.useState(false)
+    const { config } = useConfig()
+    const guildTitle = config?.GUILD_NAME?.replace(/-/g, ' ') || 'Guild Dashboard'
 
     console.log('guildData', guildData, isDataLoaded)
     
@@ -187,14 +204,21 @@ const Dashboard = ({ guildData }) => {
     }
 
     return (
-        <section className="space-y-6">
-            <div className="flex flex-col gap-1">
-                <h2 className="text-2xl font-bold tracking-tight">Dashboard</h2>
-                <p className="text-sm text-muted-foreground">
-                    Guild Overview and Statistics
-                </p>
-            </div>
+        <PageShell>
+            <PageHero
+                chip="Guild Overview"
+                chipColor={colors.accent}
+                gradientColor={colors.accent}
+                title={guildTitle}
+                description="Live guild statistics from Battle.net, enriched with Warcraft Logs raid parses and Raider.io Mythic+ rankings."
+                badges={[
+                    { label: 'Warcraft Logs', icon: Skull, color: colors.accent },
+                    { label: 'Raider.io', icon: Key, color: colors.warning },
+                    { label: 'Battle.net', icon: Database, color: '#4fc3f7' },
+                ]}
+            />
 
+            <PageContent className="space-y-8">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
                 <StatCard
@@ -231,7 +255,7 @@ const Dashboard = ({ guildData }) => {
 
             {/* Guild Rankings (WCL + Raider.io) */}
             <div className="space-y-3">
-                <h2 className="text-lg font-semibold tracking-tight">Guild Rankings</h2>
+                <SectionHeading icon={Trophy} label="Guild Rankings" color={colors.warning} />
                 <GuildTopRanks compact />
             </div>
 
@@ -250,14 +274,15 @@ const Dashboard = ({ guildData }) => {
             </div>
 
             {/* Missing Enchants Table */}
-            <div className="space-y-4">
-                <h2 className="text-2xl font-bold tracking-tight">Missing Enchants</h2>
+            <div className="space-y-3">
+                <SectionHeading icon={BarChart} label="Missing Enchants" color={colors.danger} />
                 <AuditBlock
                     data={{ all: data.missingEnchantsPlayers }}
                     name="all"
                 />
             </div>
-        </section>
+            </PageContent>
+        </PageShell>
     )
 }
 

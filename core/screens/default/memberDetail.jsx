@@ -14,6 +14,9 @@ import { ArrowLeft, Shield, Activity, Timer, Hash, Sword, Zap, Lock, Star, Troph
 
 import getRatingColor from '@/core/utils/getRatingColor'
 import { EnrichmentScores } from '@/core/components/GuildTopRanks'
+import PageHero from '@/core/components/PageHero'
+import { PageShell, PageContent } from '@/core/components/PageShell'
+import { colors } from '@/core/theme'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -529,30 +532,27 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
     const capitalizedName = decodedCharacter.charAt(0).toUpperCase() + decodedCharacter.slice(1).toLowerCase()
 
     return (
-        <section className="space-y-6">
-            {/* Header */}
-            <div className="flex flex-col gap-3">
-                <div>
+        <PageShell>
+            <PageHero
+                chip={`${characterData?.metaData?.spec || 'Character'} ${characterData?.metaData?.class || ''}`.trim()}
+                chipColor={colors.accentLt}
+                gradientColor={colors.accent}
+                title={capitalizedName}
+                description={`${decodedRealm} — detailed raid, Mythic+, and enrichment data.`}
+                actions={
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
                         onClick={() => router.back()}
-                        className="gap-2 -ml-2 text-muted-foreground hover:text-foreground"
+                        className="gap-2 shrink-0"
                     >
                         <ArrowLeft className="h-4 w-4" />
                         Back
                     </Button>
-                </div>
-                <div>
-                    <h2 className={`text-3xl font-bold tracking-tight text-${sanitizedClass}`}>
-                        {capitalizedName}
-                    </h2>
-                    <p className="text-sm text-muted-foreground mt-1">
-                        {characterData?.metaData?.spec} {characterData?.metaData?.class} &mdash; {decodedRealm}
-                    </p>
-                </div>
-            </div>
+                }
+            />
 
+            <PageContent className="space-y-6">
             {/* Character Hero Card */}
             <div className="rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden">
                 <div className="p-6">
@@ -860,7 +860,8 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
                     )}
                 </div>
             )}
-        </section>
+            </PageContent>
+        </PageShell>
     )
 }
 

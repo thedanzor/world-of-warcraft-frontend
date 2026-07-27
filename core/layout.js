@@ -1,49 +1,39 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar'
-import { Separator } from '@/components/ui/separator'
 
-import Nav from '@/core/components/nav'
+import SiteNav from '@/core/components/SiteNav'
 import SeasonAlert from '@/core/components/SeasonAlert'
 
 export default function AuditLayout({ children }) {
     const pathname = usePathname()
-    const hideNav = pathname === '/install'
+    const hideNav = pathname === '/install' || pathname?.startsWith('/settings')
 
     if (hideNav) {
         return (
-            <div className="flex min-h-screen text-foreground">
+            <div className="flex min-h-screen text-foreground flex-col">
                 <main className="flex-1 flex flex-col">
                     <div className="flex-1">
                         {children}
                     </div>
-                    <div className="p-4 text-center text-sm text-muted-foreground">
+                    <footer className="py-6 px-6 text-center text-sm text-muted-foreground border-t border-white/[0.05]">
                         <p>&copy; 2025 Holybarryz (Scott Jones). All rights reserved.</p>
-                    </div>
+                    </footer>
                 </main>
             </div>
         )
     }
 
     return (
-        <SidebarProvider>
-            <Nav />
-            <SidebarInset>
-                <header className="flex h-12 shrink-0 items-center gap-2 border-b border-white/[0.07] bg-[#090f18]/90 backdrop-blur-md px-4 md:px-6 sticky top-0 z-30">
-                    <SidebarTrigger className="-ml-1 h-8 w-8" />
-                    <Separator orientation="vertical" className="mr-2 h-4 opacity-40" />
-                    <span className="text-[0.67rem] font-semibold text-muted-foreground tracking-[0.1em] uppercase">Guild Audit</span>
-                </header>
-                <main className="flex flex-1 flex-col gap-6 p-6 md:p-8 max-w-7xl w-full mx-auto">
-                    {children}
-                    
-                    <footer className="mt-auto py-6 text-center text-sm text-muted-foreground">
-                        <p>&copy; 2025 Holybarryz (Scott Jones). All rights reserved.</p>
-                    </footer>
-                </main>
-                <SeasonAlert />
-            </SidebarInset>
-        </SidebarProvider>
+        <div className="min-h-screen flex flex-col">
+            <SiteNav />
+            <main className="flex-1 w-full max-w-7xl mx-auto">
+                {children}
+            </main>
+            <footer className="w-full max-w-7xl mx-auto py-6 px-6 md:px-8 text-center text-[0.68rem] text-muted-foreground border-t border-white/[0.05]">
+                <p>&copy; 2025 Holybarryz (Scott Jones). All rights reserved.</p>
+            </footer>
+            <SeasonAlert />
+        </div>
     )
 }

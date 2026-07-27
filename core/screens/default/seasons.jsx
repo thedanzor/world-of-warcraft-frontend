@@ -61,6 +61,9 @@ import { Button } from '@/components/ui/button'
 import RaidRequirements from '@/core/components/RaidRequirements'
 import TabPanel from '@/core/components/SeasonsStats/TabPanel'
 import SignUpForm from '@/core/components/SeasonsSignUp/SignUpForm'
+import PageHero from '@/core/components/PageHero'
+import { PageShell, PageContent } from '@/core/components/PageShell'
+import { colors } from '@/core/theme'
 import { classIcons, classColors } from '@/core/components/SeasonsStats/constants'
 import { calculateRaidBuffs } from '@/core/utils/raidBuffs'
 import { clientApi } from '@/lib/clientApi'
@@ -230,24 +233,26 @@ const SeasonsSection = ({ guildData, seasonsData }) => {
     const activeStats = getActiveData(tabValue)
 
     return (
-        <section className="space-y-6">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <h2 className="text-3xl font-bold tracking-tight">{seasonPageTitle}</h2>
-                    <p className="text-sm text-muted-foreground mt-1">{seasonPageDescription}</p>
-                </div>
-                <Button
-                    onClick={() => setSignUpOpen(true)}
-                    size="lg"
-                    className="shrink-0 gap-2"
-                >
-                    <Plus className="h-4 w-4" />
-                    {seasonSignupButtonText}
-                </Button>
-            </div>
+        <PageShell>
+            <PageHero
+                chip="Season planning"
+                chipColor={colors.neonPurple}
+                gradientColor={colors.neonPurple}
+                title={seasonPageTitle}
+                description={seasonPageDescription}
+                actions={
+                    <Button
+                        onClick={() => setSignUpOpen(true)}
+                        size="lg"
+                        className="shrink-0 gap-2"
+                    >
+                        <Plus className="h-4 w-4" />
+                        {seasonSignupButtonText}
+                    </Button>
+                }
+            />
 
-            {/* Roster Panel */}
+            <PageContent className="space-y-6">
             <TabPanel
                 data={safeSeasonsData}
                 stats={activeStats}
@@ -277,7 +282,8 @@ const SeasonsSection = ({ guildData, seasonsData }) => {
                     </div>
                 </div>
             )}
-        </section>
+            </PageContent>
+        </PageShell>
     )
 }
 

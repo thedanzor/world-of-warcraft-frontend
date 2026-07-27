@@ -9,6 +9,9 @@ import {
     Users as SocialIcon,
 } from 'lucide-react'
 import CharacterCard from '@/core/components/CharacterCard'
+import PageHero from '@/core/components/PageHero'
+import { PageShell, PageContent } from '@/core/components/PageShell'
+import { colors } from '@/core/theme'
 import { getCharacterRole } from '@/core/utils/roleFromSpec'
 import config from '@/app.config.js'
 
@@ -52,24 +55,31 @@ const RosterDisplay = ({ roster, guildData, error }) => {
 
     if (!hasAnyRoster) {
         return (
-            <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tight">Roster</h2>
-                <p className="text-muted-foreground">No roster has been configured yet. Please check back later.</p>
-            </div>
+            <PageShell>
+                <PageHero
+                    chip="Raid roster"
+                    chipColor={colors.accentLt}
+                    gradientColor={colors.accentLt}
+                    title="Roster"
+                    description="No roster has been configured yet. Please check back later."
+                />
+            </PageShell>
         )
     }
 
     const totalPlayers = ROLE_TYPES.reduce((acc, role) => acc + getRoleCharacters(role.id).length, 0)
 
     return (
-        <div className="space-y-8 pb-8">
-            <div className="flex flex-col gap-1">
-                <h2 className="text-3xl font-bold tracking-tight">Roster</h2>
-                <p className="text-sm text-muted-foreground">
-                    Current raid roster &mdash; {totalPlayers} players
-                </p>
-            </div>
-
+        <PageShell>
+            <PageHero
+                chip="Raid roster"
+                chipColor={colors.accentLt}
+                gradientColor={colors.accentLt}
+                title="Roster"
+                description={`Current raid roster — ${totalPlayers} players assigned across tanks, healers, DPS, and backups.`}
+                badges={[{ label: `${totalPlayers} players`, icon: SocialIcon, color: colors.accentLt }]}
+            />
+            <PageContent className="space-y-8">
             {ROLE_TYPES.map((role) => {
                 const characters = getRoleCharacters(role.id)
                 const Icon = role.icon
@@ -105,7 +115,8 @@ const RosterDisplay = ({ roster, guildData, error }) => {
                     </div>
                 )
             })}
-        </div>
+            </PageContent>
+        </PageShell>
     )
 }
 

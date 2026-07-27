@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 
 import { Spinner } from '@/components/ui/spinner'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
 import { 
     MessageCircle as ChatIcon, 
     Mail as EmailIcon,
@@ -17,7 +16,10 @@ import {
     ArrowRight,
 } from 'lucide-react'
 
-import ContentWrapper from '@/core/components/content'
+import PageHero from '@/core/components/PageHero'
+import { PageShell, PageContent } from '@/core/components/PageShell'
+import { colors } from '@/core/theme'
+import { UserPlus } from 'lucide-react'
 
 const ICON_MAP = {
     requirements: RulesIcon,
@@ -175,50 +177,29 @@ const Recruitment = () => {
 
     const sortedSections = [...joinText.sections].sort((a, b) => a.order - b.order)
 
+    const heroTitle = joinText.hero?.title || 'Join Our Guild'
+    const heroSubtitle = joinText.hero?.subtitle || 'Embark on epic adventures with skilled players.'
+    const heroBadges = (joinText.hero?.badges || []).map((badge) => ({
+        label: badge.label,
+        color:
+            badge.color === 'gold' ? colors.warning :
+            badge.color === 'green' ? colors.success :
+            colors.accentLt,
+    }))
+
     return (
-        <section className="space-y-0">
-            {/* Hero */}
-            {joinText.hero && (
-                <div className="relative -mx-6 md:-mx-8 lg:-mx-12 mb-10 overflow-hidden">
-                    {/* Background gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-primary/3 to-transparent pointer-events-none" />
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(255,255,255,0.06)_0%,transparent_100%)] pointer-events-none" />
-                    
-                    <div className="relative px-6 md:px-8 lg:px-12 py-14 text-center">
-                        <div className="max-w-2xl mx-auto">
-                            {joinText.hero.badges?.length > 0 && (
-                                <div className="flex justify-center gap-2 flex-wrap mb-5">
-                                    {joinText.hero.badges.map((badge, index) => (
-                                        <Badge
-                                            key={index}
-                                            variant="outline"
-                                            className={`text-xs font-medium px-3 py-1 ${
-                                                badge.color === 'gold' ? 'border-yellow-500/40 text-yellow-400 bg-yellow-500/10' :
-                                                badge.color === 'green' ? 'border-emerald-500/40 text-emerald-400 bg-emerald-500/10' :
-                                                'border-border/60 text-muted-foreground'
-                                            }`}
-                                        >
-                                            {badge.label}
-                                        </Badge>
-                                    ))}
-                                </div>
-                            )}
-                            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-                                {joinText.hero.title}
-                            </h1>
-                            <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-                                {joinText.hero.subtitle}
-                            </p>
-                        </div>
-                    </div>
+        <PageShell>
+            <PageHero
+                chip="Recruitment"
+                chipColor={colors.success}
+                gradientColor={colors.success}
+                title={heroTitle}
+                description={heroSubtitle}
+                badges={heroBadges.length > 0 ? heroBadges : [{ label: 'Open recruitment', icon: UserPlus, color: colors.success }]}
+                maxWidth="max-w-2xl"
+            />
 
-                    {/* Bottom fade */}
-                    <div className="absolute bottom-0 left-0 right-0 h-px bg-border/50" />
-                </div>
-            )}
-
-            {/* Content Sections */}
-            <div className="space-y-6">
+            <PageContent className="space-y-6">
                 {sortedSections.map((section) => {
                     const sortedBlocks = [...section.blocks].sort((a, b) => a.order - b.order)
                     return (
@@ -227,8 +208,8 @@ const Recruitment = () => {
                         </div>
                     )
                 })}
-            </div>
-        </section>
+            </PageContent>
+        </PageShell>
     )
 }
 

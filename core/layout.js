@@ -11,12 +11,12 @@ export default function AuditLayout({ children }) {
 
     if (hideNav) {
         return (
-            <div className="flex min-h-screen text-foreground flex-col">
-                <main className="flex-1 flex flex-col">
-                    <div className="flex-1">
+            <div className="flex min-h-screen flex-col bg-[#090f18] text-foreground">
+                <main className="flex-1 flex flex-col w-full">
+                    <div className="flex-1 w-full">
                         {children}
                     </div>
-                    <footer className="py-6 px-6 text-center text-sm text-muted-foreground border-t border-white/[0.05]">
+                    <footer className="py-6 px-6 lg:px-10 text-center text-[0.68rem] text-muted-foreground border-t border-white/[0.05]">
                         <p>&copy; 2025 Holybarryz (Scott Jones). All rights reserved.</p>
                     </footer>
                 </main>
@@ -25,12 +25,12 @@ export default function AuditLayout({ children }) {
     }
 
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen flex flex-col bg-[#090f18]">
             <SiteNav />
-            <main className="flex-1 w-full max-w-7xl mx-auto">
+            <div className="flex-1 w-full">
                 {children}
-            </main>
-            <footer className="w-full max-w-7xl mx-auto py-6 px-6 md:px-8 text-center text-[0.68rem] text-muted-foreground border-t border-white/[0.05]">
+            </div>
+            <footer className="w-full py-6 px-6 lg:px-10 text-center text-[0.68rem] text-muted-foreground border-t border-white/[0.05]">
                 <p>&copy; 2025 Holybarryz (Scott Jones). All rights reserved.</p>
             </footer>
             <SeasonAlert />

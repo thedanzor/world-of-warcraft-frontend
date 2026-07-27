@@ -2,6 +2,7 @@
 import React from 'react';
 import { Loader2 } from 'lucide-react';
 import WoWLoadingScreen from './WoWLoadingScreen';
+import { APP_SHORT_NAME } from '@/core/seo'
 
 const sizeMap = {
   sm: 'size-4',
@@ -29,7 +30,7 @@ const LoadingSpinner = ({
     return (
       <WoWLoadingScreen
         message={message}
-        subtitle="Guild Audit"
+        subtitle={APP_SHORT_NAME}
       />
     );
   }

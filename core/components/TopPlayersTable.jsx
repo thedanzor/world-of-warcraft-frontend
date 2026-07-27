@@ -5,6 +5,7 @@ import getRatingColor from '@/core/utils/getRatingColor'
 import Link from 'next/link'
 
 const TopPlayersTable = ({ data, title, scoreKey }) => {
+    const rows = Array.isArray(data) ? data : []
     const getValue = (player) => {
         switch (scoreKey) {
             case 'score':
@@ -38,7 +39,7 @@ const TopPlayersTable = ({ data, title, scoreKey }) => {
             <div className="overflow-x-auto">
                 <Table>
                     <TableBody>
-                        {data.slice(0, 5).map((player, index) => {
+                        {rows.slice(0, 5).map((player, index) => {
                             const sanitizedClass = player.class ? player.class.toLowerCase().replace(/\s+/g, '') : ''
                             const capitalizedName = player.name ? player.name.charAt(0).toUpperCase() + player.name.slice(1).toLowerCase() : ''
                             

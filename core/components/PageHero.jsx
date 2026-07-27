@@ -20,7 +20,7 @@ export default function PageHero({
 
   return (
     <div
-      className="border-b border-white/[0.07] px-6 md:px-8 pt-5 md:pt-8 pb-4 md:pb-6"
+      className="w-full border-b border-white/[0.07] px-6 md:px-8 lg:px-10 pt-5 md:pt-8 pb-4 md:pb-6"
       style={{
         background: `linear-gradient(180deg, ${gradientColor}${gradientAlpha} 0%, transparent 100%)`,
       }}

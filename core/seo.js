@@ -1,11 +1,39 @@
+/** Shared app branding for metadata and UI fallbacks */
+export const APP_NAME = 'WoW Guild Audit Tool'
+export const APP_SHORT_NAME = 'WoW Guild Audit'
+export const APP_DESCRIPTION =
+    'Audit your World of Warcraft guild for raid readiness — track missing enchants, lockouts, Mythic+ rankings, and PvP standings. Integrates Battle.net, Raider.io, and Warcraft Logs.'
+export const APP_KEYWORDS = [
+    'World of Warcraft',
+    'WoW',
+    'guild audit',
+    'raid readiness',
+    'missing enchants',
+    'raid lockouts',
+    'mythic plus',
+    'Mythic+',
+    'Raider.io',
+    'Warcraft Logs',
+    'guild roster',
+    'PvP ratings',
+    'Battle.net',
+    'guild management',
+].join(', ')
+
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+
 const seo = {
-    title: `${process.env.NEXT_PUBLIC_GUILD_NAME} | EU World of Warcraft Guild`,
-    description: '',
-    keywords: `World of Warcraft, WoW, EU, ${process.env.NEXT_PUBLIC_GUILD_REALM}, ${process.env.NEXT_PUBLIC_GUILD_NAME}, Mythic Raiding, War Within, Season 2, WoW Guild, Raid Progression`,
-    metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL),
+    title: {
+        default: APP_NAME,
+        template: `%s | ${APP_NAME}`,
+    },
+    description: APP_DESCRIPTION,
+    keywords: APP_KEYWORDS,
+    metadataBase: new URL(baseUrl),
     alternates: {
         canonical: '/',
     },
+    applicationName: APP_NAME,
     authors: [{ name: 'Scott Jones' }],
     creator: 'scottjones.nl',
     publisher: 'scottjones.nl',
@@ -15,16 +43,16 @@ const seo = {
         telephone: false,
     },
     openGraph: {
-        title: `${process.env.NEXT_PUBLIC_GUILD_NAME} | EU World of Warcraft Guild`,
-        description: '',
-        url: process.env.NEXT_PUBLIC_BASE_URL,
-        siteName: process.env.NEXT_PUBLIC_GUILD_NAME,
+        title: APP_NAME,
+        description: APP_DESCRIPTION,
+        url: baseUrl,
+        siteName: APP_NAME,
         images: [
             {
                 url: '/images/og-image.jpg',
                 width: 1200,
                 height: 630,
-                alt: `${process.env.NEXT_PUBLIC_GUILD_NAME} Guild Logo`,
+                alt: APP_NAME,
             },
         ],
         locale: 'en_US',
@@ -32,8 +60,8 @@ const seo = {
     },
     twitter: {
         card: 'summary_large_image',
-        title: `${process.env.NEXT_PUBLIC_GUILD_NAME} | EU World of Warcraft Guild`,
-        description: '',
+        title: APP_NAME,
+        description: APP_DESCRIPTION,
         images: ['/images/twitter-image.jpg'],
     },
     robots: {
@@ -49,4 +77,4 @@ const seo = {
     },
 }
 
-export default seo;
+export default seo

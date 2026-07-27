@@ -3,7 +3,7 @@ import React from 'react';
 
 const WoWLoadingScreen = ({
   message = 'Loading guild data...',
-  subtitle = 'Guild Audit',
+  subtitle = 'WoW Guild Audit Tool',
   showProgressBar = true,
   showDots = true,
 }) => {

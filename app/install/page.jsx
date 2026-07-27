@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Spinner } from '@/components/ui/spinner';
+import { APP_SHORT_NAME } from '@/core/seo';
 
 const steps = ['App Settings', 'Fetching Guild Data', 'Admin Account'];
 
@@ -930,7 +931,7 @@ export default function InstallPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 gap-8">
         <div>
-          <p className="text-lg font-bold tracking-tight leading-none text-center">Guild Audit</p>
+          <p className="text-lg font-bold tracking-tight leading-none text-center">{APP_SHORT_NAME}</p>
           <p className="text-xs text-muted-foreground mt-0.5 text-center">Setup &amp; Installation</p>
         </div>
 
@@ -1073,7 +1074,7 @@ export default function InstallPage() {
         {/* Branding header */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-base font-bold tracking-tight leading-none">Guild Audit</p>
+            <p className="text-base font-bold tracking-tight leading-none">{APP_SHORT_NAME}</p>
             <p className="text-xs text-muted-foreground mt-0.5">Setup Wizard</p>
           </div>
           {isAuthenticated && (

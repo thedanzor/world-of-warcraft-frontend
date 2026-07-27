@@ -27,9 +27,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 
-import { useConfig } from '@/core/hooks/useConfig'
-import menuConfig from '@/menu.config'
-import { colors } from '@/core/theme'
+import { APP_SHORT_NAME } from '@/core/seo'
 
 const ICON_MAP = {
   DashboardIcon: LayoutDashboard,
@@ -86,7 +84,7 @@ export default function SiteNav() {
 
   const guildName = config?.GUILD_NAME
     ? config.GUILD_NAME.replace(/-/g, ' ')
-    : process.env.NEXT_PUBLIC_GUILD_NAME?.replace(/-/g, ' ') || 'Guild Audit'
+    : process.env.NEXT_PUBLIC_GUILD_NAME?.replace(/-/g, ' ') || APP_SHORT_NAME
 
   const regionLabel = config?.REGION ? config.REGION.toUpperCase() : null
   const realmLabel = config?.GUILD_REALM?.replace(/-/g, ' ') || null
@@ -151,7 +149,7 @@ export default function SiteNav() {
       <nav
         className="sticky top-0 z-[100] border-b border-white/[0.07] bg-[#090f18]/92 backdrop-blur-[14px]"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="w-full px-4 sm:px-6 lg:px-10">
           <div className="flex items-center justify-between h-14 gap-3">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 min-w-0 shrink-0 group">

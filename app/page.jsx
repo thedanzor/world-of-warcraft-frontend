@@ -71,11 +71,9 @@ export default async function Home() {
     const guildData = await getGuildData()
 
     return (
-        <main className={`fullbody`}>
-            <DynamicScreenLoader 
-                screenName="dashboard"
-                props={{ guildData }}
-            />
-        </main>
+        <DynamicScreenLoader 
+            screenName="dashboard"
+            props={{ guildData }}
+        />
     )
 }

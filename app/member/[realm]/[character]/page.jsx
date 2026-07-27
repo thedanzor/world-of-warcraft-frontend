@@ -57,9 +57,9 @@ export async function generateMetadata({ params }) {
     const decodedRealm = decodeURIComponent(realm);
     
     return {
-        title: `${decodedCharacter} - ${decodedRealm} | Mythic+ Profile`,
-        description: `Mythic+ profile and statistics for ${decodedCharacter} on ${decodedRealm} server. View detailed dungeon performance, seasonal achievements, and team play history.`,
-        keywords: `World of Warcraft, WoW, ${decodedRealm}, ${decodedCharacter}, Mythic+, Dungeon, Profile, Statistics`,
+        title: `${decodedCharacter} — ${decodedRealm}`,
+        description: `Character profile for ${decodedCharacter} on ${decodedRealm}. Raid progress, Mythic+ scores, PvP ratings, and Warcraft Logs / Raider.io enrichment in WoW Guild Audit Tool.`,
+        keywords: `World of Warcraft, WoW, ${decodedRealm}, ${decodedCharacter}, guild audit, mythic plus, raid readiness`,
     }
 }
 

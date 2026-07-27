@@ -5,6 +5,6 @@ export default function robots() {
             allow: '/',
             disallow: ['/api/', '/admin/'],
         },
-        sitemap: 'https://onemoregame.app/sitemap.xml',
+        sitemap: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/sitemap.xml`,
     };
 } 

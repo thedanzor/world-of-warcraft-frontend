@@ -1,59 +1,9 @@
-/**
- * DASHBOARD SCREEN
- * 
- * This is the main landing page that provides an overview of the guild's status and performance.
- * It displays key metrics, statistics, and quick access to important guild information.
- * 
- * WHAT THIS DOES:
- * - Shows guild overview with key performance indicators
- * - Displays player statistics (item levels, raid lockouts, missing enchants)
- * - Provides role distribution visualization (tanks, healers, DPS)
- * - Shows top players in Mythic+ and PvP
- * - Integrates with audit system for raid readiness
- * - Handles loading states and error conditions gracefully
- * 
- * KEY FEATURES:
- * - Guild statistics dashboard with visual cards
- * - Player count and role distribution charts
- * - Top performers table for Mythic+ and PvP
- * - Audit block showing raid readiness status
- * - Responsive grid layout for different screen sizes
- * 
- * DATA SOURCES:
- * - guildData: Main guild information from API
- * - useAuditData: Hook for raid lockout and readiness data
- * - Statistics from backend (missing enchants, role counts, top players)
- * 
- * COMPONENTS USED:
- * - StatCard: Individual metric display cards
- * - TopPlayersTable: Table showing best performers
- * - RoleDistribution: Visual chart of role breakdown
- * - AuditBlock: Raid readiness and lockout information
- * 
- * FILTERING:
- * - Uses static filters for consistent data display
- * - Integrates with global filter system
- * - Shows data based on current lockout period
- * 
- * USAGE:
- * This screen is the main entry point for guild leaders and officers.
- * It provides quick insights into guild health and performance.
- * 
- * MODIFICATION NOTES:
- * - Keep statistics calculations accurate and performant
- * - Ensure responsive design works on all devices
- * - Test with various guild sizes and data scenarios
- * - Consider adding more metrics based on guild needs
- */
-
 'use client'
 import React, { useMemo } from 'react'
 
-// Config
-import config from '@/app.config.js'
+import appConfig from '@/app.config.js'
 import { getCharacterRole } from '@/core/utils/roleFromSpec'
 
-// Shadcn & Lucide
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Spinner } from '@/components/ui/spinner'
 import {
@@ -68,13 +18,11 @@ import {
     Database,
 } from 'lucide-react'
 
-// Components
 import AuditBlock from '@/core/modules/auditBlock'
 import useAuditData from '@/core/hooks/useAuditData'
 import getPreviousWednesdayAt1AM from '@/core/utils/currentLockout'
 import StatCard from '@/core/components/StatCard'
 import TopPlayersTable from '@/core/components/TopPlayersTable'
-import RoleDistribution from '@/core/components/RoleDistribution'
 import GuildTopRanks from '@/core/components/GuildTopRanks'
 import PageHero from '@/core/components/PageHero'
 import SectionHeading from '@/core/components/SectionHeading'
@@ -82,47 +30,23 @@ import { PageShell, PageContent } from '@/core/components/PageShell'
 import { useConfig } from '@/core/hooks/useConfig'
 import { colors } from '@/core/theme'
 
+const {
+    INITIAL_FILTERS,
+} = appConfig
 
-// Dashboard
 const Dashboard = ({ guildData }) => {
-    const [isDataLoaded, setIsDataLoaded] = React.useState(false)
-    const { config } = useConfig()
-    const guildTitle = config?.GUILD_NAME?.replace(/-/g, ' ') || 'Guild Dashboard'
+    const { config: guildConfig } = useConfig()
+    const guildTitle = guildConfig?.GUILD_NAME?.replace(/-/g, ' ') || 'Guild Dashboard'
 
-    console.log('guildData', guildData, isDataLoaded)
-    
-    // These values are static and only used in hook dependencies
     const query = ''
     const classFilter = []
     const rankFilter = 'all'
     const specFilter = 'all'
-    const ilevelFilter = config.INITIAL_FILTERS.defaultItemLevel
-    const instanceIndex = config.INITIAL_FILTERS.instanceIndex
+    const ilevelFilter = INITIAL_FILTERS.defaultItemLevel
+    const instanceIndex = INITIAL_FILTERS.instanceIndex
     const lockTimeStamp = getPreviousWednesdayAt1AM(Date.now())
 
-    // Handle loading and error states
-    if (!guildData) {
-        return (
-            <div className="flex justify-center items-center h-[50vh]">
-                <Spinner />
-            </div>
-        )
-    }
-
-    if (guildData.error) {
-        return (
-            <div className="p-6">
-                <Alert variant="destructive">
-                    <AlertTitle className="text-md">Failed to load guild data</AlertTitle>
-                    <AlertDescription className="text-sm">{guildData.error}</AlertDescription>
-                </Alert>
-            </div>
-        )
-    }
-
-    const guildDataToUse = guildData.data || []
-
-    console.log('guildDataToUse', guildDataToUse, isDataLoaded)
+    const guildDataToUse = Array.isArray(guildData?.data) ? guildData.data : []
 
     const auditData = useAuditData(guildDataToUse, [
         query,
@@ -134,23 +58,15 @@ const Dashboard = ({ guildData }) => {
         lockTimeStamp,
     ])
 
-    console.log('auditData', auditData, isDataLoaded)
-
     const data = useMemo(() => {
-        const allPlayers = guildDataToUse || []
+        const allPlayers = guildDataToUse
+        const missingEnchants = guildData?.missingEnchants || { all: 0, mains: 0, alts: 0 }
+        const topPvp = Array.isArray(guildData?.topPvp) ? guildData.topPvp : []
+        const topPve = Array.isArray(guildData?.topPve) ? guildData.topPve : []
 
-        // Use pagination from API response
-        const pagination = guildData.pagination || {};
-        const missingEnchants = guildData.missingEnchants || { all: 0, mains: 0, alts: 0 };
-        const topPvp = guildData.topPvp || [];
-        const topPve = guildData.topPve || [];
-
-        // Derive role counts from current roster using spec/role helper instead of backend snapshot
         const roleCounts = allPlayers.reduce(
             (acc, player) => {
-                console.log('player', player, isDataLoaded)
-                const role = getCharacterRole(player, config)
-                console.log('role', role, isDataLoaded)
+                const role = getCharacterRole(player, appConfig)
                 if (role === 'tank') acc.tanks += 1
                 else if (role === 'healer') acc.healers += 1
                 else acc.dps += 1
@@ -159,48 +75,53 @@ const Dashboard = ({ guildData }) => {
             { tanks: 0, healers: 0, dps: 0 }
         )
 
-        // Calculate averages from top players
-        const avgTopMplus = topPve.length > 0 
-            ? topPve.reduce((acc, p) => acc + (p.score || 0), 0) / topPve.length 
+        const avgTopMplus = topPve.length > 0
+            ? topPve.reduce((acc, p) => acc + (p.score || 0), 0) / topPve.length
             : 0
-        const avgTopPvp = topPvp.length > 0 
-            ? topPvp.reduce((acc, p) => acc + (p.rating || 0), 0) / topPvp.length 
+        const avgTopPvp = topPvp.length > 0
+            ? topPvp.reduce((acc, p) => acc + (p.rating || 0), 0) / topPvp.length
             : 0
 
-        // Count players with raid lockouts using auditData
-        const totalLocked = (auditData.locked || []).length
+        const totalLocked = (auditData?.locked || []).length
 
-        // Get players with missing enchants from the optimized data
-        const missingEnchantsPlayers = allPlayers.filter(player => 
-            player.missingEnchants && player.missingEnchants.length > 0
+        const missingEnchantsPlayers = allPlayers.filter(
+            (player) => player.missingEnchants && player.missingEnchants.length > 0
         )
 
         return {
             totalMembers: allPlayers.length,
             missingEnchants: missingEnchants.all || 0,
             raidLocked: totalLocked,
-            avgTopMplus: avgTopMplus,
-            avgTopPvp: avgTopPvp,
+            avgTopMplus,
+            avgTopPvp,
             topMplus: topPve,
-            topPvp: topPvp,
-            missingEnchantsPlayers: missingEnchantsPlayers,
+            topPvp,
+            missingEnchantsPlayers,
             tanks: roleCounts.tanks || 0,
             healers: roleCounts.healers || 0,
             dps: roleCounts.dps || 0,
         }
-    }, [auditData, guildData])
+    }, [auditData, guildData, guildDataToUse])
 
-    // Set data loaded when data is available
-    React.useEffect(() => {
-        if (data && Object.keys(data).length > 0) {
-            setIsDataLoaded(true)
-        }
-    }, [data])
+    if (!guildData) {
+        return (
+            <div className="flex justify-center items-center h-[50vh]">
+                <Spinner />
+            </div>
+        )
+    }
 
-    console.log('data', data, isDataLoaded)
-
-    if (!isDataLoaded) {
-        return null
+    if (guildData.error) {
+        return (
+            <PageShell>
+                <PageContent>
+                    <Alert variant="destructive">
+                        <AlertTitle className="text-md">Failed to load guild data</AlertTitle>
+                        <AlertDescription className="text-sm">{guildData.error}</AlertDescription>
+                    </Alert>
+                </PageContent>
+            </PageShell>
+        )
     }
 
     return (
@@ -219,68 +140,64 @@ const Dashboard = ({ guildData }) => {
             />
 
             <PageContent className="space-y-8">
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-                <StatCard
-                    title="Total Characters"
-                    value={data.totalMembers}
-                    description="Active guild characters"
-                    icon={Users}
-                />
-                <StatCard
-                    title="Missing Enchants"
-                    value={data.missingEnchants}
-                    description="Players need attention"
-                    icon={Wrench}
-                />
-                <StatCard
-                    title="Raid Locked"
-                    value={data.raidLocked}
-                    description="Players with lockouts"
-                    icon={Lock}
-                />
-                <StatCard
-                    title="M+ Score"
-                    value={Math.round(data.avgTopMplus)}
-                    description="Average of top 5"
-                    icon={Star}
-                />
-                <StatCard
-                    title="PvP Rating"
-                    value={Math.round(data.avgTopPvp)}
-                    description="Average of top 5"
-                    icon={Trophy}
-                />
-            </div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+                    <StatCard
+                        title="Total Characters"
+                        value={data.totalMembers}
+                        description="Active guild characters"
+                        icon={Users}
+                    />
+                    <StatCard
+                        title="Missing Enchants"
+                        value={data.missingEnchants}
+                        description="Players need attention"
+                        icon={Wrench}
+                    />
+                    <StatCard
+                        title="Raid Locked"
+                        value={data.raidLocked}
+                        description="Players with lockouts"
+                        icon={Lock}
+                    />
+                    <StatCard
+                        title="M+ Score"
+                        value={Math.round(data.avgTopMplus)}
+                        description="Average of top 5"
+                        icon={Star}
+                    />
+                    <StatCard
+                        title="PvP Rating"
+                        value={Math.round(data.avgTopPvp)}
+                        description="Average of top 5"
+                        icon={Trophy}
+                    />
+                </div>
 
-            {/* Guild Rankings (WCL + Raider.io) */}
-            <div className="space-y-3">
-                <SectionHeading icon={Trophy} label="Guild Rankings" color={colors.warning} />
-                <GuildTopRanks compact />
-            </div>
+                <div className="space-y-3">
+                    <SectionHeading icon={Trophy} label="Guild Rankings" color={colors.warning} />
+                    <GuildTopRanks compact />
+                </div>
 
-            {/* Top Players Tables */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <TopPlayersTable
-                    data={data.topMplus}
-                    title="Top Mythic+ Players"
-                    scoreKey="score"
-                />
-                <TopPlayersTable
-                    data={data.topPvp}
-                    title="Top PvP Players"
-                    scoreKey="pvp"
-                />
-            </div>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <TopPlayersTable
+                        data={data.topMplus}
+                        title="Top Mythic+ Players"
+                        scoreKey="score"
+                    />
+                    <TopPlayersTable
+                        data={data.topPvp}
+                        title="Top PvP Players"
+                        scoreKey="pvp"
+                    />
+                </div>
 
-            {/* Missing Enchants Table */}
-            <div className="space-y-3">
-                <SectionHeading icon={BarChart} label="Missing Enchants" color={colors.danger} />
-                <AuditBlock
-                    data={{ all: data.missingEnchantsPlayers }}
-                    name="all"
-                />
-            </div>
+                <div className="space-y-3">
+                    <SectionHeading icon={BarChart} label="Missing Enchants" color={colors.danger} />
+                    <AuditBlock
+                        data={{ all: data.missingEnchantsPlayers }}
+                        name="all"
+                    />
+                </div>
             </PageContent>
         </PageShell>
     )

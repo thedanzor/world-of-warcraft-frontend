@@ -1,15 +1,6 @@
 import { api } from '@/lib/api'
 import DynamicScreenLoader from '@/core/dynamicScreenLoader'
 
-import { Public_Sans } from 'next/font/google'
-const publicSans = Public_Sans({
-    subsets: ['latin'],
-    weight: ['400', '500', '600', '700'],
-    display: 'swap',
-    fallback: ['system-ui', 'arial', 'sans-serif'],
-    preload: false, // Disable preloading to avoid build issues
-})
-
 // Disable caching - always fetch live data
 export const revalidate = 0
 export const dynamic = 'force-dynamic'
@@ -66,13 +57,9 @@ export default async function AuditPage() {
     const guildData = await getGuildData()
 
     return (
-        <main className={`fullbody ${publicSans.className}`}>
-            <DynamicScreenLoader 
-                screenName="audit"
-                props={{ auditable: true, initialData: guildData }}
-                loadingMessage="Loading Audit..."
-                minHeight="50vh"
-            />
-        </main>
+        <DynamicScreenLoader 
+            screenName="audit"
+            props={{ auditable: true, initialData: guildData }}
+        />
     )
 }

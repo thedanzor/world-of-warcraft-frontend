@@ -13,6 +13,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { ArrowLeft, Shield, Activity, Timer, Hash, Sword, Zap, Lock, Star, Trophy, Clock } from 'lucide-react'
 
 import getRatingColor from '@/core/utils/getRatingColor'
+import { EnrichmentScores } from '@/core/components/GuildTopRanks'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -596,6 +597,12 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
                                     {Math.round(characterData?.processedStats?.mythicPlusScore || 0)}
                                 </span>
                             </p>
+                            <div className="mt-2">
+                                <EnrichmentScores
+                                    enrichment={characterData?.enrichment}
+                                    processedStats={characterData?.processedStats}
+                                />
+                            </div>
                         </div>
 
                         {/* Stat pills */}
@@ -677,6 +684,73 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
             {/* Raid Overview — all-time progress */}
             {characterData?.raidHistory && (
                 <RaidOverview raidHistory={characterData.raidHistory} />
+            )}
+
+            {/* Warcraft Logs raid parses */}
+            {characterData?.enrichment?.raider && (
+                <Card className="border-border/50 shadow-sm bg-card/80">
+                    <CardHeader className="pb-3">
+                        <CardTitle className="text-base font-semibold flex items-center gap-2">
+                            <Sword className="h-4 w-4 text-muted-foreground" />
+                            Warcraft Logs — Raid Performance
+                            <Badge variant="secondary" className="text-xs">
+                                Score {Math.round(characterData.enrichment.raidScore ?? 0)}
+                            </Badge>
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        {Object.values(characterData.enrichment.raider.zones ?? {}).map((zone) => (
+                            <div key={zone.patch} className="space-y-2">
+                                <div className="flex flex-wrap items-center gap-2 text-sm">
+                                    <span className="font-medium">{zone.zoneName}</span>
+                                    <span className="text-muted-foreground">
+                                        {zone.kills}/{zone.totalBosses} bosses · Parse {zone.parseScore?.toFixed?.(0)} · Speed {zone.speedScore?.toFixed?.(0)}
+                                    </span>
+                                </div>
+                                {zone.bossRankings?.length > 0 && (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                        {zone.bossRankings.map((boss) => (
+                                            <div key={boss.bossName} className="flex justify-between gap-2 p-2 rounded-md bg-muted/30 text-xs">
+                                                <span className="truncate">{boss.bossName}</span>
+                                                <span className="font-semibold text-purple-400 shrink-0">
+                                                    {boss.bestParse?.toFixed?.(0)}%
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </CardContent>
+                </Card>
+            )}
+
+            {/* Raider.io enriched M+ */}
+            {characterData?.enrichment?.mplus && (
+                <Card className="border-border/50 shadow-sm bg-card/80">
+                    <CardHeader className="pb-3">
+                        <CardTitle className="text-base font-semibold flex items-center gap-2">
+                            <Star className="h-4 w-4 text-muted-foreground" />
+                            Raider.io — Mythic+ Profile
+                            <Badge variant="secondary" className="text-xs">
+                                {Math.round(characterData.enrichment.mplus.score)} rating
+                            </Badge>
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        {[
+                            { label: 'M+ Score', value: characterData.enrichment.mplus.totalMplusScore?.toFixed?.(0) },
+                            { label: 'Highest Timed', value: characterData.enrichment.mplus.highestTimedKey },
+                            { label: 'Success Rate', value: `${Math.round(characterData.enrichment.mplus.successRate ?? 0)}%` },
+                            { label: 'Tracked Runs', value: characterData.enrichment.mplus.totalTrackedRuns },
+                        ].map(({ label, value }) => (
+                            <div key={label} className="p-3 rounded-lg bg-muted/40 border border-border/30">
+                                <p className="text-xs text-muted-foreground">{label}</p>
+                                <p className="text-xl font-bold">{value}</p>
+                            </div>
+                        ))}
+                    </CardContent>
+                </Card>
             )}
 
             {/* Weekly Lockouts */}

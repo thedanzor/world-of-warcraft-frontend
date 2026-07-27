@@ -13,6 +13,11 @@ const data = {
                     "path": "/audit",
                     "icon": "AssessmentIcon"
                 },
+                {
+                    "label": "Rankings",
+                    "path": "/rankings",
+                    "icon": "EmojiEventsIcon"
+                },
             ]
         },
         "SEASONS": {

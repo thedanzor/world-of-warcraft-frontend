@@ -154,6 +154,9 @@ export default function InstallPage() {
   const [appSettings, setAppSettings] = useState({
     API_BATTLENET_KEY: '',
     API_BATTLENET_SECRET: '',
+    RAIDERIO_API_KEY: '',
+    WCL_CLIENT_ID: '',
+    WCL_CLIENT_SECRET: '',
     GUILD_NAME: '',
     GUILD_REALM: '',
     REGION: 'eu',
@@ -255,6 +258,9 @@ export default function InstallPage() {
             // Don't pre-fill API keys for security
             API_BATTLENET_KEY: '',
             API_BATTLENET_SECRET: '',
+            RAIDERIO_API_KEY: '',
+            WCL_CLIENT_ID: '',
+            WCL_CLIENT_SECRET: '',
           }));
         }
         
@@ -278,6 +284,9 @@ export default function InstallPage() {
             // Don't override sensitive fields if they're not in defaults
             API_BATTLENET_KEY: prev.API_BATTLENET_KEY || '',
             API_BATTLENET_SECRET: prev.API_BATTLENET_SECRET || '',
+            RAIDERIO_API_KEY: prev.RAIDERIO_API_KEY || '',
+            WCL_CLIENT_ID: prev.WCL_CLIENT_ID || '',
+            WCL_CLIENT_SECRET: prev.WCL_CLIENT_SECRET || '',
           }));
         }
       }
@@ -1004,7 +1013,7 @@ export default function InstallPage() {
   // ── Main install UI ─────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen text-foreground">
       {/* Dialogs */}
       <Dialog open={showOverwriteDialog} onOpenChange={setShowOverwriteDialog}>
         <DialogContent>
@@ -1119,6 +1128,18 @@ export default function InstallPage() {
               </Field>
               <Field label="Client Secret" required span2 hint="Your Battle.net API Client Secret">
                 <Input type="password" value={appSettings.API_BATTLENET_SECRET} onChange={(e) => handleAppSettingsChange('API_BATTLENET_SECRET', e.target.value)} required placeholder="••••••••••••••••" />
+              </Field>
+            </FormSection>
+
+            <FormSection title="Raider.io &amp; Warcraft Logs" description="Third-party API keys for Mythic+ rankings and raid parse data. Stored securely server-side only.">
+              <Field label="Raider.io API Key" required span2 hint="From raider.io — used for M+ scores and run history">
+                <Input type="password" value={appSettings.RAIDERIO_API_KEY} onChange={(e) => handleAppSettingsChange('RAIDERIO_API_KEY', e.target.value)} required placeholder="••••••••••••••••" />
+              </Field>
+              <Field label="Warcraft Logs Client ID" required hint="OAuth client ID from warcraftlogs.com">
+                <Input type="password" value={appSettings.WCL_CLIENT_ID} onChange={(e) => handleAppSettingsChange('WCL_CLIENT_ID', e.target.value)} required placeholder="••••••••••••••••" />
+              </Field>
+              <Field label="Warcraft Logs Client Secret" required hint="OAuth client secret from warcraftlogs.com">
+                <Input type="password" value={appSettings.WCL_CLIENT_SECRET} onChange={(e) => handleAppSettingsChange('WCL_CLIENT_SECRET', e.target.value)} required placeholder="••••••••••••••••" />
               </Field>
             </FormSection>
 

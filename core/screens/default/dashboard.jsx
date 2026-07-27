@@ -65,6 +65,7 @@ import getPreviousWednesdayAt1AM from '@/core/utils/currentLockout'
 import StatCard from '@/core/components/StatCard'
 import TopPlayersTable from '@/core/components/TopPlayersTable'
 import RoleDistribution from '@/core/components/RoleDistribution'
+import GuildTopRanks from '@/core/components/GuildTopRanks'
 
 
 // Dashboard
@@ -226,6 +227,12 @@ const Dashboard = ({ guildData }) => {
                     description="Average of top 5"
                     icon={Trophy}
                 />
+            </div>
+
+            {/* Guild Rankings (WCL + Raider.io) */}
+            <div className="space-y-4">
+                <h2 className="text-2xl font-bold tracking-tight">Guild Rankings</h2>
+                <GuildTopRanks compact />
             </div>
 
             {/* Top Players Tables */}

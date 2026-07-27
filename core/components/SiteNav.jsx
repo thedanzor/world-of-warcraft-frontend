@@ -27,7 +27,10 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 
+import { useConfig } from '@/core/hooks/useConfig'
+import menuConfig from '@/menu.config'
 import { APP_SHORT_NAME } from '@/core/seo'
+import { colors } from '@/core/theme'
 
 const ICON_MAP = {
   DashboardIcon: LayoutDashboard,

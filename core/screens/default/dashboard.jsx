@@ -188,9 +188,9 @@ const Dashboard = ({ guildData }) => {
 
     return (
         <section className="space-y-6">
-            <div className="flex flex-col gap-2">
-                <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-                <p className="text-muted-foreground">
+            <div className="flex flex-col gap-1">
+                <h2 className="text-2xl font-bold tracking-tight">Dashboard</h2>
+                <p className="text-sm text-muted-foreground">
                     Guild Overview and Statistics
                 </p>
             </div>
@@ -230,8 +230,8 @@ const Dashboard = ({ guildData }) => {
             </div>
 
             {/* Guild Rankings (WCL + Raider.io) */}
-            <div className="space-y-4">
-                <h2 className="text-2xl font-bold tracking-tight">Guild Rankings</h2>
+            <div className="space-y-3">
+                <h2 className="text-lg font-semibold tracking-tight">Guild Rankings</h2>
                 <GuildTopRanks compact />
             </div>
 

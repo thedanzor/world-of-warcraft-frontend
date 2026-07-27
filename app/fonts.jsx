@@ -1,14 +1,15 @@
 /**
- * FONT CONFIGURATION SYSTEM
- * 
- * This file manages all font configurations for the application.
+ * FONT CONFIGURATION — Inter (matches tntaiaudit)
  */
 
-import { Nunito_Sans } from 'next/font/google'
+import { Inter } from 'next/font/google'
 
-export const nunitoSans = Nunito_Sans({
-    subsets: ['latin'],
-    weight: ['400', '500', '600', '700', '800'],
-    display: 'swap',
-    variable: '--font-sans',
+export const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-sans',
 })
+
+// Legacy export name used by layout
+export const nunitoSans = inter

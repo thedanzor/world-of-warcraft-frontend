@@ -45,15 +45,15 @@ const data = {
     },
     "GUILLD_RANKS": [
         "Guild Lead",
-        "Officer",
-        "Officer Alt",
-        "Cunt",
-        "Muppet",
-        "Raider",
-        "Trial Raider",
-        "Member",
-        "Alt",
-        "New Recruit"
+        "Unknown",
+        "Unknown",
+        "Unknown",
+        "Unknown",
+        "Unknown",
+        "Unknown",
+        "Unknown",
+        "Unknown",
+        "Unknown"
     ],
     "RESULTS_PAGINATION": {
         "MAX_ITEMS": 20

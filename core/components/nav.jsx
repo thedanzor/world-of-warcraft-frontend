@@ -142,16 +142,16 @@ export default function Nav() {
     return (
         <>
             <Sidebar>
-                <SidebarHeader className="px-5 py-5 border-b border-border/30">
-                    <Link href="/" className="font-bold text-xl tracking-tight truncate text-foreground hover:opacity-80 transition-opacity capitalize" onClick={() => setOpenMobile(false)}>
+                <SidebarHeader className="px-5 py-4 border-b border-white/[0.07]">
+                    <Link href="/" className="font-bold text-base tracking-tight truncate text-foreground hover:text-primary transition-colors capitalize" onClick={() => setOpenMobile(false)}>
                         {guildName}
                     </Link>
                 </SidebarHeader>
                 
-                <SidebarContent className="py-3">
+                <SidebarContent className="py-2">
                     {Object.entries(navigationItems).map(([sectionKey, section]) => (
-                        <SidebarGroup key={sectionKey} className="px-3 pb-1">
-                            <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground/60 uppercase tracking-widest px-2 mb-1">{section.label}</SidebarGroupLabel>
+                        <SidebarGroup key={sectionKey} className="px-2 pb-1">
+                            <SidebarGroupLabel className="text-[0.67rem] font-semibold text-muted-foreground uppercase tracking-[0.1em] px-2 mb-1">{section.label}</SidebarGroupLabel>
                             <SidebarGroupContent>
                                 <SidebarMenu>
                                     {section.items.map((item) => {
@@ -162,7 +162,11 @@ export default function Nav() {
                                                     asChild
                                                     isActive={isCurrent}
                                                     onClick={() => setOpenMobile(false)}
-                                                    className={`rounded-md h-9 transition-all duration-150 ${isCurrent ? 'bg-muted text-foreground font-semibold' : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'}`}
+                                                    className={`rounded-md h-9 transition-all duration-150 ${
+                                                        isCurrent
+                                                            ? 'bg-primary/12 text-primary border border-primary/25 font-semibold'
+                                                            : 'text-muted-foreground hover:bg-white/[0.04] hover:text-foreground border border-transparent'
+                                                    }`}
                                                 >
                                                     <Link href={item.path} target={item.external ? '_blank' : undefined} className="flex items-center gap-2.5 px-2.5">
                                                         {item.icon && <item.icon className="w-4 h-4 shrink-0" />}
@@ -178,7 +182,7 @@ export default function Nav() {
                     ))}
                 </SidebarContent>
 
-                <SidebarFooter className="px-3 pb-4 pt-3 border-t border-border/30">
+                <SidebarFooter className="px-2 pb-4 pt-2 border-t border-white/[0.07]">
                     <SidebarMenu>
                         <SidebarMenuItem>
                             <SidebarMenuButton

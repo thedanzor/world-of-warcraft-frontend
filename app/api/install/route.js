@@ -3,6 +3,8 @@
  * @module app/api/install/route
  */
 
+import { parseBackendResponse } from '@/lib/parseBackendResponse';
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
 /**
@@ -15,14 +17,20 @@ export async function GET() {
       headers: {
         'Content-Type': 'application/json',
       },
+      cache: 'no-store',
     });
 
-    const data = await response.json();
+    const data = await parseBackendResponse(response);
 
-    if (!response.ok) {
+    if (!response.ok || data._emptyBody || data._invalidJson) {
       return Response.json(
-        { success: false, error: data.error || 'Failed to check installation status', message: data.message },
-        { status: response.status }
+        {
+          success: false,
+          installed: false,
+          error: data.error || 'Failed to check installation status',
+          message: data.message,
+        },
+        { status: data._emptyBody || data._invalidJson ? 502 : response.status }
       );
     }
 
@@ -30,7 +38,7 @@ export async function GET() {
   } catch (error) {
     console.error('Error checking installation status:', error);
     return Response.json(
-      { success: false, error: 'Network error', message: error.message },
+      { success: false, installed: false, error: 'Network error', message: error.message },
       { status: 500 }
     );
   }
@@ -42,10 +50,6 @@ export async function GET() {
 export async function POST(request) {
   try {
     const body = await request.json();
-    
-    console.log('=== NEXT.JS API PROXY ===');
-    console.log('Received body:', JSON.stringify({ ...body, API_BATTLENET_KEY: '***', API_BATTLENET_SECRET: '***' }, null, 2));
-    console.log('========================');
 
     const response = await fetch(`${API_BASE_URL}/api/install`, {
       method: 'POST',
@@ -55,21 +59,15 @@ export async function POST(request) {
       body: JSON.stringify(body),
     });
 
-    const data = await response.json();
-    
-    console.log('=== BACKEND RESPONSE ===');
-    console.log('Status:', response.status);
-    console.log('Data:', JSON.stringify(data, null, 2));
-    console.log('========================');
+    const data = await parseBackendResponse(response);
 
-    if (!response.ok) {
-      // Pass through ALL fields from the backend response
+    if (!response.ok || data._emptyBody || data._invalidJson) {
       return Response.json(
-        { 
+        {
           ...data,
-          success: false
+          success: false,
         },
-        { status: response.status }
+        { status: data._emptyBody || data._invalidJson ? 502 : response.status }
       );
     }
 
@@ -82,4 +80,3 @@ export async function POST(request) {
     );
   }
 }
-

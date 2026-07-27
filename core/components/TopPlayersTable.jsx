@@ -29,9 +29,9 @@ const TopPlayersTable = ({ data, title, scoreKey }) => {
     }
 
     return (
-        <div className="top-players-table bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-            <div className="px-5 py-4 border-b border-border bg-muted/20">
-                <h6 className="top-players-table-title text-sm font-semibold tracking-tight">
+        <div className="audit-panel overflow-hidden">
+            <div className="audit-panel-header">
+                <h6 className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                     {title}
                 </h6>
             </div>

@@ -1,22 +1,27 @@
 import React from 'react'
+import { colors } from '@/core/theme'
 
-const StatCard = ({ title, value, description, icon: Icon }) => (
-    <div className="stat-card relative overflow-hidden bg-card text-card-foreground rounded-xl border border-border/50 shadow-sm p-6 flex flex-col justify-between bg-gradient-subtle card-gradient-border group">
-        <div className="stat-card-header flex items-center justify-between mb-4 relative z-10">
-            <h3 className="stat-card-title text-sm font-medium tracking-tight text-muted-foreground">
-                {title}
-            </h3>
-            <div className="p-2 rounded-md bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-                <Icon className="w-4 h-4" />
+const StatCard = ({ title, value, description, icon: Icon, color = colors.accent }) => (
+    <div className="audit-panel h-full transition-colors hover:border-primary/30 group">
+        <div className="p-5">
+            <div className="flex items-center justify-between mb-4">
+                <p className="text-[0.67rem] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+                    {title}
+                </p>
+                <div
+                    className="flex items-center justify-center w-7 h-7 rounded-md shrink-0"
+                    style={{
+                        background: `${color}1a`,
+                        border: `1px solid ${color}33`,
+                    }}
+                >
+                    <Icon className="w-3.5 h-3.5" style={{ color }} />
+                </div>
             </div>
-        </div>
-        <div className="relative z-10">
-            <p className="stat-card-value text-3xl font-bold tracking-tight">
-                {value}
-            </p>
-            <p className="stat-card-description text-xs text-muted-foreground mt-1">
-                {description}
-            </p>
+            <p className="stat-number text-[1.65rem] leading-none mb-1">{value}</p>
+            {description && (
+                <p className="text-xs text-muted-foreground">{description}</p>
+            )}
         </div>
     </div>
 )

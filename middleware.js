@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { parseBackendResponse } from '@/lib/parseBackendResponse';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
@@ -23,19 +24,18 @@ export async function middleware(request) {
       cache: 'no-store',
     });
 
-    const data = await response.json();
+    const data = await parseBackendResponse(response);
 
-    // If not installed, redirect to install page
-    if (!data.installed) {
+    // Only redirect when the backend explicitly reports not installed.
+    // Empty/invalid responses usually mean the API is down — don't trap users on /install.
+    if (response.ok && !data._emptyBody && !data._invalidJson && !data.installed) {
       const installUrl = new URL('/install', request.url);
       return NextResponse.redirect(installUrl);
     }
   } catch (error) {
     console.error('Error checking installation status in middleware:', error);
-    // On error, allow the request to proceed (might be network issue)
-    // But redirect to install if we can't reach the API
-    const installUrl = new URL('/install', request.url);
-    return NextResponse.redirect(installUrl);
+    // On network error, allow the request to proceed
+    return NextResponse.next();
   }
 
   return NextResponse.next();
@@ -54,4 +54,3 @@ export const config = {
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };
-

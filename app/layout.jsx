@@ -14,11 +14,11 @@ export default function RootLayout({ children }) {
             <head>
                 <link rel="icon" href="/favicon.ico" sizes="any" />
                 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-                <meta name="theme-color" content="#09090b" />
+                <meta name="theme-color" content="#090f18" />
             </head>
             <body className={`${nunitoSans.variable} font-sans antialiased min-h-screen text-foreground`}>
-                <div className="applicationWrapper">
-                    <Theme size="3">
+                <div className="applicationWrapper min-h-screen">
+                    <Theme appearance="dark" accentColor="blue" radius="medium" scaling="100%">
                         <StyledComponentsRegistry>
                             <BaseLayout>{children}</BaseLayout>
                         </StyledComponentsRegistry>

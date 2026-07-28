@@ -22,30 +22,52 @@ export const dynamic = 'force-dynamic' // Force dynamic rendering
 
 // Server-side data fetching for member details
 async function getMemberData(realm, character) {
-    try {
-        // Fetch both seasonal stats and complete character data in parallel
-        const [seasonalResponse, characterResponse] = await Promise.all([
-            api.getCharacterSeasonalStats(realm, character),
-            api.getCharacterData(realm, character, 'raid,mplus,pvp')
-        ]);
+    const [seasonalResult, characterResult] = await Promise.allSettled([
+        api.getCharacterSeasonalStats(realm, character),
+        api.getCharacterData(realm, character, 'raid,mplus,pvp,stats'),
+    ])
 
-        return {
-            seasonalData: seasonalResponse.seasonalStats,
-            characterData: characterResponse.character,
-            timestamp: {
-                seasonal: seasonalResponse.timestamp,
-                character: characterResponse.timestamp
-            },
-            error: null
-        }
-    } catch (error) {
-        console.error('Error fetching member data:', error)
+    const seasonalResponse = seasonalResult.status === 'fulfilled' ? seasonalResult.value : null
+    const characterResponse = characterResult.status === 'fulfilled' ? characterResult.value : null
+
+    const characterData = characterResponse?.success ? characterResponse.character : null
+    const dbSeasonalData = seasonalResponse?.success ? seasonalResponse.seasonalStats : null
+    const liveSeasonalData = characterData?.seasonalStats
+
+    // Prefer live seasonal stats when DB cache is empty or stale
+    const seasonalData = (liveSeasonalData?.totalRuns > 0 ? liveSeasonalData : null)
+        || (dbSeasonalData?.totalRuns > 0 ? dbSeasonalData : null)
+        || liveSeasonalData
+        || dbSeasonalData
+
+    const errors = []
+    if (seasonalResult.status === 'rejected' && !liveSeasonalData) {
+        errors.push(`Seasonal cache: ${seasonalResult.reason?.message || 'unavailable'}`)
+    }
+    if (characterResult.status === 'rejected') {
+        errors.push(characterResult.reason?.message || 'Failed to load character data')
+    }
+    if (characterResponse && !characterResponse.success) {
+        errors.push(characterResponse.message || characterResponse.error || 'Character not found')
+    }
+
+    if (!characterData && errors.length > 0) {
         return {
             seasonalData: null,
             characterData: null,
             timestamp: null,
-            error: error.message
+            error: errors.join('; '),
         }
+    }
+
+    return {
+        seasonalData,
+        characterData,
+        timestamp: {
+            seasonal: seasonalResponse?.timestamp || null,
+            character: characterResponse?.timestamp || null,
+        },
+        error: errors.length > 0 ? errors.join('; ') : null,
     }
 }
 

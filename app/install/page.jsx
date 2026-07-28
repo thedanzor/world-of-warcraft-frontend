@@ -176,7 +176,7 @@ export default function InstallPage() {
     DIFFICULTY: ['Mythic', 'Heroic', 'Normal'],
     SEASON_START_DATE: '2026-02-25',
     CURRENT_EXPANSION: 'Midnight',
-    CURRENT_MPLUS_SEASON: 16,
+    CURRENT_MPLUS_SEASON: 17,
     GUILLD_RANKS: [
       'Guild Lead',
       'Officer',

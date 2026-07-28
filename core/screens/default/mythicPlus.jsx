@@ -18,6 +18,9 @@ const MPlus = ({ guildData, allGuildData = [], seasonalData }) => {
     const [activeTab, setActiveTab] = useState('weekly')
     const rosterForStats = Array.isArray(allGuildData) ? allGuildData : (guildData?.data || [])
     const hasSeasonalStats = seasonalData?.stats && Object.keys(seasonalData.stats).length > 0
+    const hasMplusCacheData = hasSeasonalStats && (
+        (seasonalData.stats.charactersWithMplus ?? 0) > 0 || (seasonalData.stats.totalRuns ?? 0) > 0
+    )
 
     if (!guildData) {
         return (
@@ -62,7 +65,9 @@ const MPlus = ({ guildData, allGuildData = [], seasonalData }) => {
                         <TabsTrigger value="rio">Raider.io Rankings</TabsTrigger>
                         <TabsTrigger value="stats">Statistics</TabsTrigger>
                         {hasSeasonalStats && (
-                            <TabsTrigger value="seasonal">Season Cache</TabsTrigger>
+                            <TabsTrigger value="seasonal">
+                                Season Cache{!hasMplusCacheData ? ' (empty)' : ''}
+                            </TabsTrigger>
                         )}
                     </TabsList>
 

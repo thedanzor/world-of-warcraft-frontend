@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -14,6 +15,7 @@ import { ArrowLeft, Shield, Activity, Timer, Hash, Sword, Zap, Lock, Star, Troph
 
 import getRatingColor from '@/core/utils/getRatingColor'
 import { EnrichmentScores } from '@/core/components/GuildTopRanks'
+import CharacterStatistics from '@/core/components/CharacterStatistics'
 import PageHero from '@/core/components/PageHero'
 import { PageShell, PageContent } from '@/core/components/PageShell'
 import { colors } from '@/core/theme'
@@ -346,12 +348,13 @@ const LockoutsSection = ({ lockStatus }) => {
 }
 
 /**
- * Current season M+ best run per dungeon.
+ * Current season M+ best run per dungeon with party members.
  */
-const BestRunsSection = ({ currentSeason, getScoreColor }) => {
+const BestRunsSection = ({ currentSeason, mplus, getScoreColor }) => {
     const runs = currentSeason?.best_runs
     if (!runs?.length) return null
 
+    const seasonId = currentSeason?.season?.id || mplus?.seasons?.[0]?.id
     const sortedRuns = [...runs].sort((a, b) => b.keystone_level - a.keystone_level)
 
     const formatDuration = (ms) => {
@@ -361,12 +364,24 @@ const BestRunsSection = ({ currentSeason, getScoreColor }) => {
         return `${mins}:${secs.toString().padStart(2, '0')}`
     }
 
+    const getMemberUrl = (member) => {
+        const name = member.character?.name
+        const realm = member.character?.realm?.slug
+        if (!name || !realm) return null
+        return `/member/${realm}/${name}`
+    }
+
     return (
         <Card className="border-border/50 shadow-sm bg-card/80">
             <CardHeader className="pb-3">
                 <CardTitle className="text-base font-semibold flex items-center gap-2">
                     <Clock className="h-4 w-4 text-muted-foreground" />
-                    Season Best Runs
+                    Season {seasonId ? `${seasonId} ` : ''}Best Runs
+                    {currentSeason?.current_mythic_rating?.rating > 0 && (
+                        <Badge variant="secondary" className="ml-auto text-xs">
+                            {Math.round(currentSeason.current_mythic_rating.rating)} rating
+                        </Badge>
+                    )}
                 </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
@@ -377,7 +392,8 @@ const BestRunsSection = ({ currentSeason, getScoreColor }) => {
                                 <TableHead className="text-muted-foreground font-medium text-sm pl-6">Dungeon</TableHead>
                                 <TableHead className="text-muted-foreground font-medium text-sm">Key Level</TableHead>
                                 <TableHead className="text-muted-foreground font-medium text-sm">Time</TableHead>
-                                <TableHead className="text-muted-foreground font-medium text-sm pr-6">Rating</TableHead>
+                                <TableHead className="text-muted-foreground font-medium text-sm">Rating</TableHead>
+                                <TableHead className="text-muted-foreground font-medium text-sm pr-6">Party</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -395,10 +411,39 @@ const BestRunsSection = ({ currentSeason, getScoreColor }) => {
                                             {run.is_completed_within_time ? '✓ Timed' : '✗ Depleted'}
                                         </span>
                                     </TableCell>
-                                    <TableCell className="pr-6">
+                                    <TableCell>
                                         <span className="font-semibold" style={{ color: getScoreColor(run.mythic_rating?.rating) }}>
                                             {Math.round(run.mythic_rating?.rating || 0)}
                                         </span>
+                                    </TableCell>
+                                    <TableCell className="pr-6">
+                                        <div className="flex flex-wrap gap-1">
+                                            {(run.members || []).map((member, idx) => {
+                                                const url = getMemberUrl(member)
+                                                const label = member.character?.name
+                                                    ? `${member.character.name.charAt(0).toUpperCase()}${member.character.name.slice(1).toLowerCase()}`
+                                                    : 'Unknown'
+                                                const spec = member.specialization?.name
+
+                                                if (url) {
+                                                    return (
+                                                        <Link
+                                                            key={idx}
+                                                            href={url}
+                                                            className="text-xs bg-muted/60 border border-border/50 rounded px-1.5 py-0.5 text-muted-foreground hover:text-foreground hover:border-border transition-colors"
+                                                        >
+                                                            {label}{spec ? ` (${spec})` : ''}
+                                                        </Link>
+                                                    )
+                                                }
+
+                                                return (
+                                                    <span key={idx} className="text-xs bg-muted/60 border border-border/50 rounded px-1.5 py-0.5 text-muted-foreground">
+                                                        {label}{spec ? ` (${spec})` : ''}
+                                                    </span>
+                                                )
+                                            })}
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -517,7 +562,7 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
         )
     }
 
-    if (memberData.error) {
+    if (memberData.error && !characterData) {
         return (
             <div className="p-6">
                 <Alert variant="destructive">
@@ -553,6 +598,12 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
             />
 
             <PageContent className="space-y-6">
+            {error && (
+                <Alert>
+                    <AlertTitle>Partial data loaded</AlertTitle>
+                    <AlertDescription>{error}</AlertDescription>
+                </Alert>
+            )}
             {/* Character showcase */}
             <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0f1923] min-h-[280px] sm:min-h-[340px]">
                 <div
@@ -761,9 +812,18 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
                 <LockoutsSection lockStatus={characterData.lockStatus} />
             )}
 
+            {/* Character Statistics from Battle.net */}
+            {characterData?.statistics && (
+                <CharacterStatistics statistics={characterData.statistics} />
+            )}
+
             {/* M+ Season Best Runs */}
             {characterData?.currentSeason && (
-                <BestRunsSection currentSeason={characterData.currentSeason} getScoreColor={getScoreColor} />
+                <BestRunsSection
+                    currentSeason={characterData.currentSeason}
+                    mplus={characterData.mplus}
+                    getScoreColor={getScoreColor}
+                />
             )}
 
             {/* PvP */}
@@ -772,12 +832,7 @@ const MemberDetail = ({ auditable, memberData, realm, character }) => {
             )}
 
             {/* Seasonal Data */}
-            {error ? (
-                <Alert variant="destructive">
-                    <AlertTitle>Failed to load seasonal statistics</AlertTitle>
-                    <AlertDescription>{error}</AlertDescription>
-                </Alert>
-            ) : !seasonalData ? (
+            {!seasonalData ? (
                 <Alert>
                     <AlertTitle>No seasonal data available</AlertTitle>
                     <AlertDescription>This character hasn&apos;t completed any Mythic+ runs this season.</AlertDescription>

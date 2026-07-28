@@ -20,7 +20,7 @@ const data = {
     "_DRAFT_DIFFICULTY": ["LFR", "Raid Finder", "Mythic", "Heroic", "Normal"],
     "SEASON_START_DATE": "2026-02-25",
     "CURRENT_EXPANSION": "Midnight",
-    "CURRENT_MPLUS_SEASON": 16,
+    "CURRENT_MPLUS_SEASON": 17,
     "CURRENT_SEASON_TIER_SETS": [
         "Relentless Rider's Lament",
         "Devouring Reaver's Sheathe",

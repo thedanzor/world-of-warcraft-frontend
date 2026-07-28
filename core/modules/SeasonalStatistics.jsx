@@ -35,6 +35,31 @@ const SeasonalStatistics = ({ data, guildData }) => {
         )
     }
 
+    const hasMplusData = (data.charactersWithMplus ?? 0) > 0 || (data.totalRuns ?? 0) > 0
+
+    if (!hasMplusData) {
+        return (
+            <div>
+                <div className="mb-6 p-6 bg-card border border-border shadow-sm rounded-xl">
+                    <h4 className="text-foreground text-2xl font-bold mb-2">
+                        Season {data.season} Statistics
+                    </h4>
+                    <p className="text-muted-foreground">
+                        Last updated: {new Date(data.lastUpdated).toLocaleString()}
+                    </p>
+                </div>
+                <div className="bg-amber-500/10 border border-amber-500/20 text-amber-500 rounded-lg p-4">
+                    <h6 className="text-md font-medium mb-1">Season cache is empty</h6>
+                    <p className="text-sm">
+                        No Mythic+ run data was found for season {data.season}. This usually means the configured
+                        season ID is out of date or the guild hasn&apos;t been synced with M+ data since the season changed.
+                        Run a guild update with Mythic+ enabled to refresh the cache.
+                    </p>
+                </div>
+            </div>
+        )
+    }
+
     const getScoreColor = (score, color = null) => {
         // Use the color from API if available
         if (color) {
